@@ -19,7 +19,7 @@ class SignInView(generic.TemplateView):
         # If auth failed
         if user is None:
             args['login_error'] = 'Username or password is incorrect'
-            return render_to_response('login.html', args)
+            return render_to_response('signin.html', args)
         else:
             auth.login(request, user)
             return redirect('/')
