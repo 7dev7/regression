@@ -8,5 +8,40 @@
             </div>
         </div>
     </div>
+    <div>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <form action="{% url 'signup' %}" method="POST">
+                    {% csrf_token %}
+                    <fieldset>
+                        {% if error %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label for="username">Username: </label>
+                            <input type="text" class="form-control" id="username" placeholder="Enter username" name="username"
+                                required />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email: </label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email"
+                                required />
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password: </label>
+                            <input type="password" class="form-control" id="password" placeholder="Password" name="password"
+                                required />
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordConfirm">Password confirm: </label>
+                            <input type="password" class="form-control" id="passwordConfirm" placeholder="Password confirm"
+                                name="passwordConfirm" required />
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary float-right">Sign up</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
