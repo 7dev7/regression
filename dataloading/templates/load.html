@@ -9,23 +9,30 @@
         </div>
     </div>
     <div class="content">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <form action="{% url 'load' %}" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <fieldset>
-                        <div class="form-group ">
-                            <div class="input-group mb-3">
-                                <div class="custom-file">
-                                    <input type="file" id="inputFile" aria-describedby="inputFileAddon" accept=".csv" />
-                                    <label class="custom-file-label" for="inputFile">Файл</label>
-                                </div>
+        <div class="col-md-8 offset-md-2">
+            <h4>Вы можете загрузить файл с данными: </h4>
+            <br>
+            <form action="{% url 'load' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="form-group ">
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input type="file" id="inputFile" aria-describedby="inputFileAddon" accept=".csv" />
+                                <label class="custom-file-label" for="inputFile">Файл</label>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-outline-primary float-right">Загрузить файл</button>
-                    </fieldset>
-                </form>
-            </div>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary float-right">Загрузить файл</button>
+                </fieldset>
+            </form>
+            <hr>
+        </div>
+        <br>
+        <div class="col-md-8 offset-md-2">
+            <h4>Либо создать набор данных в визуальном режиме:</h4>
+            <br>
+            <a href="/" class="btn btn-outline-primary float-right">Перейти к созданию в визуальном режиме</a>
         </div>
     </div>
 </div>
