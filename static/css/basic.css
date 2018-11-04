@@ -20,3 +20,7 @@ body {
 .page-header {
     margin-top: 20px;
 }
+
+.custom-file-input ~ .custom-file-label::after {
+    content: "Найти";
+}
