@@ -13,9 +13,7 @@ def validate(username: str, email: str, pwd: str, pwd_confirm: str) -> (bool, st
     if pwd != pwd_confirm:
         return False, 'Password must be equals to password confirm'
 
-    existing_user = User.objects.get(username=username)
-
-    if existing_user is not None:
+    if User.objects.filter(username=username).exists():
         return False, 'There is user with such username'
 
     return True, ''

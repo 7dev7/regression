@@ -1,19 +1,23 @@
 {% load staticfiles %}
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Regression</title>
+    <title>Регрессия</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Didact+Gothic|Neucha|Play|Ubuntu+Condensed"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/basic.css' %}" />
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a href="/" class="navbar-brand">Regression</a>
+        <a href="/" class="navbar-brand">Регрессия</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -21,10 +25,10 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/data/load/">Data</a>
+                    <a class="nav-link" href="/data/load/">Данные</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Analysis</a>
+                    <a class="nav-link" href="/">Анализ</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav ml-auto">
@@ -33,14 +37,14 @@
                     <a class="nav-link" href="/">{{ user.username }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/auth/logout/">Log out</a>
+                    <a class="nav-link" href="/auth/logout/">Выйти</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/auth/signin/">Sign In</a>
+                    <a class="nav-link" href="/auth/signin/">Войти</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/auth/signup/">Sign Up</a>
+                    <a class="nav-link" href="/auth/signup/">Зарегистрироваться</a>
                 </li>
                 {% endif %}
             </ul>
@@ -52,7 +56,7 @@
     </main>
 
     <footer class="footer">
-        <hr/>
+        <hr />
         <div class="container">
             <p><a href="https://github.com/7dev7/regression">GitHub</a></p>
         </div>
