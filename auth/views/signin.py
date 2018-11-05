@@ -1,5 +1,4 @@
 from django.contrib import auth
-from django.contrib.auth.models import User
 from django.shortcuts import redirect, render_to_response
 from django.template.context_processors import csrf
 from django.views import generic

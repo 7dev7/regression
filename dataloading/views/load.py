@@ -1,18 +1,19 @@
-from django.views import generic
-from django.shortcuts import redirect, render_to_response
-from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect, render_to_response
 from django.template.context_processors import csrf
+from django.utils.datastructures import MultiValueDictKeyError
+from django.views import generic
 
 
 class LoadView(LoginRequiredMixin, generic.TemplateView):
     redirect_field_name = None
     template_name = 'load.html'
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         file = extract_file(request)
         if file is not None:
-            print(file)
+            # TODO handle file
             return redirect('/', request)
         else:
             args = {}

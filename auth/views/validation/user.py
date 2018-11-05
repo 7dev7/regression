@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 
+
 def validate(username: str, email: str, pwd: str, pwd_confirm: str) -> (bool, str):
     """
     Performs user's data validation. Returns success flag and error message if exists.
