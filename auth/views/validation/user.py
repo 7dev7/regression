@@ -5,15 +5,15 @@ def validate(username: str, email: str, pwd: str, pwd_confirm: str) -> (bool, st
     Performs user's data validation. Returns success flag and error message if exists.
     """
     if not username.strip():
-        return False, 'Username cannot be empty'
+        return False, 'Имя пользователя не может быть пустым'
     if not email.strip():
-        return False, 'Email cannot be empty'
+        return False, 'Email не может быть пустым'
     if not pwd.strip():
-        return False, 'Password cannot be empty'
+        return False, 'Пароль не может быть пустым'
     if pwd != pwd_confirm:
-        return False, 'Password must be equals to password confirm'
+        return False, 'Пароль и подвтерждение пароля должны совпадать'
 
     if User.objects.filter(username=username).exists():
-        return False, 'There is user with such username'
+        return False, 'Выбранное имя пользователя уже занято'
 
     return True, ''
