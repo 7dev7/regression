@@ -12,13 +12,22 @@
             {% if documents %}
                 {% for doc in documents %}
                     <div class="col-md-8 offset-md-2">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="doc_id" value="{{ doc.id }}"/>
+                            <button class="btn btn-outline-danger float-right"><span aria-hidden="true">&times;</span>
+                            </button>
+                        </form>
                         <h4>{{ doc.name }}</h4>
-                        <span>{{ doc.upload_time }}</span>
+                        <p class="text-secondary">{{ doc.upload_time }}</p>
                     </div>
                     <hr>
                 {% endfor %}
             {% else %}
-                <h4>Empty docs</h4>
+                <div class="col-md-8 offset-md-2">
+                    <h4>На данный момент у вас нет наборов данных :(</h4>
+                    <h5>Вы можете добавить наборы данных <a href="/data/load">здесь</a></h5>
+                </div>
             {% endif %}
         </div>
     </div>
