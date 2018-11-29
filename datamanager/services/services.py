@@ -1,16 +1,16 @@
-from datamanager.models import Document
+from datamanager.models import Dataset
 
 
 def load_dataset(file, user):
-    doc = Document(content=file, author=user, name=generate_doc_name(user))
-    doc.save()
+    ds = Dataset(content=file, author=user, name=generate_dataset_name(user))
+    ds.save()
 
 
-def generate_doc_name(user):
-    count = Document.objects.filter(author=user).count()
+def generate_dataset_name(user):
+    count = Dataset.objects.filter(author=user).count()
     return 'Набор #{}'.format(count + 1)
 
 
-def delete_document(doc_id):
-    doc = Document.objects.filter(id=doc_id)
-    doc.delete()
+def delete_dataset(ds_id):
+    ds = Dataset.objects.filter(id=ds_id)
+    ds.delete()

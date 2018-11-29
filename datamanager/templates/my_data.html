@@ -9,17 +9,17 @@
             </div>
         </div>
         <div class="content">
-            {% if documents %}
-                {% for doc in documents %}
+            {% if dataset %}
+                {% for ds in dataset %}
                     <div class="col-md-8 offset-md-2">
                         <form method="POST">
                             {% csrf_token %}
-                            <input type="hidden" name="doc_id" value="{{ doc.id }}"/>
+                            <input type="hidden" name="ds_id" value="{{ ds.id }}"/>
                             <button class="btn btn-outline-danger float-right"><span aria-hidden="true">&times;</span>
                             </button>
                         </form>
-                        <h4>{{ doc.name }}</h4>
-                        <p class="text-secondary">{{ doc.upload_time }}</p>
+                        <h4>{{ ds.name }}</h4>
+                        <p class="text-secondary">{{ ds.upload_time }}</p>
                     </div>
                     <hr>
                 {% endfor %}

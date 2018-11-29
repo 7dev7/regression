@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from datamanager.models import Document
+from datamanager.models import Dataset
 
 # Register your models here.
 admin.site.register([
-    Document,
+    Dataset,
 ])

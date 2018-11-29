@@ -3,26 +3,27 @@ from django.shortcuts import redirect
 from django.template.context_processors import csrf
 from django.views import generic
 
-from datamanager.models import Document
-from datamanager.services.services import delete_document
+from datamanager.models import Dataset
+from datamanager.services.services import delete_dataset
 
 
-class DocumentsView(LoginRequiredMixin, generic.ListView):
+class DatasetView(LoginRequiredMixin, generic.ListView):
     redirect_field_name = None
     template_name = 'my_data.html'
 
-    context_object_name = 'documents'
+    context_object_name = 'dataset'
 
     def get_queryset(self):
-        return Document.objects.filter(author=self.request.user)
+        return Dataset.objects.filter(author=self.request.user)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         args = {}
         args.update(csrf(request))
 
-        doc_id = request.POST.get('doc_id', None)
+        ds_id = request.POST.get('ds_id', None)
 
-        if doc_id is not None:
-            delete_document(doc_id)
+        if ds_id is not None:
+            delete_dataset(ds_id)
 
         return redirect('/data', request)

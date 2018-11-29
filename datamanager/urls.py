@@ -4,5 +4,5 @@ from datamanager.views import load, my_data
 
 urlpatterns = [
     path('load/', load.LoadView.as_view(), name='load'),
-    path('', my_data.DocumentsView.as_view(), name='my_data'),
+    path('', my_data.DatasetView.as_view(), name='my_data'),
 ]
