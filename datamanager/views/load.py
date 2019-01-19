@@ -4,7 +4,7 @@ from django.template.context_processors import csrf
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import generic
 
-from datamanager.services.services import load_dataset
+from datamanager.services.services import create_dataset
 
 
 class LoadView(LoginRequiredMixin, generic.TemplateView):
@@ -15,7 +15,7 @@ class LoadView(LoginRequiredMixin, generic.TemplateView):
     def post(request):
         file = extract_file(request)
         if file is not None:
-            load_dataset(file, request.user)
+            create_dataset(file, request.user)
             return redirect('/data/', request)
         else:
             args = {}

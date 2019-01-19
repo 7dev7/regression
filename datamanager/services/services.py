@@ -1,9 +1,22 @@
+import pandas as pd
+
 from datamanager.models import Dataset
 
 
-def load_dataset(file, user):
-    ds = Dataset(content=file, author=user, name=generate_dataset_name(user))
+def create_dataset(file, user):
+    if file is None:
+        return
+
+    # TODO add file check
+
+    content = __get_csv_content(file)
+    ds = Dataset(content=content, author=user, name=generate_dataset_name(user))
     ds.save()
+
+
+def __get_csv_content(file):
+    df = pd.read_csv(file)
+    return df.to_json()
 
 
 def generate_dataset_name(user):
