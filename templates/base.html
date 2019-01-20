@@ -14,6 +14,8 @@
 
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/basic.css' %}"/>
+
+    {% block header-links %}{% endblock %}
 </head>
 
 <body>
@@ -77,6 +79,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
+
+{% block footer-scripts %}{% endblock %}
 </body>
 
 </html>
