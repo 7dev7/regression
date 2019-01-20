@@ -5,3 +5,8 @@ from django.views import generic
 class DatasetView(LoginRequiredMixin, generic.TemplateView):
     redirect_field_name = None
     template_name = 'dataset.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['data_id'] = kwargs.get('data_id')
+        return data

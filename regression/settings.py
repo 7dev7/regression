@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'auth.apps.AuthConfig',
     'main.apps.MainConfig',
     'datamanager.apps.DatamanagerConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
