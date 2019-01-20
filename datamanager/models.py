@@ -9,3 +9,5 @@ class Dataset(models.Model):
     upload_time = models.DateTimeField(default=timezone.now, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = JSONField()
+    columns = JSONField()
+    size = models.IntegerField()

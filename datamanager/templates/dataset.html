@@ -2,34 +2,19 @@
 {% load staticfiles %}
 
 {% block header-links %}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{% static "css/ui.jqgrid-bootstrap4.css" %}">
+    <script src="{% static "js/grid.locale-ru.js" %}"></script>
+    <script src="{% static "js/jquery.jqGrid.min.js" %}"></script>
 {% endblock %}
 
 {% block content %}
     <br/>
-    <h2>Data id = {{ data_id }}</h2>
+    <input type="hidden" value="{{ data_id }}" id="data_id"/>
     <br/>
-    <table id="myTable">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Position</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Tiger Nixon</td>
-            <td>System Architect</td>
-        </tr>
-        <tr>
-            <td>Garrett Winters</td>
-            <td>Accountant</td>
-        </tr>
-        </tbody>
+    <table id="dataset_table">
     </table>
 {% endblock %}
 
 {% block footer-scripts %}
-    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="{% static "js/dataset.js" %}"></script>
 {% endblock %}

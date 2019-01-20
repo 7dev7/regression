@@ -8,15 +8,14 @@ def create_dataset(file, user):
         return
 
     # TODO add file check
-
-    content = __get_csv_content(file)
-    ds = Dataset(content=content, author=user, name=generate_dataset_name(user))
-    ds.save()
-
-
-def __get_csv_content(file):
     df = pd.read_csv(file)
-    return df.to_json()
+    content = df.to_json().replace("\"", "'")
+    columns = df.columns.values.tolist()
+    size = df.shape[0]
+
+    ds = Dataset(content=content, author=user, name=generate_dataset_name(user),
+                 columns=columns, size=size)
+    ds.save()
 
 
 def generate_dataset_name(user):

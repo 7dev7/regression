@@ -1,7 +1,10 @@
 #!/bin/bash
 
+echo "Create database migrations"
+python manage.py makemigrations --noinput
+
 echo "Apply database migrations"
-python manage.py migrate
+python manage.py migrate --noinput
 
 # Start server
 echo "Starting server"
