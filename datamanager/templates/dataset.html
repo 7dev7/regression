@@ -5,14 +5,22 @@
     <link rel="stylesheet" href="{% static "css/ui.jqgrid-bootstrap4.css" %}">
     <script src="{% static "js/grid.locale-ru.js" %}"></script>
     <script src="{% static "js/jquery.jqGrid.min.js" %}"></script>
+
+    <script>
+        $.jgrid.defaults.responsive = true;
+        $.jgrid.defaults.styleUI = 'Bootstrap';
+    </script>
 {% endblock %}
 
 {% block content %}
-    <br/>
-    <input type="hidden" value="{{ data_id }}" id="data_id"/>
-    <br/>
-    <table id="dataset_table">
-    </table>
+    <div class="container">
+        <br/>
+        <input type="hidden" value="{{ data_id }}" id="data_id"/>
+        <br/>
+        <table id="dataset_table">
+        </table>
+        <div id="dataset_table_pager"></div>
+    </div>
 {% endblock %}
 
 {% block footer-scripts %}

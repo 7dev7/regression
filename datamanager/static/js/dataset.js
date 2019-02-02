@@ -7,8 +7,26 @@ $(document).ready(function () {
     });
 });
 
-function renderTable(dataset) {
-    console.log(dataset);
+function parseRows(dataset) {
+    let content = JSON.parse(dataset.content.replace(new RegExp('\'', 'g'), "\""));
+    let columns = dataset.columns;
+
+    let rows = [];
+    for (let i = 0; i < dataset.size; i++) {
+        let row = {};
+
+        for (let j = 0; j < columns.length; j++) {
+            let col = columns[j];
+            row[col] = content[col][i];
+        }
+
+        rows.push(row);
+    }
+
+    return rows;
+}
+
+function parseColumnModels(dataset) {
     let content = JSON.parse(dataset.content.replace(new RegExp('\'', 'g'), "\""));
     let columns = dataset.columns;
 
@@ -21,11 +39,20 @@ function renderTable(dataset) {
         model.push({label: columns[i], name: columns[i], editable: true});
     }
 
-    //TODO implement content parsing
-    console.log(content);
+    return model;
+}
+
+function renderTable(dataset) {
+    let model = parseColumnModels(dataset);
+
+    let data = {
+        page: 1,
+        records: dataset.size,
+        rows: parseRows(dataset)
+    };
 
     $("#dataset_table").jqGrid({
-        data: content,
+        data: data.rows,
         datatype: "local",
         colModel: model,
         autowidth: true,
@@ -35,5 +62,5 @@ function renderTable(dataset) {
         viewrecords: true,
         height: 500,
         rowNum: 25
-    });
+    }).navGrid('#dataset_table_pager');
 }
