@@ -12,24 +12,26 @@
     <link href="https://fonts.googleapis.com/css?family=Didact+Gothic|Neucha|Play|Ubuntu+Condensed"
           rel="stylesheet">
 
+    {# Font Awesome #}
+    <link rel="stylesheet" href="{% static "css/all.css" %}">
     <link rel="stylesheet" href="{% static "css/pace.css" %}">
-
-    <script src="https://code.jquery.com/jquery-3.3.1.js"
-            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-            crossorigin="anonymous"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-            crossorigin="anonymous"></script>
-
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-            crossorigin="anonymous"></script>
-
-    <script src="{% static "js/pace.min.js" %}"></script>
-
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/basic.css' %}"/>
+
+
+    {# Font awesome #}
+    <script src="{% static "js/all.js" %}"></script>
+    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <script src="{% static "js/popper.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/pace.min.js" %}"></script>
+
+    <script>
+        paceOptions = {
+            startOnPageLoad: false,
+            ghostTime: 1000
+        }
+    </script>
 
     {% block header-links %}{% endblock %}
 </head>
@@ -78,6 +80,8 @@
 <main role="main" class="container">
     {% block content %}{% endblock %}
 </main>
+
+{% block raw_content %}{% endblock %}
 
 <footer class="footer">
     <hr/>

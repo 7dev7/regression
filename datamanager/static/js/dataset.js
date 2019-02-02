@@ -61,6 +61,12 @@ function renderTable(dataset) {
         scroll: true,
         viewrecords: true,
         height: 500,
-        rowNum: 25
-    }).navGrid('#dataset_table_pager');
+        rowNum: 25,
+        pager: '#dataset_table_pager',
+        cellsubmit: 'clientArray',
+        editurl: 'clientArray',
+        iconSet: 'fontAwesome',
+        rownumbers: true,
+        guiStyle: 'bootstrap4'
+    }).navGrid('#dataset_table_pager', {search: true, edit: true, add: true, del: true, refresh: false});
 }

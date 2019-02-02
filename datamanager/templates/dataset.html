@@ -8,19 +8,17 @@
 
     <script>
         $.jgrid.defaults.responsive = true;
-        $.jgrid.defaults.styleUI = 'Bootstrap';
+        $.jgrid.defaults.styleUI = 'Bootstrap4';
     </script>
 {% endblock %}
 
-{% block content %}
-    <div class="container">
-        <br/>
-        <input type="hidden" value="{{ data_id }}" id="data_id"/>
-        <br/>
-        <table id="dataset_table">
-        </table>
-        <div id="dataset_table_pager"></div>
-    </div>
+{% block raw_content %}
+    <br/>
+    <input type="hidden" value="{{ data_id }}" id="data_id"/>
+    <br/>
+    <table id="dataset_table">
+    </table>
+    <div id="dataset_table_pager"></div>
 {% endblock %}
 
 {% block footer-scripts %}
