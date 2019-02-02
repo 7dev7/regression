@@ -1,60 +1,58 @@
+let columns = [];
+let dataset = [];
+
+let predictor = {};
+let addictive = {};
+
 $(document).ready(function () {
+    predictor = $('#var1');
+    addictive = $('#var2');
+
     Pace.track(function () {
         $.ajax('/data/api/dataset/' + $('#data_id').val())
             .done(function (responseData) {
-                let cols = responseData.columns;
+                columns = responseData.columns;
+                dataset = parseRows(responseData);
 
-                let first = $('#var1');
-                let second = $('#var2');
-
-                first.find('option').remove();
-                second.find('option').remove();
-
-                $.each(cols, function (i, item) {
-                    first.append($('<option>', {
-                        value: i,
-                        text: item
-                    }));
-                    second.append($('<option>', {
-                        value: i,
-                        text: item
-                    }));
-                });
-
-                first.selectpicker('refresh');
-                second.selectpicker('refresh');
-
-                scatter(responseData);
+                fillOptions(columns);
+                render(dataset, predictor.find("option:selected").text(),
+                    addictive.find("option:selected").text())
             });
+    });
+
+    predictor.on('changed.bs.select', function (e, clickedIndex) {
+        render(dataset, columns[clickedIndex], addictive.find("option:selected").text());
+    });
+
+    addictive.on('changed.bs.select', function (e, clickedIndex) {
+        render(dataset, predictor.find("option:selected").text(), columns[clickedIndex]);
     });
 });
 
-function parseRows(dataset) {
-    let content = JSON.parse(dataset.content.replace(new RegExp('\'', 'g'), "\""));
-    let columns = dataset.columns;
+function fillOptions(columns) {
+    predictor.find('option').remove();
+    addictive.find('option').remove();
 
-    let rows = [];
-    for (let i = 0; i < dataset.size; i++) {
-        let row = {};
+    $.each(columns, function (i, item) {
+        predictor.append($('<option>', {
+            value: i,
+            text: item
+        }));
+        addictive.append($('<option>', {
+            value: i,
+            text: item
+        }));
+    });
 
-        for (let j = 0; j < columns.length; j++) {
-            let col = columns[j];
-            row[col] = content[col][i];
-        }
-
-        rows.push(row);
-    }
-
-    return rows;
+    predictor.selectpicker('refresh');
+    addictive.selectpicker('refresh');
 }
 
-function scatter(dataset) {
-    let rows = parseRows(dataset);
-
+function render(dataset, x, y) {
     let data = [];
-    for (let i = 0; i < rows.length; i++) {
-        let row = rows[i];
-        data.push({x: row['x2'], y: row['y']});
+    for (let i = 0; i < dataset.length; i++) {
+        let row = dataset[i];
+        data.push({x: row[x], y: row[y]});
     }
 
     let ctx = document.getElementById("scatterPlot").getContext('2d');
