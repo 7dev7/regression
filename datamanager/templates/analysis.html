@@ -1,4 +1,15 @@
 {% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block header-links %}
+    <script src="{% static "js/chart.bundle.js" %}"></script>
+    <script src="{% static "js/chart.utils.js" %}"></script>
+    <script src="{% static "js/Chart.js" %}"></script>
+    <script src="{% static "js/analysis.js" %}"></script>
+{% endblock %}
+
+
 {% block content %}
     <div class="container">
         <div class="page-header" id="banner">
@@ -8,8 +19,25 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" value="{{ data_id }}" id="data_id"/>
         <div class="content">
-            <h1>Waaaat</h1>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#scatter">Диаграмма рассеивания</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#other">Другое</a>
+                </li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade show active" id="scatter">
+                    <br/>
+                    <canvas id="scatterPlot" width="400" height="400"></canvas>
+                </div>
+                <div class="tab-pane fade" id="other">
+                    <h2>Other</h2>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
