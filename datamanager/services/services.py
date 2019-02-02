@@ -19,8 +19,9 @@ def create_dataset(file, user):
 
 
 def generate_dataset_name(user):
-    count = Dataset.objects.filter(author=user).count()
-    return 'Набор #{}'.format(count + 1)
+    datasets = Dataset.objects.filter(author=user).order_by('-id')
+    num = 1 if not datasets else datasets[0].pk + 1
+    return 'Набор #{}'.format(num)
 
 
 def delete_dataset(ds_id):
