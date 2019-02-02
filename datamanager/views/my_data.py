@@ -4,7 +4,7 @@ from django.template.context_processors import csrf
 from django.views import generic
 
 from datamanager.models import Dataset
-from datamanager.services.services import delete_dataset
+from datamanager.services.dataset import delete_dataset
 
 
 class DatasetView(LoginRequiredMixin, generic.ListView):

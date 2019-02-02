@@ -4,7 +4,7 @@ from django.template.context_processors import csrf
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import generic
 
-from datamanager.services.services import create_dataset
+from datamanager.services.dataset import create_dataset
 
 
 class LoadView(LoginRequiredMixin, generic.TemplateView):

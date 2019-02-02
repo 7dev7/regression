@@ -1,6 +1,7 @@
 import pandas as pd
 
 from datamanager.models import Dataset
+from datamanager.services.dataframe import get_json
 
 
 def create_dataset(file, user):
@@ -9,7 +10,7 @@ def create_dataset(file, user):
 
     # TODO add file check
     df = pd.read_csv(file)
-    content = df.to_json().replace("\"", "'")
+    content = get_json(df)
     columns = df.columns.values.tolist()
     size = df.shape[0]
 
