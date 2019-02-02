@@ -4,6 +4,8 @@ let dataset = [];
 let predictor = {};
 let addictive = {};
 
+let chart = {};
+
 $(document).ready(function () {
     predictor = $('#var1');
     addictive = $('#var2');
@@ -15,17 +17,17 @@ $(document).ready(function () {
                 dataset = parseRows(responseData);
 
                 fillOptions(columns);
-                render(dataset, predictor.find("option:selected").text(),
-                    addictive.find("option:selected").text())
+                chart = initScatter(dataset, predictor.find("option:selected").text(),
+                    addictive.find("option:selected").text());
             });
     });
 
     predictor.on('changed.bs.select', function (e, clickedIndex) {
-        render(dataset, columns[clickedIndex], addictive.find("option:selected").text());
+        updateScatter(chart, dataset, columns[clickedIndex], addictive.find("option:selected").text());
     });
 
     addictive.on('changed.bs.select', function (e, clickedIndex) {
-        render(dataset, predictor.find("option:selected").text(), columns[clickedIndex]);
+        updateScatter(chart, dataset, predictor.find("option:selected").text(), columns[clickedIndex]);
     });
 });
 
@@ -48,7 +50,7 @@ function fillOptions(columns) {
     addictive.selectpicker('refresh');
 }
 
-function render(dataset, x, y) {
+function initScatter(dataset, x, y) {
     let data = [];
     for (let i = 0; i < dataset.length; i++) {
         let row = dataset[i];
@@ -58,7 +60,7 @@ function render(dataset, x, y) {
     let ctx = document.getElementById("scatterPlot").getContext('2d');
     let color = Chart.helpers.color;
 
-    new Chart(ctx, {
+    return new Chart(ctx, {
         type: 'scatter',
         data: {
             datasets: [{
@@ -77,4 +79,15 @@ function render(dataset, x, y) {
             }
         }
     });
+}
+
+function updateScatter(chart, dataset, x, y) {
+    let data = [];
+    for (let i = 0; i < dataset.length; i++) {
+        let row = dataset[i];
+        data.push({x: row[x], y: row[y]});
+    }
+
+    chart.data.datasets[0].data = data;
+    chart.update();
 }
