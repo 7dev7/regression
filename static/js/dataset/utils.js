@@ -16,3 +16,20 @@ function parseRows(dataset) {
 
     return rows;
 }
+
+function getColumnValues(dataset, col) {
+    let result = [];
+    for (let i = 0; i < dataset.length; i++) {
+        let row = dataset[i];
+        result.push(row[col]);
+    }
+    return result;
+}
+
+Array.prototype.max = function () {
+    return Math.max.apply(null, this);
+};
+
+Array.prototype.min = function () {
+    return Math.min.apply(null, this);
+};

@@ -41,7 +41,7 @@
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="header_bar">
     <a href="/" class="navbar-brand">Регрессия</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/">Анализ</a>
+                <a class="nav-link" href="/data/dashboard/">Анализ</a>
             </li>
         </ul>
         <ul class="nav navbar-nav ml-auto">
@@ -81,11 +81,7 @@
     </div>
 </nav>
 
-<main role="main" class="container">
-    {% block content %}{% endblock %}
-</main>
-
-{% block raw_content %}{% endblock %}
+{% block content %}{% endblock %}
 
 <footer class="footer">
     <hr/>

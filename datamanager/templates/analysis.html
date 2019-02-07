@@ -11,45 +11,62 @@
 
 
 {% block content %}
-    <div class="container">
-        <div class="page-header" id="banner">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                    <h1>Анализ данных</h1>
-                </div>
-            </div>
-        </div>
-        <input type="hidden" value="{{ data_id }}" id="data_id"/>
-        <div class="content">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#scatter">Диаграмма рассеивания</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#other">Другое</a>
-                </li>
-            </ul>
-            <div id="myTabContent" class="tab-content">
-                <div class="tab-pane fade show active" id="scatter">
-                    <br/>
-                    <div>
-                        <div class="float-left">
-                            <label for="var1" class="control-label">X: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true" id="var1">
-                            </select>
-                        </div>
-                        <div class="float-right">
-                            <label for="var2" class="control-label">Y: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true" id="var2">
-                            </select>
-                        </div>
+    <main role="main" class="container">
+        <div class="container">
+            <div class="page-header" id="banner">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                        <h1>Анализ данных</h1>
                     </div>
-                    <canvas id="scatterPlot" width="400" height="400"></canvas>
                 </div>
-                <div class="tab-pane fade" id="other">
-                    <h2>Other</h2>
+            </div>
+            <input type="hidden" value="{{ data_id }}" id="data_id"/>
+            <div class="content">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#scatter">Диаграмма рассеивания</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#linear_regression">Линейная регрессия</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade show active" id="scatter">
+                        <br/>
+                        <div>
+                            <div class="float-left">
+                                <label for="var1" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true" id="var1">
+                                </select>
+                            </div>
+                            <div class="float-right">
+                                <label for="var2" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true" id="var2">
+                                </select>
+                            </div>
+                        </div>
+                        <canvas id="scatterPlot" width="400" height="400"></canvas>
+                    </div>
+                    <div class="tab-pane fade" id="linear_regression">
+                        <br/>
+                        <div>
+                            <div class="float-left">
+                                <label for="regr_var1" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="regr_var1">
+                                </select>
+                            </div>
+                            <div class="float-right">
+                                <label for="regr_var2" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="regr_var2">
+                                </select>
+                            </div>
+                        </div>
+                        <canvas id="regressionPlot" width="400" height="400"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 {% endblock %}
