@@ -6,6 +6,7 @@
     <script src="{% static "js/chart.bundle.js" %}"></script>
     <script src="{% static "js/chart.utils.js" %}"></script>
     <script src="{% static "js/Chart.js" %}"></script>
+    <script src="{% static "js/analysis_manager.js" %}"></script>
     <script src="{% static "js/analysis.js" %}"></script>
 {% endblock %}
 
@@ -24,10 +25,12 @@
             <div class="content">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#scatter">Диаграмма рассеивания</a>
+                        <a class="nav-link active" data-toggle="tab" href="#scatter" id="scatter_tab">Диаграмма
+                            рассеивания</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#linear_regression">Линейная регрессия</a>
+                        <a class="nav-link" data-toggle="tab" href="#linear_regression" id="linear_regr_tab">Линейная
+                            регрессия</a>
                     </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">

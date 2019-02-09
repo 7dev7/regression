@@ -55,13 +55,11 @@ $(document).ready(function () {
             let line_data = [];
 
             labels.forEach(label => {
-                label = Math.round(label);
                 let res = coef * label + intercept;
-                line_data.push({x: label, y: Math.round(res)});
+                line_data.push({x: label, y: res});
             });
 
             let color = Chart.helpers.color;
-
 
             let data = [];
             for (let i = 0; i < dataset.length; i++) {
@@ -72,9 +70,9 @@ $(document).ready(function () {
             return new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels.map(label => Math.floor(label)),
+                    labels: labels,
                     datasets: [{
-                        label: 'Regression',
+                        label: 'Линия регрессии',
                         data: line_data,
                         borderColor: window.chartColors.red,
                         fill: false,
@@ -88,9 +86,11 @@ $(document).ready(function () {
                     }]
                 },
                 options: {
-                    title: {
-                        display: true,
-                        text: 'Description'
+                    scales: {
+                        xAxes: [{
+                            type: 'linear',
+                            position: 'bottom'
+                        }]
                     }
                 }
             });
