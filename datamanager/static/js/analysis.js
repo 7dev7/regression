@@ -1,20 +1,17 @@
 let columns = [];
 let dataset = [];
 
-let predictor = {};
-let addictive = {};
-
-let regr_predictor = {};
-let regr_addictive = {};
+let source = {};
+let target = {};
 
 let chart = {};
 
-$(document).ready(function () {
-    predictor = $('#var1');
-    addictive = $('#var2');
+let data_id;
 
-    regr_predictor = $('#regr_var1');
-    regr_addictive = $('#regr_var2');
+$(document).ready(function () {
+    source = $('#in_select');
+    target = $('#out_select');
+    data_id = $('#data_id').val();
 
     Pace.track(function () {
         $.ajax('/data/api/dataset/' + $('#data_id').val())
@@ -22,81 +19,79 @@ $(document).ready(function () {
                 columns = responseData.columns;
                 dataset = parseRows(responseData);
 
-                fillOptions(columns, predictor);
-                fillOptions(columns, addictive);
+                initSelectors(columns);
 
-                fillOptions(columns, regr_predictor);
-                fillOptions(columns, regr_addictive);
-
-
-                chart = initScatter(dataset, predictor.find("option:selected").text(),
-                    addictive.find("option:selected").text());
+                chart = initScatter(dataset, getSelectedOption(source), getSelectedOption(target));
+                recalculateLinearRegression();
             });
     });
 
-    predictor.on('changed.bs.select', function (e, clickedIndex) {
-        updateScatter(chart, dataset, columns[clickedIndex], addictive.find("option:selected").text());
-    });
-
-    addictive.on('changed.bs.select', function (e, clickedIndex) {
-        updateScatter(chart, dataset, predictor.find("option:selected").text(), columns[clickedIndex]);
-    });
-
-    $.ajax('/data/api/analysis/' + $('#data_id').val() + '/x2/y/')
-        .done(function (responseData) {
-            let intercept = parseFloat(responseData.intercept);
-            let coef = parseFloat(responseData.coef[0]);
-
-            let ctx = document.getElementById("regressionPlot").getContext('2d');
-
-            let labels = getColumnValues(dataset, 'x2');
-            labels.sort();
-
-            let line_data = [];
-
-            labels.forEach(label => {
-                let res = coef * label + intercept;
-                line_data.push({x: label, y: res});
-            });
-
-            let color = Chart.helpers.color;
-
-            let data = [];
-            for (let i = 0; i < dataset.length; i++) {
-                let row = dataset[i];
-                data.push({x: row['x2'], y: row['y']});
-            }
-
-            return new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Линия регрессии',
-                        data: line_data,
-                        borderColor: window.chartColors.red,
-                        fill: false,
-                        lineTension: 0
-                    }, {
-                        label: 'X / Y',
-                        data: data,
-                        showLine: false,
-                        borderColor: window.chartColors.green,
-                        backgroundColor: color(window.chartColors.green).alpha(0.2).rgbString()
-                    }]
-                },
-                options: {
-                    scales: {
-                        xAxes: [{
-                            type: 'linear',
-                            position: 'bottom'
-                        }]
-                    }
-                }
-            });
-        });
+    initEvents();
 });
 
+function initEvents() {
+    source.on('changed.bs.select', function () {
+        Pace.track(function () {
+            recalculateLinearRegression();
+        });
+    });
+
+    target.on('changed.bs.select', function () {
+        Pace.track(function () {
+            recalculateLinearRegression();
+        });
+    });
+}
+
+function recalculateLinearRegression() {
+    let x = getSelectedOption(source);
+    let y = getSelectedOption(target);
+
+    $.ajax('/data/api/analysis/' + data_id + '/' + x + '/' + y + '/')
+        .done(function (responseData) {
+            let regressionData = getRegressionData(responseData, x, y);
+            updateScatter(chart, regressionData);
+        });
+}
+
+function getRegressionData(regressionResult, x, y) {
+    let intercept = parseFloat(regressionResult.intercept);
+    let coefficient = parseFloat(regressionResult.coef[0]);
+
+    let predictors = getColumnValues(dataset, x);
+    predictors.sort();
+
+    let linePoints = [];
+
+    predictors.forEach(predictor => {
+        let res = coefficient * predictor + intercept;
+        linePoints.push({x: predictor, y: res});
+    });
+
+    let observations = [];
+    for (let i = 0; i < dataset.length; i++) {
+        let row = dataset[i];
+        observations.push({x: row[x], y: row[y]});
+    }
+
+    return {
+        linePoints: linePoints,
+        observations: observations,
+        predictors: predictors
+    };
+}
+
+function getSelectedOption(select) {
+    return select.find("option:selected").text();
+}
+
+function initSelectors(columns) {
+    fillOptions(columns, source);
+    fillOptions(columns, target);
+
+    target.find(':last').attr("selected", "selected");
+    target.selectpicker('refresh');
+}
 
 function fillOptions(columns, select) {
     select.find('option').remove();
@@ -110,22 +105,24 @@ function fillOptions(columns, select) {
     select.selectpicker('refresh');
 }
 
-function initScatter(dataset, x, y) {
-    let data = [];
-    for (let i = 0; i < dataset.length; i++) {
-        let row = dataset[i];
-        data.push({x: row[x], y: row[y]});
-    }
-
+function initScatter() {
     let ctx = document.getElementById("scatterPlot").getContext('2d');
     let color = Chart.helpers.color;
 
     return new Chart(ctx, {
-        type: 'scatter',
+        type: 'line',
         data: {
+            labels: [],
             datasets: [{
-                label: 'X / Y',
-                data: data,
+                label: 'Линия регрессии',
+                data: [],
+                borderColor: window.chartColors.red,
+                fill: false,
+                lineTension: 0
+            }, {
+                label: 'Наблюдения',
+                data: [],
+                showLine: false,
                 borderColor: window.chartColors.green,
                 backgroundColor: color(window.chartColors.green).alpha(0.2).rgbString()
             }]
@@ -138,16 +135,12 @@ function initScatter(dataset, x, y) {
                 }]
             }
         }
-    });
+    })
 }
 
-function updateScatter(chart, dataset, x, y) {
-    let data = [];
-    for (let i = 0; i < dataset.length; i++) {
-        let row = dataset[i];
-        data.push({x: row[x], y: row[y]});
-    }
-
-    chart.data.datasets[0].data = data;
+function updateScatter(chart, regressionData) {
+    chart.data.labels = regressionData.predictors;
+    chart.data.datasets[0].data = regressionData.linePoints;
+    chart.data.datasets[1].data = regressionData.observations;
     chart.update();
 }
