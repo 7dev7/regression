@@ -1,5 +1,4 @@
 import statsmodels.api as sm
-import statsmodels.stats.api as sms
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
@@ -34,7 +33,7 @@ def linear_regression_info(request, data_id, x, y):
         't_values': model.tvalues,
         'durbin_watson': durbin_watson(model.resid),
         'jarque_bera': jarque_bera(model.resid),
-        'linear_harvey_collier': sms.linear_harvey_collier(model),
+        # 'linear_harvey_collier': sms.linear_harvey_collier(model),
         'residuals': model.resid
     }
 
