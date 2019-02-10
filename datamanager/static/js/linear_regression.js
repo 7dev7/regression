@@ -7,6 +7,7 @@ let regressionEquation = {};
 let breuschGodfrey = {};
 let jarqueBera = {};
 let paramsTable = {};
+let breuschPagan = {};
 
 let messageHolder = {};
 
@@ -44,8 +45,9 @@ function initVariables() {
     regressionEquation = $('#regression_equation');
     breuschGodfrey = $('#breusch_godfrey');
     jarqueBera = $('#jarque_bera');
-    paramsTable = $('#paramsTable');
+    breuschPagan = $('#breusch_pagan');
 
+    paramsTable = $('#paramsTable');
     messageHolder = $('#messageHolder');
 }
 
@@ -94,17 +96,25 @@ function refillRegressionInfo() {
             adjRSquared.text(Math.round(parseFloat(responseInfo.info.adj_r_squared) * 100) + '%');
             adjRSquared.attr('data-original-title', responseInfo.info.adj_r_squared);
 
-            durbinWatson.text(parseFloat(responseInfo.info.durbin_watson).toFixed(3));
+            durbinWatson.text(round(responseInfo.info.durbin_watson));
             durbinWatson.attr('data-original-title', responseInfo.info.durbin_watson);
 
-            breuschGodfrey.text(parseFloat(responseInfo.info.breusch_godfrey[0]).toFixed(3));
-            breuschGodfrey.attr('data-original-title', responseInfo.info.breusch_godfrey[0]);
+            breuschGodfrey.text(round(responseInfo.info.breusch_godfrey[2]) +
+                ' / p - значение: ' + round(responseInfo.info.breusch_godfrey[3]));
+            breuschGodfrey.attr('data-original-title', responseInfo.info.breusch_godfrey[2]);
 
-            jarqueBera.text(parseFloat(responseInfo.info.jarque_bera[0]).toFixed(3));
-            jarqueBera.attr('data-original-title', 'Значение: ' + responseInfo.info.jarque_bera[0] +
-                ' p-значение: ' + responseInfo.info.jarque_bera[1]);
+            jarqueBera.text(round(responseInfo.info.jarque_bera[0]) +
+                ' / p - значение: ' + round(responseInfo.info.jarque_bera[1]));
+            jarqueBera.attr('data-original-title', responseInfo.info.jarque_bera[0]);
+
+
+            breuschPagan.text(round(responseInfo.info.het_breuschpagan[0]) +
+                ' / p - значение: ' + round(responseInfo.info.het_breuschpagan[1]));
+            breuschPagan.attr('data-original-title', responseInfo.info.jarque_bera[0]);
+
 
             validateDwCriteria(responseInfo.info.durbin_watson);
+            validateBgCriteria(responseInfo.info.breusch_godfrey);
 
             fillParamsTable(responseInfo.info);
         }
@@ -133,7 +143,7 @@ function formatRegressionEquation(info) {
 function validateDwCriteria(dwCriteria) {
     messageHolder.find('div').remove();
 
-    if (dwCriteria > 1.001 && dwCriteria < 2.5) {
+    if (dwCriteria > 1.5 && dwCriteria < 2.5) {
         messageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
             '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
             '<p class="mb-0">Критерий Дарбина - Уотсона соблюдается</p> ' +
@@ -146,11 +156,22 @@ function validateDwCriteria(dwCriteria) {
     }
 }
 
-function fillParamsTable(info) {
-    const round = (param) => {
-        return parseFloat(param).toFixed(3);
-    };
+function validateBgCriteria(bgCriteria) {
+    let fPValue = parseFloat(bgCriteria[3]);
+    if (fPValue > 0.05) {
+        messageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
+            '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+            '<p class="mb-0">Тест Бройша - Годфри соблюдается</p> ' +
+            '</div>');
+    } else {
+        messageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+            '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+            '<p class="mb-0">Тест Бройша - Годфри не соблюдается, возможна автокорреляция остатков регрессионной модели</p> ' +
+            '</div>');
+    }
+}
 
+function fillParamsTable(info) {
     const params = info.params.map(round);
     const size = params.length;
 
@@ -169,3 +190,7 @@ function fillParamsTable(info) {
         body.append(row);
     }
 }
+
+const round = (param) => {
+    return parseFloat(param).toFixed(3);
+};
