@@ -19,7 +19,10 @@ function handleEnterRegressionTab() {
                 fillOptions(columns, regrTabSource);
                 fillOptions(columns, regrTabTarget);
 
+                regrTabSource.find(':first').attr("selected", "selected");
                 regrTabTarget.find(':last').attr("selected", "selected");
+
+                regrTabSource.selectpicker('refresh');
                 regrTabTarget.selectpicker('refresh');
 
                 initRegrEvents();
@@ -54,12 +57,29 @@ function initRegrEvents() {
     });
 }
 
-function refillRegressionInfo() {
-    let x = getSelectedOption(regrTabSource);
-    let y = getSelectedOption(regrTabTarget);
+function getSelectedOptions(select) {
+    let options = [];
+    select.find("option:selected").each(function () {
+        options.push($(this).text());
+    });
+    return options;
+}
 
-    $.ajax('/data/api/analysis/info/' + data_id + '/' + x + '/' + y + '/')
-        .done(function (responseInfo) {
+function refillRegressionInfo() {
+    let x = getSelectedOptions(regrTabSource);
+    let y = getSelectedOptions(regrTabTarget);
+
+    $.ajax({
+        url: '/data/api/analysis/info/',
+        type: 'POST',
+        data: JSON.stringify({
+            data_id: data_id,
+            x: x,
+            y: y
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (responseInfo) {
             regressionEquation.html(formatRegressionEquation(responseInfo.info));
 
             rSquared.text(Math.round(parseFloat(responseInfo.info.r_squared) * 100) + '%');
@@ -75,7 +95,8 @@ function refillRegressionInfo() {
             breuschGodfrey.attr('data-original-title', responseInfo.info.breusch_godfrey[0]);
 
             validateDwCriteria(responseInfo.info.durbin_watson);
-        });
+        }
+    });
 }
 
 function formatRegressionEquation(info) {

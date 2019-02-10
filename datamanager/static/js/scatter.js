@@ -138,7 +138,7 @@ function initScatter() {
                 }]
             }
         }
-    })
+    });
 }
 
 function updateScatter(chart, regressionData) {
