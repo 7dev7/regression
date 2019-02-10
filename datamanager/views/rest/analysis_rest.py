@@ -37,6 +37,8 @@ def linear_regression_info(request):
     predictor = sm.add_constant(df[request_x])
     model = sm.OLS(df[request_y], predictor).fit()
 
+    predictors = ['Константа'] + request_x
+
     print(model.summary())
 
     info = {
@@ -45,6 +47,8 @@ def linear_regression_info(request):
         'p_values': model.pvalues,
         'params': model.params,
         'std': model.bse,
+        'size': model.nobs,
+        'predictors': predictors,
         't_values': model.tvalues,
         'durbin_watson': durbin_watson(model.resid),
         'breusch_godfrey': acorr_breusch_godfrey(model),

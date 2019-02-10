@@ -5,6 +5,9 @@ let adjRSquared = {};
 let durbinWatson = {};
 let regressionEquation = {};
 let breuschGodfrey = {};
+let jarqueBera = {};
+let paramsTable = {};
+
 let messageHolder = {};
 
 function handleEnterRegressionTab() {
@@ -40,6 +43,9 @@ function initVariables() {
     durbinWatson = $('#durbin_watson');
     regressionEquation = $('#regression_equation');
     breuschGodfrey = $('#breusch_godfrey');
+    jarqueBera = $('#jarque_bera');
+    paramsTable = $('#paramsTable');
+
     messageHolder = $('#messageHolder');
 }
 
@@ -94,7 +100,13 @@ function refillRegressionInfo() {
             breuschGodfrey.text(parseFloat(responseInfo.info.breusch_godfrey[0]).toFixed(3));
             breuschGodfrey.attr('data-original-title', responseInfo.info.breusch_godfrey[0]);
 
+            jarqueBera.text(parseFloat(responseInfo.info.jarque_bera[0]).toFixed(3));
+            jarqueBera.attr('data-original-title', 'Значение: ' + responseInfo.info.jarque_bera[0] +
+                ' p-значение: ' + responseInfo.info.jarque_bera[1]);
+
             validateDwCriteria(responseInfo.info.durbin_watson);
+
+            fillParamsTable(responseInfo.info);
         }
     });
 }
@@ -131,5 +143,29 @@ function validateDwCriteria(dwCriteria) {
             '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
             '<p class="mb-0">Критерий Дарбина - Уотсона не соблюдается, возможна автокорреляция остатков регрессионной модели</p> ' +
             '</div>');
+    }
+}
+
+function fillParamsTable(info) {
+    const round = (param) => {
+        return parseFloat(param).toFixed(3);
+    };
+
+    const params = info.params.map(round);
+    const size = params.length;
+
+    const stds = info.std.map(round);
+    const tValues = info.t_values.map(round);
+    const pValues = info.p_values.map(round);
+
+    let body = paramsTable.find('tbody');
+    body.find('tr').remove();
+
+    for (let i = 0; i < size; i++) {
+        let row = '<tr><td>' + info.predictors[i] + '</td><td>' + params[i] + '</td><td>' +
+            stds[i] + '</td><td>' + tValues[i] + '</td><td>' +
+            pValues[i] + '</td></tr>';
+
+        body.append(row);
     }
 }
