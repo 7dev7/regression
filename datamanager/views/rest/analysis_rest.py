@@ -1,6 +1,7 @@
 import statsmodels.api as sm
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from statsmodels.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
 from datamanager.services.dataframe import get_dataframe
@@ -32,7 +33,9 @@ def linear_regression_info(request, data_id, x, y):
         'std': model.bse,
         't_values': model.tvalues,
         'durbin_watson': durbin_watson(model.resid),
+        'breusch_godfrey': acorr_breusch_godfrey(model),
         'jarque_bera': jarque_bera(model.resid),
+        'het_breuschpagan': het_breuschpagan(model.resid, model.model.exog),
         # 'linear_harvey_collier': sms.linear_harvey_collier(model),
         'residuals': model.resid
     }

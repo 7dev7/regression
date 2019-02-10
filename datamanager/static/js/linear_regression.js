@@ -4,6 +4,8 @@ let rSquared = {};
 let adjRSquared = {};
 let durbinWatson = {};
 let regressionEquation = {};
+let breuschGodfrey = {};
+let messageHolder = {};
 
 function handleEnterRegressionTab() {
     initVariables();
@@ -34,6 +36,8 @@ function initVariables() {
     adjRSquared = $('#adj_r_squared');
     durbinWatson = $('#durbin_watson');
     regressionEquation = $('#regression_equation');
+    breuschGodfrey = $('#breusch_godfrey');
+    messageHolder = $('#messageHolder');
 }
 
 function initRegrEvents() {
@@ -66,6 +70,11 @@ function refillRegressionInfo() {
 
             durbinWatson.text(parseFloat(responseInfo.info.durbin_watson).toFixed(3));
             durbinWatson.attr('data-original-title', responseInfo.info.durbin_watson);
+
+            breuschGodfrey.text(parseFloat(responseInfo.info.breusch_godfrey[0]).toFixed(3));
+            breuschGodfrey.attr('data-original-title', responseInfo.info.breusch_godfrey[0]);
+
+            validateDwCriteria(responseInfo.info.durbin_watson);
         });
 }
 
@@ -86,4 +95,20 @@ function formatRegressionEquation(info) {
     }
     equation += intercept;
     return equation;
+}
+
+function validateDwCriteria(dwCriteria) {
+    messageHolder.find('div').remove();
+
+    if (dwCriteria > 1.001 && dwCriteria < 2.5) {
+        messageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
+            '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+            '<p class="mb-0">Критерий Дарбина - Уотсона соблюдается</p> ' +
+            '</div>');
+    } else {
+        messageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+            '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+            '<p class="mb-0">Критерий Дарбина - Уотсона не соблюдается, возможна автокорреляция остатков регрессионной модели</p> ' +
+            '</div>');
+    }
 }
