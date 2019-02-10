@@ -6,7 +6,14 @@
     <script src="{% static "js/chart.bundle.js" %}"></script>
     <script src="{% static "js/chart.utils.js" %}"></script>
     <script src="{% static "js/Chart.js" %}"></script>
-    <script src="{% static "js/analysis.js" %}"></script>
+    <script src="{% static "js/scatter.js" %}"></script>
+    <script src="{% static "js/linear_regression.js" %}"></script>
+    <script src="{% static "js/analysis_manager.js" %}"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 {% endblock %}
 
 
@@ -52,7 +59,47 @@
                         <canvas id="scatterPlot" width="400" height="400"></canvas>
                     </div>
                     <div class="tab-pane fade" id="linear_regression">
-                        <h3>Other</h3>
+                        <br/>
+                        <div>
+                            <div class="float-left">
+                                <label for="in_select2" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="in_select2">
+                                </select>
+                            </div>
+                            <div class="float-right">
+                                <label for="out_select2" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="out_select2">
+                                </select>
+                            </div>
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <p data-toggle="tooltip" data-placement="right" title=""
+                                   data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%">
+                                    Коэффициент детерминации (R<sup>2</sup>)</p>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <p id="r_squared" data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title=""></p>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <p>Скорректированный коэффициент детерминации (Adjusted R<sup>2</sup>)</p>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <p id="adj_r_squared" data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title=""></p>
+                                <hr/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

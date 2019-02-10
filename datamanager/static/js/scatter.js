@@ -13,8 +13,13 @@ $(document).ready(function () {
     target = $('#out_select');
     data_id = $('#data_id').val();
 
+    handleEnterScatter();
+    initEvents();
+});
+
+function handleEnterScatter() {
     Pace.track(function () {
-        $.ajax('/data/api/dataset/' + $('#data_id').val())
+        $.ajax('/data/api/dataset/' + data_id)
             .done(function (responseData) {
                 columns = responseData.columns;
                 dataset = parseRows(responseData);
@@ -25,9 +30,7 @@ $(document).ready(function () {
                 recalculateLinearRegression();
             });
     });
-
-    initEvents();
-});
+}
 
 function initEvents() {
     source.on('changed.bs.select', function () {
