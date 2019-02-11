@@ -11,7 +11,10 @@ let breuschPagan = {};
 
 let messageHolder = {};
 
+let tab_initialized = false;
+
 function handleEnterRegressionTab() {
+    if (tab_initialized) return;
     initVariables();
 
     Pace.track(function () {
@@ -34,6 +37,7 @@ function handleEnterRegressionTab() {
                 refillRegressionInfo();
             });
     });
+    tab_initialized = true;
 }
 
 function initVariables() {
@@ -112,6 +116,7 @@ function refillRegressionInfo() {
 
             validateDwCriteria(responseInfo.info.durbin_watson);
             validateBgCriteria(responseInfo.info.breusch_godfrey);
+            validateHetBpCriteria(responseInfo.info.het_breuschpagan);
 
             fillParamsTable(responseInfo.info);
         }
@@ -164,6 +169,21 @@ function validateBgCriteria(bgCriteria) {
         messageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
             '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
             '<p class="mb-0">Тест Бройша - Годфри не соблюдается, возможна автокорреляция остатков регрессионной модели</p> ' +
+            '</div>');
+    }
+}
+
+function validateHetBpCriteria(hetBpCriteria) {
+    let fPValue = parseFloat(hetBpCriteria.f_pval);
+    if (fPValue < 0.05) {
+        messageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
+            '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+            '<p class="mb-0">Гетероскедатичность случайных ошибок отсутствует</p> ' +
+            '</div>');
+    } else {
+        messageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+            '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+            '<p class="mb-0">Присутствует гетероскедатичность случайных ошибок. Это может привести к неэффективности построенных оценок.</p> ' +
             '</div>');
     }
 }
