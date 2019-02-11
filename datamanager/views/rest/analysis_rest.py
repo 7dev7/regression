@@ -36,10 +36,12 @@ def linear_regression_info(request):
 
     predictor = sm.add_constant(df[request_x])
     model = sm.OLS(df[request_y], predictor).fit()
+    print(model.summary())
 
     predictors = ['Константа'] + request_x
-
-    print(model.summary())
+    bg = acorr_breusch_godfrey(model)
+    jb = jarque_bera(model.resid)
+    het_bp = het_breuschpagan(model.resid, model.model.exog)
 
     info = {
         'r_squared': model.rsquared,
@@ -51,9 +53,24 @@ def linear_regression_info(request):
         'predictors': predictors,
         't_values': model.tvalues,
         'durbin_watson': durbin_watson(model.resid),
-        'breusch_godfrey': acorr_breusch_godfrey(model),
-        'jarque_bera': jarque_bera(model.resid),
-        'het_breuschpagan': het_breuschpagan(model.resid, model.model.exog),
+        'breusch_godfrey': {
+            'lm': bg[0],
+            'lm_pval': bg[1],
+            'fval': bg[2],
+            'f_pval': bg[3]
+        },
+        'jarque_bera': {
+            'jb': jb[0],
+            'jb_pval': jb[1],
+            'skew': jb[2],
+            'kurtosis': jb[3]
+        },
+        'het_breuschpagan': {
+            'lm': het_bp[0],
+            'lm_pval': het_bp[1],
+            'fval': het_bp[2],
+            'f_pval': het_bp[3]
+        },
         # 'linear_harvey_collier': sms.linear_harvey_collier(model),
         'residuals': model.resid
     }

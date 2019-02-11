@@ -90,27 +90,24 @@ function refillRegressionInfo() {
         success: function (responseInfo) {
             regressionEquation.html(formatRegressionEquation(responseInfo.info));
 
-            rSquared.text(Math.round(parseFloat(responseInfo.info.r_squared) * 100) + '%');
+            rSquared.text(percents(responseInfo.info.r_squared));
             rSquared.attr('data-original-title', responseInfo.info.r_squared);
 
-            adjRSquared.text(Math.round(parseFloat(responseInfo.info.adj_r_squared) * 100) + '%');
+            adjRSquared.text(percents(responseInfo.info.adj_r_squared));
             adjRSquared.attr('data-original-title', responseInfo.info.adj_r_squared);
 
             durbinWatson.text(round(responseInfo.info.durbin_watson));
             durbinWatson.attr('data-original-title', responseInfo.info.durbin_watson);
 
-            breuschGodfrey.text(round(responseInfo.info.breusch_godfrey[2]) +
-                ' / p - значение: ' + round(responseInfo.info.breusch_godfrey[3]));
-            breuschGodfrey.attr('data-original-title', responseInfo.info.breusch_godfrey[2]);
+            breuschGodfrey.text(percents(responseInfo.info.breusch_godfrey.f_pval));
+            breuschGodfrey.attr('data-original-title', responseInfo.info.breusch_godfrey.f_pval);
 
-            jarqueBera.text(round(responseInfo.info.jarque_bera[0]) +
-                ' / p - значение: ' + round(responseInfo.info.jarque_bera[1]));
-            jarqueBera.attr('data-original-title', responseInfo.info.jarque_bera[0]);
+            jarqueBera.text(percents(responseInfo.info.jarque_bera.jb_pval));
+            jarqueBera.attr('data-original-title', responseInfo.info.jarque_bera.jb_pval);
 
 
-            breuschPagan.text(round(responseInfo.info.het_breuschpagan[0]) +
-                ' / p - значение: ' + round(responseInfo.info.het_breuschpagan[1]));
-            breuschPagan.attr('data-original-title', responseInfo.info.jarque_bera[0]);
+            breuschPagan.text(percents(responseInfo.info.het_breuschpagan.f_pval));
+            breuschPagan.attr('data-original-title', responseInfo.info.het_breuschpagan.f_pval);
 
 
             validateDwCriteria(responseInfo.info.durbin_watson);
@@ -157,7 +154,7 @@ function validateDwCriteria(dwCriteria) {
 }
 
 function validateBgCriteria(bgCriteria) {
-    let fPValue = parseFloat(bgCriteria[3]);
+    let fPValue = parseFloat(bgCriteria.f_pval);
     if (fPValue > 0.05) {
         messageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
             '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
@@ -193,4 +190,8 @@ function fillParamsTable(info) {
 
 const round = (param) => {
     return parseFloat(param).toFixed(3);
+};
+
+const percents = (param) => {
+    return Math.round(parseFloat(param) * 100) + '%'
 };
