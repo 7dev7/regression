@@ -26,7 +26,7 @@ function handleEnterScatter() {
 
                 initSelectors(columns);
 
-                chart = initScatter(dataset, getSelectedOption(source), getSelectedOption(target));
+                chart = initScatter("scatterPlot");
                 recalculateLinearRegression();
             });
     });
@@ -50,38 +50,20 @@ function recalculateLinearRegression() {
     let x = getSelectedOption(source);
     let y = getSelectedOption(target);
 
-    $.ajax('/data/api/analysis/' + data_id + '/' + x + '/' + y + '/')
-        .done(function (responseData) {
-            let regressionData = getRegressionData(responseData, x, y);
-            updateScatter(chart, regressionData);
-        });
-}
-
-function getRegressionData(regressionResult, x, y) {
-    let intercept = parseFloat(regressionResult.intercept);
-    let coefficient = parseFloat(regressionResult.coef[0]);
-
-    let predictors = getColumnValues(dataset, x);
-    predictors.sort();
-
-    let linePoints = [];
-
-    predictors.forEach(predictor => {
-        let res = coefficient * predictor + intercept;
-        linePoints.push({x: predictor, y: res});
+    $.ajax({
+        url: '/data/api/analysis/',
+        type: 'POST',
+        data: JSON.stringify({
+            data_id: data_id,
+            x: x,
+            y: y
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (responseInfo) {
+            updateScatter(chart, responseInfo);
+        }
     });
-
-    let observations = [];
-    for (let i = 0; i < dataset.length; i++) {
-        let row = dataset[i];
-        observations.push({x: row[x], y: row[y]});
-    }
-
-    return {
-        linePoints: linePoints,
-        observations: observations,
-        predictors: predictors
-    };
 }
 
 function getSelectedOption(select) {
@@ -108,8 +90,8 @@ function fillOptions(columns, select) {
     select.selectpicker('refresh');
 }
 
-function initScatter() {
-    let ctx = document.getElementById("scatterPlot").getContext('2d');
+function initScatter(canvasId) {
+    let ctx = document.getElementById(canvasId).getContext('2d');
     let color = Chart.helpers.color;
 
     return new Chart(ctx, {
@@ -142,6 +124,10 @@ function initScatter() {
 }
 
 function updateScatter(chart, regressionData) {
+    regressionData.linePoints.sort(function (a, b) {
+        return a['x'] - b['x'];
+    });
+
     chart.data.labels = regressionData.predictors;
     chart.data.datasets[0].data = regressionData.linePoints;
     chart.data.datasets[1].data = regressionData.observations;

@@ -3,6 +3,9 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import PolynomialFeatures
 from statsmodels.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
@@ -14,14 +17,63 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
         return None
 
 
-@api_view(['GET'])
-def linear_regression(request, data_id, x, y):
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def linear_regression_scatter(request):
+    request_x = request.data['x']
+    request_y = request.data['y']
+    data_id = request.data['data_id']
     df = get_dataframe(data_id)
 
-    predictor = sm.add_constant(df[[x]])
-    model = sm.OLS(df[[y]], predictor).fit()
+    x = df[[request_x]]
+    y = df[[request_y]]
 
-    return Response({"intercept": model.params[0], "coef": [model.params[1]]})
+    model = LinearRegression().fit(x, y)
+
+    size = x.shape[0]
+
+    labels = [x.iloc[i][request_x] for i in range(0, size)]
+    predictions = model.predict(x)
+
+    line_points = [{'x': labels[i], 'y': predictions[i][0]} for i in range(0, size)]
+    observations = [{'x': labels[i], 'y': y.iloc[i][request_y]} for i in range(0, 200)]
+
+    return Response({
+        'predictors': labels,
+        'linePoints': line_points,
+        'observations': observations
+    })
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def polynomial_regression_scatter(request):
+    request_x = request.data['x']
+    request_y = request.data['y']
+    data_id = request.data['data_id']
+    df = get_dataframe(data_id)
+
+    x = df[[request_x]]
+    y = df[[request_y]]
+
+    model = make_pipeline(PolynomialFeatures(degree=5), LinearRegression())
+    model.fit(x, y)
+
+    size = x.shape[0]
+
+    labels = [x.iloc[i][request_x] for i in range(0, size)]
+    predictions = model.predict(x)
+
+    line_points = [{'x': labels[i], 'y': predictions[i][0]} for i in range(0, size)]
+    observations = [{'x': labels[i], 'y': y.iloc[i][request_y]} for i in range(0, 200)]
+
+    return Response({
+        'predictors': labels,
+        'linePoints': line_points,
+        'observations': observations
+    })
 
 
 @api_view(['POST'])
@@ -38,7 +90,7 @@ def linear_regression_info(request):
     model = sm.OLS(df[request_y], predictor).fit()
     print(model.summary())
 
-    predictors = ['Константа'] + request_x
+    predictors = ['Смещение'] + request_x
     bg = acorr_breusch_godfrey(model)
     jb = jarque_bera(model.resid)
     het_bp = het_breuschpagan(model.resid, model.model.exog)

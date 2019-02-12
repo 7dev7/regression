@@ -8,6 +8,7 @@
     <script src="{% static "js/Chart.js" %}"></script>
     <script src="{% static "js/scatter.js" %}"></script>
     <script src="{% static "js/linear_regression.js" %}"></script>
+    <script src="{% static "js/polynomial.js" %}"></script>
     <script src="{% static "js/analysis_manager.js" %}"></script>
     <script>
         $(function () {
@@ -36,6 +37,10 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#linear_regression" id="linear_regr_tab">Линейная
+                            регрессия</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#poly_regression" id="poly_regr_tab">Полиномиальная
                             регрессия</a>
                     </li>
                 </ul>
@@ -184,6 +189,24 @@
                                 </table>
                             </div>
                         </div>
+                    </div>
+                    <div class="tab-pane fade" id="poly_regression">
+                        <br/>
+                        <div>
+                            <div class="float-left">
+                                <label for="in_select3" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="in_select3">
+                                </select>
+                            </div>
+                            <div class="float-right">
+                                <label for="out_select3" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="out_select3">
+                                </select>
+                            </div>
+                        </div>
+                        <canvas id="polyScatter" width="400" height="400"></canvas>
                     </div>
                 </div>
             </div>
