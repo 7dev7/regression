@@ -18,24 +18,18 @@ function handleEnterRegressionTab() {
     initVariables();
 
     Pace.track(function () {
-        $.ajax('/data/api/dataset/' + data_id)
-            .done(function (responseData) {
-                columns = responseData.columns;
-                dataset = parseRows(responseData);
+        fillOptions(columns, regrTabSource);
+        fillOptions(columns, regrTabTarget);
 
-                fillOptions(columns, regrTabSource);
-                fillOptions(columns, regrTabTarget);
+        regrTabSource.find(':first').attr("selected", "selected");
+        regrTabTarget.find(':last').attr("selected", "selected");
 
-                regrTabSource.find(':first').attr("selected", "selected");
-                regrTabTarget.find(':last').attr("selected", "selected");
+        regrTabSource.selectpicker('refresh');
+        regrTabTarget.selectpicker('refresh');
 
-                regrTabSource.selectpicker('refresh');
-                regrTabTarget.selectpicker('refresh');
+        initRegrEvents();
 
-                initRegrEvents();
-
-                refillRegressionInfo();
-            });
+        refillRegressionInfo();
     });
     tab_initialized = true;
 }
