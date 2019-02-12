@@ -92,9 +92,9 @@ def linear_regression_info(request):
     print(model.summary())
 
     predictors = ['Смещение'] + request_x
-    bg = acorr_breusch_godfrey(model)
-    jb = jarque_bera(model.resid)
-    het_bp = het_breuschpagan(model.resid, model.model.exog)
+    bg_lm, bg_lm_pval, bg_fval, bg_fpval = acorr_breusch_godfrey(model)
+    jb, jb_pval, jb_skew, jb_kurtosis = jarque_bera(model.resid)
+    het_bp_lm, het_bp_lmpval, het_bp_fval, het_bp_fpval = het_breuschpagan(model.resid, model.model.exog)
 
     info = {
         'r_squared': model.rsquared,
@@ -107,22 +107,22 @@ def linear_regression_info(request):
         't_values': model.tvalues,
         'durbin_watson': durbin_watson(model.resid),
         'breusch_godfrey': {
-            'lm': bg[0],
-            'lm_pval': bg[1],
-            'fval': bg[2],
-            'f_pval': bg[3]
+            'lm': bg_lm,
+            'lm_pval': bg_lm_pval,
+            'fval': bg_fval,
+            'f_pval': bg_fpval
         },
         'jarque_bera': {
-            'jb': jb[0],
-            'jb_pval': jb[1],
-            'skew': jb[2],
-            'kurtosis': jb[3]
+            'jb': jb,
+            'jb_pval': jb_pval,
+            'skew': jb_skew,
+            'kurtosis': jb_kurtosis
         },
         'het_breuschpagan': {
-            'lm': het_bp[0],
-            'lm_pval': het_bp[1],
-            'fval': het_bp[2],
-            'f_pval': het_bp[3]
+            'lm': het_bp_lm,
+            'lm_pval': het_bp_lmpval,
+            'fval': het_bp_fval,
+            'f_pval': het_bp_fpval
         },
         # 'linear_harvey_collier': sms.linear_harvey_collier(model),
         'residuals': model.resid
