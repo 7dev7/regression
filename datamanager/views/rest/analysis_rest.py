@@ -52,13 +52,14 @@ def linear_regression_scatter(request):
 def polynomial_regression_scatter(request):
     request_x = request.data['x']
     request_y = request.data['y']
+    degree = int(request.data['degree'])
     data_id = request.data['data_id']
     df = get_dataframe(data_id)
 
     x = df[[request_x]]
     y = df[[request_y]]
 
-    model = make_pipeline(PolynomialFeatures(degree=5), LinearRegression())
+    model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
     model.fit(x, y)
 
     size = x.shape[0]
