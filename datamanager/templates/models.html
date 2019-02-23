@@ -20,7 +20,9 @@
                                         aria-hidden="true">&times;</span>
                                 </button>
                             </form>
-                            <h4>{{ model.name }}</h4>
+                            <h4>
+                                <a href="/data/model/{{ model.id }}">{{ model.name }}</a>
+                            </h4>
                             <p class="text-secondary">{{ model.creation_time }}</p>
                         </div>
                         <hr>

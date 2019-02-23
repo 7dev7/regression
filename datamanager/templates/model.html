@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header-links %}
+    <script src="{% static "js/model.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+    <main role="main" class="container">
+        <div class="container-fluid">
+            <div class="page-header" id="banner">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                        <h1>Сохраненная модель</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <input type="hidden" id="inputs" value="{{ model.ds_in_cols }}">
+
+                <div class="row justify-content-md-center">
+                    <div class="col-md-8 justify-content-center">
+                        <h4>Входные параметры: </h4>
+                        <ul class="list-group">
+                            {% for col in model.ds_in_cols %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">{{ col }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <br/>
+                <div class="row justify-content-md-center">
+                    <div class="col-md-8 justify-content-center">
+                        <h4>Выходные параметры: </h4>
+                        <ul class="list-group">
+                            {% for col in model.ds_out_cols %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">{{ col }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <br/>
+                <div class="row justify-content-md-center">
+                    <div class="col-md-8 justify-content-center">
+                        <h4>Дата создания: </h4>
+                        <p>{{ model.creation_time }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

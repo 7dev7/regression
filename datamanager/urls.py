@@ -1,6 +1,6 @@
 from django.urls import path
 
-from datamanager.views import load, my_data, dataset, analysis, models
+from datamanager.views import load, my_data, dataset, analysis, models, model
 from datamanager.views.rest import dataset_rest, analysis_rest, ml_models_rest
 
 urlpatterns = [
@@ -16,5 +16,6 @@ urlpatterns = [
          name='analysis_nonlinear_regr_info_rest'),
     path('api/models/', ml_models_rest.save_model, name='models_save'),
     path('models/', models.ModelsView.as_view(), name='models'),
+    path('model/<int:model_id>/', model.ModelView.as_view(), name='model'),
     path('', my_data.DatasetView.as_view(), name='my_data'),
 ]
