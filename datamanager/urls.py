@@ -1,7 +1,7 @@
 from django.urls import path
 
 from datamanager.views import load, my_data, dataset, analysis
-from datamanager.views.rest import dataset_rest, analysis_rest
+from datamanager.views.rest import dataset_rest, analysis_rest, ml_models_rest
 
 urlpatterns = [
     path('load/', load.LoadView.as_view(), name='load'),
@@ -14,5 +14,6 @@ urlpatterns = [
          name='analysis_linear_regr_info_rest'),
     path('api/analysis/info/nonlinear/', analysis_rest.polynomial_regression_scatter,
          name='analysis_nonlinear_regr_info_rest'),
+    path('api/models/', ml_models_rest.save_model, name='models_save'),
     path('', my_data.DatasetView.as_view(), name='my_data'),
 ]

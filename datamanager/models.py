@@ -11,3 +11,12 @@ class Dataset(models.Model):
     content = JSONField()
     columns = JSONField()
     size = models.IntegerField()
+
+
+class MlModel(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    creation_time = models.DateTimeField(default=timezone.now, blank=True)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    ds_in_cols = JSONField()
+    ds_out_cols = JSONField()
+    model = models.CharField(max_length=20)

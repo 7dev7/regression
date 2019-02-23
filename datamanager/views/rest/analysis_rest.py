@@ -1,5 +1,4 @@
 import statsmodels.api as sm
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
@@ -10,11 +9,7 @@ from statsmodels.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
 from datamanager.services.dataframe import get_dataframe
-
-
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-    def enforce_csrf(self, request):
-        return None
+from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 
 
 @api_view(['POST'])

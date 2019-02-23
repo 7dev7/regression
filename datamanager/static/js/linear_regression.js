@@ -61,6 +61,47 @@ function initRegrEvents() {
             refillRegressionInfo();
         });
     });
+
+    $('#save_model_btn').click(function () {
+        save_model();
+    });
+}
+
+function save_model() {
+    let x = getSelectedOptions(regrTabSource);
+    let y = getSelectedOptions(regrTabTarget);
+
+    if (x.length === 0 || y.length === 0) return;
+
+    Pace.track(function () {
+        $.ajax({
+            url: '/data/api/models/',
+            type: 'POST',
+            data: JSON.stringify({
+                data_id: parseInt(data_id),
+                in: x,
+                out: y,
+                model: 'OLS'
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+
+                if (response.status === 'ok') {
+                    messageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                        '<p class="mb-0">Модель сохранена</p> ' +
+                        '</div>');
+                } else {
+                    messageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                        '<p class="mb-0">Ошибка при сохранении модели: ' + response.error_message + '</p> ' +
+                        '</div>');
+                }
+            }
+        });
+    });
 }
 
 function getSelectedOptions(select) {
@@ -74,6 +115,8 @@ function getSelectedOptions(select) {
 function refillRegressionInfo() {
     let x = getSelectedOptions(regrTabSource);
     let y = getSelectedOptions(regrTabTarget);
+
+    if (x.length === 0 || y.length === 0) return;
 
     $.ajax({
         url: '/data/api/analysis/info/',
