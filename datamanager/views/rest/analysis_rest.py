@@ -8,6 +8,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from statsmodels.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
+from datamanager.models import MlModel
 from datamanager.services.dataframe import get_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 
@@ -124,3 +125,26 @@ def linear_regression_info(request):
     }
 
     return Response({"info": info})
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def linear_predict(request):
+    inputs = request.data['inputs']
+    ml_model_id = request.data['ml_model_id']
+
+    model = MlModel.objects.get(pk=ml_model_id)
+
+    if model.model == 'OLS':
+        request_x = model.ds_in_cols
+        request_y = model.ds_out_cols
+
+        df = get_dataframe(model.dataset.id)
+
+        x = df[request_x]
+        y = df[request_y]
+
+        model = LinearRegression().fit(x, y)
+        res = model.predict([inputs])
+        return Response({'predicted': res[0]})
