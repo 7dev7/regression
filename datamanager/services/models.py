@@ -3,9 +3,19 @@ from datamanager.models import MlModel, Dataset
 
 def save_ml_model(in_cols, out_cols, ds_id, model, user):
     ds = Dataset.objects.get(pk=ds_id)
-    ml_model = MlModel(author=user, ds_in_cols=in_cols, ds_out_cols=out_cols,
+    name = generate_model_name(in_cols, out_cols, model)
+    ml_model = MlModel(author=user, name=name, ds_in_cols=in_cols, ds_out_cols=out_cols,
                        dataset=ds, model=model)
     ml_model.save()
+
+
+def generate_model_name(in_cols, out_cols, model):
+    return 'Модель {}: {} -> {}'.format(model, in_cols, out_cols)
+
+
+def delete_model(model_id):
+    model = MlModel.objects.get(id=model_id)
+    model.delete()
 
 
 def check_model_correct(in_cols, out_cols, ds_id, model, user):

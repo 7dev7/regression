@@ -14,6 +14,7 @@ class Dataset(models.Model):
 
 
 class MlModel(models.Model):
+    name = models.CharField(max_length=256, null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     creation_time = models.DateTimeField(default=timezone.now, blank=True)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
