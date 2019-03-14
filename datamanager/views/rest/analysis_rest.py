@@ -163,7 +163,7 @@ def neural_regression_scatter(request):
     x = df[[request_x]]
     y = df[[request_y]]
 
-    clf = MLPRegressor(hidden_layer_sizes=(5,), max_iter=10000)
+    clf = MLPRegressor(hidden_layer_sizes=(5,), max_iter=10000, activation='logistic', random_state=9)
     neural_model = clf.fit(x, y.values.ravel())
     predictions = neural_model.predict(x)
 
