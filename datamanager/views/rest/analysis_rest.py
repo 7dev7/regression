@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, parser_classes, authentication_c
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from sklearn.linear_model import LinearRegression
+from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 from statsmodels.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
@@ -148,3 +149,33 @@ def linear_predict(request):
         model = LinearRegression().fit(x, y)
         res = model.predict([inputs])
         return Response({'predicted': res[0]})
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def neural_regression_scatter(request):
+    request_x = request.data['x']
+    request_y = request.data['y']
+    data_id = request.data['data_id']
+    df = get_dataframe(data_id)
+
+    x = df[[request_x]]
+    y = df[[request_y]]
+
+    clf = MLPRegressor(hidden_layer_sizes=(5,), max_iter=10000)
+    neural_model = clf.fit(x, y.values.ravel())
+    predictions = neural_model.predict(x)
+
+    size = x.shape[0]
+
+    labels = [x.iloc[i][request_x] for i in range(0, size)]
+
+    line_points = [{'x': labels[i], 'y': predictions[i]} for i in range(0, size)]
+    observations = [{'x': labels[i], 'y': y.iloc[i][request_y]} for i in range(0, 200)]
+
+    return Response({
+        'predictors': labels,
+        'linePoints': line_points,
+        'observations': observations
+    })

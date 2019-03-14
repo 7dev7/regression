@@ -9,6 +9,7 @@
     <script src="{% static "js/scatter.js" %}"></script>
     <script src="{% static "js/linear_regression.js" %}"></script>
     <script src="{% static "js/polynomial.js" %}"></script>
+    <script src="{% static "js/neural_scatter.js" %}"></script>
     <script src="{% static "js/analysis_manager.js" %}"></script>
     <script>
         $(function () {
@@ -42,6 +43,10 @@
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#poly_regression" id="poly_regr_tab">Полиномиальная
                             регрессия</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#neural_regression" id="neural_regr_tab">Нейронная
+                            сеть</a>
                     </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
@@ -227,6 +232,24 @@
                             </div>
                         </div>
                         <canvas id="polyScatter" width="400" height="400"></canvas>
+                    </div>
+                    <div class="tab-pane fade" id="neural_regression">
+                        <br/>
+                        <div>
+                            <div class="float-left">
+                                <label for="in_select4" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="in_select4">
+                                </select>
+                            </div>
+                            <div class="float-right">
+                                <label for="out_select4" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="out_select4">
+                                </select>
+                            </div>
+                        </div>
+                        <canvas id="neuralScatter" width="400" height="400"></canvas>
                     </div>
                 </div>
             </div>

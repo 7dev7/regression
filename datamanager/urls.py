@@ -14,6 +14,8 @@ urlpatterns = [
          name='analysis_linear_regr_info_rest'),
     path('api/analysis/info/nonlinear/', analysis_rest.polynomial_regression_scatter,
          name='analysis_nonlinear_regr_info_rest'),
+    path('api/analysis/info/neural/', analysis_rest.neural_regression_scatter,
+         name='analysis_neural_regr_info_rest'),
     path('api/analysis/predict/', analysis_rest.linear_predict,
          name='analysis_linear_predict'),
     path('api/models/', ml_models_rest.save_model, name='models_save'),
