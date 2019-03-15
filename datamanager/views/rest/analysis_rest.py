@@ -72,6 +72,30 @@ def polynomial_regression_scatter(request):
 @api_view(['POST'])
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
+def poly_regression_info(request):
+    request_x = request.data['x']
+    request_y = request.data['y']
+    data_id = request.data['data_id']
+    df = get_dataframe(data_id)
+
+    x = df[request_x]
+    y = df[request_y]
+    degree = int(request.data['degree'])
+
+    model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
+    model.fit(x, y)
+
+    return Response({
+        'r_squared': model.score(x, y),
+        'degree': degree,
+        'coefs': model.steps[1][1].coef_[0][1:],
+        'intercept': model.steps[1][1].intercept_,
+    })
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
 def linear_regression_info(request):
     request_x = request.data['x']
     request_y = request.data['y']
@@ -85,7 +109,9 @@ def linear_regression_info(request):
 
     predictors = ['Смещение'] + request_x
     bg_lm, bg_lm_pval, bg_fval, bg_fpval = acorr_breusch_godfrey(model)
+
     jb, jb_pval, jb_skew, jb_kurtosis = jarque_bera(model.resid)
+
     het_bp_lm, het_bp_lmpval, het_bp_fval, het_bp_fpval = het_breuschpagan(model.resid, model.model.exog)
 
     info = {
@@ -187,8 +213,8 @@ def train_models(hidden_range, iters, activations, x, y):
     results = []
     for hidden in hidden_range:
         for activation in activations:
-            clf = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=iters, activation=activation, random_state=9)
-            model = clf.fit(x, y.values.ravel())
+            regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=iters, activation=activation, random_state=9)
+            model = regressor.fit(x, y.values.ravel())
             results.append({'model': model, 'score': model.score(x, y.values.ravel())})
     return results
 
