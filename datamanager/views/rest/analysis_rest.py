@@ -59,7 +59,13 @@ def polynomial_regression_scatter(request):
     return Response({
         'predictors': labels,
         'linePoints': line_points,
-        'observations': observations
+        'observations': observations,
+        'model': {
+            'r_squared': model.score(x, y),
+            'degree': degree,
+            'coefs': model.steps[1][1].coef_[0][1:],
+            'intercept': model.steps[1][1].intercept_,
+        }
     })
 
 
