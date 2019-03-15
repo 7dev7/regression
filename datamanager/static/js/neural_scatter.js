@@ -1,6 +1,9 @@
 let neuralScatterTabSource = {};
 let neuralScatterTabTarget = {};
 let neuralChart = {};
+let neuralRsquared = {};
+let activationFunc = {};
+let hiddenNeurons = {};
 
 let neuralScatterInitialized = false;
 
@@ -9,6 +12,9 @@ function handleEnterNeuralTab() {
     Pace.track(function () {
         neuralScatterTabSource = $('#in_select4');
         neuralScatterTabTarget = $('#out_select4');
+        neuralRsquared = $('#neural_r_squared');
+        activationFunc = $('#activation_func');
+        hiddenNeurons = $('#hidden_neurons');
 
         fillOptions(columns, neuralScatterTabSource);
         fillOptions(columns, neuralScatterTabTarget);
@@ -54,6 +60,17 @@ function recalculateNeuralRegression() {
         dataType: "json",
         success: function (responseInfo) {
             updateScatter(neuralChart, responseInfo);
+            updateInfo(responseInfo);
         }
     });
+}
+
+function updateInfo(responseInfo) {
+    let model = responseInfo.model;
+
+    neuralRsquared.text(percents(model.r_squared));
+    neuralRsquared.attr('data-original-title', model.r_squared);
+
+    activationFunc.text(model.activation);
+    hiddenNeurons.text(model.hidden_layer_sizes);
 }

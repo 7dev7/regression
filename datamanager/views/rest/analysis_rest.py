@@ -172,7 +172,7 @@ def neural_regression_scatter(request):
 
 
 def find_best_model(x, y):
-    results = train_models(range(3, 8), 9000, ['logistic', 'tanh'], x, y)
+    results = train_models(range(3, 4), 9000, ['logistic', 'tanh'], x, y)
     results.sort(key=lambda r: r['score'], reverse=True)
     return results[0]['model'], results[0]['score']
 
