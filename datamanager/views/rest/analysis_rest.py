@@ -2,6 +2,7 @@ import statsmodels.api as sm
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from sklearn import preprocessing
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
@@ -18,13 +19,7 @@ from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
 def linear_regression_scatter(request):
-    request_x = request.data['x']
-    request_y = request.data['y']
-    data_id = request.data['data_id']
-    df = get_dataframe(data_id)
-
-    x = df[[request_x]]
-    y = df[[request_y]]
+    x, y, request_x, request_y, df = get_data(request)
 
     model = LinearRegression().fit(x, y)
 
@@ -47,14 +42,8 @@ def linear_regression_scatter(request):
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
 def polynomial_regression_scatter(request):
-    request_x = request.data['x']
-    request_y = request.data['y']
+    x, y, request_x, request_y, df = get_data(request)
     degree = int(request.data['degree'])
-    data_id = request.data['data_id']
-    df = get_dataframe(data_id)
-
-    x = df[[request_x]]
-    y = df[[request_y]]
 
     model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
     model.fit(x, y)
@@ -155,17 +144,13 @@ def linear_predict(request):
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
 def neural_regression_scatter(request):
-    request_x = request.data['x']
-    request_y = request.data['y']
-    data_id = request.data['data_id']
-    df = get_dataframe(data_id)
+    x, y, request_x, request_y, df = get_data(request)
 
-    x = df[[request_x]]
-    y = df[[request_y]]
+    min_max_scaler = preprocessing.MinMaxScaler()
+    x_normalized = min_max_scaler.fit_transform(x, y)
 
-    clf = MLPRegressor(hidden_layer_sizes=(5,), max_iter=10000, activation='logistic', random_state=9)
-    neural_model = clf.fit(x, y.values.ravel())
-    predictions = neural_model.predict(x)
+    neural_model, score = find_best_model(x_normalized, y)
+    predictions = neural_model.predict(x_normalized)
 
     size = x.shape[0]
 
@@ -177,5 +162,38 @@ def neural_regression_scatter(request):
     return Response({
         'predictors': labels,
         'linePoints': line_points,
-        'observations': observations
+        'observations': observations,
+        'model': {
+            'r_squared': score,
+            'activation': neural_model.activation,
+            'hidden_layer_sizes': neural_model.hidden_layer_sizes
+        }
     })
+
+
+def find_best_model(x, y):
+    results = train_models(range(3, 8), 9000, ['logistic', 'tanh'], x, y)
+    results.sort(key=lambda r: r['score'], reverse=True)
+    return results[0]['model'], results[0]['score']
+
+
+def train_models(hidden_range, iters, activations, x, y):
+    results = []
+    for hidden in hidden_range:
+        for activation in activations:
+            clf = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=iters, activation=activation, random_state=9)
+            model = clf.fit(x, y.values.ravel())
+            results.append({'model': model, 'score': model.score(x, y.values.ravel())})
+    return results
+
+
+def get_data(request):
+    request_x = request.data['x']
+    request_y = request.data['y']
+    data_id = request.data['data_id']
+    df = get_dataframe(data_id)
+
+    x = df[[request_x]]
+    y = df[[request_y]]
+
+    return x, y, request_x, request_y, df
