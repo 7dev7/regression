@@ -11,8 +11,15 @@ def save_ml_model(in_cols, out_cols, ds_id, model, degree, user):
 
 def generate_model_name(in_cols, out_cols, model, degree):
     degree_suffix = ', {} степени'.format(degree) if degree is not None else ''
+    return '{}: {} -> {}{}'.format(map_model(model), map_columns(in_cols), map_columns(out_cols),
+                                   degree_suffix)
 
-    return '{}: {} -> {}{}'.format(map_model(model), in_cols, out_cols, degree_suffix)
+
+def map_columns(cols):
+    if len(cols) > 4:
+        return '[{}, {}, {}, {}, ...]'.format(cols[0], cols[1], cols[2], cols[3])
+    else:
+        return cols
 
 
 def map_model(model):

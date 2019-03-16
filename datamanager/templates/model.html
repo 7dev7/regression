@@ -3,6 +3,11 @@
 
 {% block header-links %}
     <script src="{% static "js/model.js" %}"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -11,7 +16,7 @@
             <div class="page-header" id="banner">
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                        <h1>Сохраненная модель</h1>
+                        <h3>{{ model.name }}</h3>
                     </div>
                 </div>
             </div>
@@ -57,9 +62,19 @@
                 <br/>
                 <div class="row justify-content-md-center">
                     <div class="col-md-4 justify-content-center">
-                        <h4>Значения входных параметров: </h4>
+                        <h4 data-toggle="tooltip" data-placement="top"
+                            title="Минимальное, максимальное и среднее значения представлены на основании обучающей выборки."
+                            data-original-title="test">Значения входных параметров: </h4>
                         {% for col in model.ds_in_cols %}
-                            <label class="col-form-label" for="in{{ col }}">{{ col }}</label>
+                            <label class="col-form-label" for="in{{ col }}">{{ col }}
+                                {% for m in meta %}
+                                    {% if m.column == col %}
+                                        <span class="text-muted"><em>мин: {{ m.min }};</em></span>
+                                        <span class="text-muted"><em>макс: {{ m.max }};</em></span>
+                                        <span class="text-muted"><em>средн: {{ m.mean }}</em></span>
+                                    {% endif %}
+                                {% endfor %}
+                            </label>
                             <input type="text" class="form-control" id="in{{ col }}"/>
                         {% endfor %}
                     </div>
