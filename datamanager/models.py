@@ -12,6 +12,13 @@ class Dataset(models.Model):
     columns = JSONField()
     size = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Набор данных'
+        verbose_name_plural = 'Наборы данных'
+
 
 class MlModel(models.Model):
     name = models.CharField(max_length=256, null=True, blank=True)
@@ -22,3 +29,10 @@ class MlModel(models.Model):
     ds_out_cols = JSONField()
     model = models.CharField(max_length=20)
     degree = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Модель'
+        verbose_name_plural = 'Модели'
