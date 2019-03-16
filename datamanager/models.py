@@ -21,3 +21,4 @@ class MlModel(models.Model):
     ds_in_cols = JSONField()
     ds_out_cols = JSONField()
     model = models.CharField(max_length=20)
+    degree = models.IntegerField(blank=True, null=True)

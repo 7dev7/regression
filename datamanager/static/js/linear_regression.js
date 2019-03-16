@@ -63,11 +63,11 @@ function initRegrEvents() {
     });
 
     $('#save_model_btn').click(function () {
-        save_model();
+        saveModel();
     });
 }
 
-function save_model() {
+function saveModel() {
     let x = getSelectedOptions(regrTabSource);
     let y = getSelectedOptions(regrTabTarget);
 
