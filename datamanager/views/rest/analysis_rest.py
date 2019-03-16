@@ -158,16 +158,22 @@ def linear_predict(request):
 
     model = MlModel.objects.get(pk=ml_model_id)
 
+    request_x = model.ds_in_cols
+    request_y = model.ds_out_cols
+
+    df = get_dataframe(model.dataset.id)
+
+    x = df[request_x]
+    y = df[request_y]
+
     if model.model == 'OLS':
-        request_x = model.ds_in_cols
-        request_y = model.ds_out_cols
-
-        df = get_dataframe(model.dataset.id)
-
-        x = df[request_x]
-        y = df[request_y]
-
         model = LinearRegression().fit(x, y)
+        res = model.predict([inputs])
+        return Response({'predicted': res[0]})
+    elif model.model == 'Polynomial':
+        degree = model.degree
+        model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
+        model.fit(x, y)
         res = model.predict([inputs])
         return Response({'predicted': res[0]})
 
@@ -213,7 +219,8 @@ def train_models(hidden_range, iters, activations, x, y):
     results = []
     for hidden in hidden_range:
         for activation in activations:
-            regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=iters, activation=activation, random_state=9)
+            regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=iters, activation=activation,
+                                     random_state=9)
             model = regressor.fit(x, y.values.ravel())
             results.append({'model': model, 'score': model.score(x, y.values.ravel())})
     return results
