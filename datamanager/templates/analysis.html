@@ -3,195 +3,200 @@
 {% load staticfiles %}
 
 {% block header-links %}
-<script src="{% static "js/chart.bundle.js" %}"></script>
-<script src="{% static "js/chart.utils.js" %}"></script>
-<script src="{% static "js/Chart.js" %}"></script>
-<script src="{% static "js/scatter.js" %}"></script>
-<script src="{% static "js/linear_regression.js" %}"></script>
-<script src="{% static "js/polynomial.js" %}"></script>
-<script src="{% static "js/poly_info_tab.js" %}"></script>
-<script src="{% static "js/neural_scatter.js" %}"></script>
-<script src="{% static "js/analysis_manager.js" %}"></script>
-<script>
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
-</script>
+    <script src="{% static "js/chart.bundle.js" %}"></script>
+    <script src="{% static "js/chart.utils.js" %}"></script>
+    <script src="{% static "js/Chart.js" %}"></script>
+    <script src="{% static "js/scatter.js" %}"></script>
+    <script src="{% static "js/linear_regression.js" %}"></script>
+    <script src="{% static "js/polynomial.js" %}"></script>
+    <script src="{% static "js/poly_info_tab.js" %}"></script>
+    <script src="{% static "js/neural_scatter.js" %}"></script>
+    <script src="{% static "js/analysis_manager.js" %}"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 {% endblock %}
 
 
 {% block content %}
-<main role="main" class="container">
-    <div class="container">
-        <div class="page-header" id="banner">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                    <h1>Анализ данных</h1>
+    <main role="main" class="container">
+        <div class="container">
+            <div class="page-header" id="banner">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                        <h1>Анализ данных</h1>
+                    </div>
                 </div>
             </div>
-        </div>
-        <input type="hidden" value="{{ data_id }}" id="data_id" />
-        <div class="content">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#scatter" id="scatter_tab">Диаграмма
-                        рассеяния</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#linear_regression" id="linear_regr_tab">Линейная
-                        регрессия</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
-                        aria-haspopup="true" aria-expanded="false">Полиномиальная регрессия</a>
-                    <div class="dropdown-menu" x-placement="bottom-start"
-                        style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 40px, 0px);">
-                        <a class="dropdown-item" data-toggle="tab" href="#poly_regression_scatter"
-                            id="poly_regr_scatter_tab">Диаграмма рассеяния</a>
-                        <a class="dropdown-item" data-toggle="tab" href="#poly_regression_info"
-                            id="poly_regr_info_tab">Параметры</a>
+            <input type="hidden" value="{{ data_id }}" id="data_id"/>
+            <div class="content">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                           aria-haspopup="true" aria-expanded="false">Линейная регрессия</a>
+                        <div class="dropdown-menu" x-placement="bottom-start"
+                             style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 40px, 0px);">
+                            <a class="dropdown-item" data-toggle="tab" href="#scatter" id="scatter_tab">Диаграмма
+                                рассеяния</a>
+                            <a class="dropdown-item" data-toggle="tab" href="#linear_regression" id="linear_regr_tab">Параметры</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                           aria-haspopup="true" aria-expanded="false">Полиномиальная регрессия</a>
+                        <div class="dropdown-menu" x-placement="bottom-start"
+                             style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 40px, 0px);">
+                            <a class="dropdown-item" data-toggle="tab" href="#poly_regression_scatter"
+                               id="poly_regr_scatter_tab">Диаграмма рассеяния</a>
+                            <a class="dropdown-item" data-toggle="tab" href="#poly_regression_info"
+                               id="poly_regr_info_tab">Параметры</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#neural_regression" id="neural_regr_tab">Нейронная
+                            сеть</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade show active" id="scatter">
+                        <br/>
+                        <div>
+                            <div class="float-left">
+                                <label for="in_select" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="in_select">
+                                </select>
+                            </div>
+                            <div class="float-right">
+                                <label for="out_select" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="out_select">
+                                </select>
+                            </div>
+                        </div>
+                        <canvas id="scatterPlot" width="400" height="400"></canvas>
                     </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#neural_regression" id="neural_regr_tab">Нейронная
-                        сеть</a>
-                </li>
-            </ul>
-            <div id="myTabContent" class="tab-content">
-                <div class="tab-pane fade show active" id="scatter">
-                    <br />
-                    <div>
-                        <div class="float-left">
-                            <label for="in_select" class="control-label">X: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true" id="in_select">
-                            </select>
+                    <div class="tab-pane fade" id="linear_regression">
+                        <br/>
+                        <div id="messageHolder">
                         </div>
-                        <div class="float-right">
-                            <label for="out_select" class="control-label">Y: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true"
-                                id="out_select">
-                            </select>
+                        <div>
+                            <div class="float-left">
+                                <label for="in_select2" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="in_select2"
+                                        multiple="multiple">
+                                </select> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button class="float-right btn btn-success" id="save_model_btn" data-toggle="tooltip"
+                                        data-placement="right" title=""
+                                        data-original-title="Сохранение построенной регрессионной модели в список пользовательских моделей.">
+                                    Сохранить модель
+                                </button>
+                            </div>
+                            <div class="float-right">
+                                <label for="out_select2" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="out_select2">
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <canvas id="scatterPlot" width="400" height="400"></canvas>
-                </div>
-                <div class="tab-pane fade" id="linear_regression">
-                    <br />
-                    <div id="messageHolder">
-                    </div>
-                    <div>
-                        <div class="float-left">
-                            <label for="in_select2" class="control-label">X: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true" id="in_select2"
-                                multiple="multiple">
-                            </select> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <button class="float-right btn btn-success" id="save_model_btn" data-toggle="tooltip"
-                                data-placement="right" title=""
-                                data-original-title="Сохранение построенной регрессионной модели в список пользовательских моделей.">
-                                Сохранить модель
-                            </button>
-                        </div>
-                        <div class="float-right">
-                            <label for="out_select2" class="control-label">Y: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true"
-                                id="out_select2">
-                            </select>
-                        </div>
-                    </div>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <div class="row text-center">
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Числовое соотношение между величинами, выраженное в виде тенденции к возрастанию (или убыванию) одной переменной величины при возрастании (убывании) другой.">
-                                Уравнение регрессии</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="regression_equation" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Числовое соотношение между величинами, выраженное в виде тенденции к возрастанию (или убыванию) одной переменной величины при возрастании (убывании) другой.">
+                                    Уравнение регрессии</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="regression_equation" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
 
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
-                                Коэффициент детерминации (R<sup>2</sup>)</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="r_squared" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
+                                    Коэффициент детерминации (R<sup>2</sup>)</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="r_squared" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
 
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Коэффициент детерминации, скорректированный на число факторов, и не чувствительный к числу регрессоров.">
-                                Скорректированный коэффициент детерминации (Adj. R<sup>2</sup>)</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="adj_r_squared" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Коэффициент детерминации, скорректированный на число факторов, и не чувствительный к числу регрессоров.">
+                                    Скорректированный коэффициент детерминации (Adj. R<sup>2</sup>)</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="adj_r_squared" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
 
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Используется для тестирования автокорреляции первого порядка элементов исследуемой последовательности.">
-                                <span class="text-muted">Автокорреляция: </span>Критерий Дарбина — Уотсона</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="durbin_watson" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Используется для тестирования автокорреляции первого порядка элементов исследуемой последовательности.">
+                                    <span class="text-muted">Автокорреляция: </span>Критерий Дарбина — Уотсона</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="durbin_watson" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
 
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Процедура проверки автокорреляции произвольного порядка в случайных ошибках регрессионных моделей. Представлено F-значение.">
-                                <span class="text-muted">Автокорреляция: </span> Тест Бройша — Годфри</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="breusch_godfrey" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Процедура проверки автокорреляции произвольного порядка в случайных ошибках регрессионных моделей. Представлено F-значение.">
+                                    <span class="text-muted">Автокорреляция: </span> Тест Бройша — Годфри</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="breusch_godfrey" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
 
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Проверка ошибкок наблюдений на нормальность.">
-                                <span class="text-muted">Нормальность: </span> Тест Харке — Бера</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="jarque_bera" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Проверка ошибкок наблюдений на нормальность.">
+                                    <span class="text-muted">Нормальность: </span> Тест Харке — Бера</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="jarque_bera" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
 
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Проверка наличия гетероскедастичности случайных ошибок регрессионной модели.">
-                                <span class="text-muted">Гетероскедатичность: </span>Тест Бройша — Пагана</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="breusch_pagan" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Проверка наличия гетероскедастичности случайных ошибок регрессионной модели.">
+                                    <span class="text-muted">Гетероскедатичность: </span>Тест Бройша — Пагана</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="breusch_pagan" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
 
-                        <br />
-                        <br />
-                        <div class="col-md-12">
-                            <table class="table" id="paramsTable">
-                                <thead class="thead-dark">
+                            <br/>
+                            <br/>
+                            <div class="col-md-12">
+                                <table class="table" id="paramsTable">
+                                    <thead class="thead-dark">
                                     <tr>
                                         <th scope="col"></th>
                                         <th scope="col">Коэффициент</th>
@@ -199,190 +204,192 @@
                                         <th scope="col">t - значение</th>
                                         <th scope="col">p - значение</th>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="poly_regression_scatter">
-                    <br />
-                    <div>
-                        <div class="float-left">
-                            <label for="in_select3" class="control-label">X: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true"
-                                id="in_select3">
-                            </select>
-                            &nbsp;&nbsp;&nbsp;
-                            <label for="degreeInput" class="control-label">Степень: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-done-button="true" id="degreeInput">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                            </select>
+                    <div class="tab-pane fade" id="poly_regression_scatter">
+                        <br/>
+                        <div>
+                            <div class="float-left">
+                                <label for="in_select3" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="in_select3">
+                                </select>
+                                &nbsp;&nbsp;&nbsp;
+                                <label for="degreeInput" class="control-label">Степень: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-done-button="true" id="degreeInput">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                </select>
+                            </div>
+                            <div class="float-right">
+                                <label for="out_select3" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="out_select3">
+                                </select>
+                            </div>
                         </div>
-                        <div class="float-right">
-                            <label for="out_select3" class="control-label">Y: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true"
-                                id="out_select3">
-                            </select>
+                        <canvas id="polyScatter" width="400" height="400"></canvas>
+                    </div>
+
+                    <div class="tab-pane fade" id="poly_regression_info">
+                        <br/>
+                        <div>
+                            <div class="float-left">
+                                <label for="in_select_poly_info" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="in_select_poly_info"
+                                        multiple="multiple">
+                                </select>
+                                &nbsp;&nbsp;&nbsp;
+                                <label for="polyInfoDegreeInput" class="control-label">Степень: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-done-button="true" id="polyInfoDegreeInput">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <!-- TODO implement it -->
+                                <button class="float-right btn btn-success" id="save_poly_model_btn"
+                                        data-toggle="tooltip"
+                                        data-placement="right" title=""
+                                        data-original-title="Сохранение построенной регрессионной модели в список пользовательских моделей.">
+                                    Сохранить модель
+                                </button>
+                            </div>
+                            <div class="float-right">
+                                <label for="out_select_poly_info" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="out_select_poly_info" multiple="multiple">
+                                </select>
+                            </div>
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Числовое соотношение между величинами, выраженное в виде тенденции к возрастанию (или убыванию) одной переменной величины при возрастании (убывании) другой.">
+                                    Уравнение регрессии</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="poly_regression_equation" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
+                                    Коэффициент детерминации (R<sup>2</sup>)</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="poly_r_squared" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title="" data-original-title="">
+                                    Степень полинома</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="poly_degree" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
                         </div>
                     </div>
-                    <canvas id="polyScatter" width="400" height="400"></canvas>
-                </div>
 
-                <div class="tab-pane fade" id="poly_regression_info">
-                    <br />
-                    <div>
-                        <div class="float-left">
-                            <label for="in_select_poly_info" class="control-label">X: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true" id="in_select_poly_info"
-                                multiple="multiple">
-                            </select> 
-                            &nbsp;&nbsp;&nbsp;
-                            <label for="polyInfoDegreeInput" class="control-label">Степень: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-done-button="true" id="polyInfodegreeInput">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <!-- TODO implement it -->
-                            <button class="float-right btn btn-success" id="save_poly_model_btn" data-toggle="tooltip"
-                                data-placement="right" title=""
-                                data-original-title="Сохранение построенной регрессионной модели в список пользовательских моделей.">
-                                Сохранить модель
-                            </button>
+                    <div class="tab-pane fade" id="neural_regression">
+                        <br/>
+                        <div>
+                            <div class="float-left">
+                                <label for="in_select4" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="in_select4">
+                                </select>
+                            </div>
+                            <div class="float-right">
+                                <label for="out_select4" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="out_select4">
+                                </select>
+                            </div>
                         </div>
-                        <div class="float-right">
-                            <label for="out_select_poly_info" class="control-label">Y: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true"
-                                id="out_select_poly_info" multiple="multiple">
-                            </select>
+                        <canvas id="neuralScatter" width="400" height="400"></canvas>
+                        <br/>
+                        <hr/>
+                        <br/>
+                        <div class="row text-center">
+                            <div class="col-md-12">
+                                <h3>Параметры</h3>
+                            </div>
                         </div>
-                    </div>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <div class="row text-center">
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Числовое соотношение между величинами, выраженное в виде тенденции к возрастанию (или убыванию) одной переменной величины при возрастании (убывании) другой.">
-                                Уравнение регрессии</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="poly_regression_equation" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
+                        <br/>
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
+                                    Коэффициент детерминации (R<sup>2</sup>)</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="neural_r_squared" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
 
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
-                                Коэффициент детерминации (R<sup>2</sup>)</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="poly_r_squared" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Функция, вычисляющая выходной сигнал искусственного нейрона. В качестве аргумента принимает сигнал Y, получаемый на выходе входного сумматора Sigma.">
+                                    Функция активации</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="activation_func" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
 
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title="" data-original-title="">
-                                Степень полинома</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="poly_degree" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane fade" id="neural_regression">
-                    <br />
-                    <div>
-                        <div class="float-left">
-                            <label for="in_select4" class="control-label">X: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true"
-                                id="in_select4">
-                            </select>
-                        </div>
-                        <div class="float-right">
-                            <label for="out_select4" class="control-label">Y: &nbsp;&nbsp;</label>
-                            <select class="selectpicker" data-live-search="true" data-done-button="true"
-                                id="out_select4">
-                            </select>
-                        </div>
-                    </div>
-                    <canvas id="neuralScatter" width="400" height="400"></canvas>
-                    <br />
-                    <hr />
-                    <br />
-                    <div class="row text-center">
-                        <div class="col-md-12">
-                            <h3>Параметры</h3>
-                        </div>
-                    </div>
-                    <br />
-                    <div class="row text-center">
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
-                                Коэффициент детерминации (R<sup>2</sup>)</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="neural_r_squared" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
-
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Функция, вычисляющая выходной сигнал искусственного нейрона. В качестве аргумента принимает сигнал Y, получаемый на выходе входного сумматора Sigma.">
-                                Функция активации</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="activation_func" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
-                        </div>
-
-                        <div class="col-md-6">
-                            <h5 data-toggle="tooltip" data-placement="right" title=""
-                                data-original-title="Нейронная сеть содержит слой скрытых нейронов, не являющихся частью входа или выхода сети. Эти нейроны позволяют сети обучаться решению сложных задач, последовательно извлекая наиболее важные признаки из входного образа.">
-                                Количество нейронов на скрытом слое</h5>
-                            <hr />
-                        </div>
-                        <div class="col-md-6">
-                            <h5 id="hidden_neurons" data-toggle="tooltip" data-placement="top" title=""
-                                data-original-title=""></h5>
-                            <hr />
+                            <div class="col-md-6">
+                                <h5 data-toggle="tooltip" data-placement="right" title=""
+                                    data-original-title="Нейронная сеть содержит слой скрытых нейронов, не являющихся частью входа или выхода сети. Эти нейроны позволяют сети обучаться решению сложных задач, последовательно извлекая наиболее важные признаки из входного образа.">
+                                    Количество нейронов на скрытом слое</h5>
+                                <hr/>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 id="hidden_neurons" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title=""></h5>
+                                <hr/>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
 {% endblock %}
