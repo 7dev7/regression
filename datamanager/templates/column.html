@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header-links %}
+    <script src="{% static "js/chart.bundle.js" %}"></script>
+    <script src="{% static "js/chart.utils.js" %}"></script>
+    <script src="{% static "js/Chart.js" %}"></script>
+    <script src="{% static "js/column.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+    <main role="main" class="container">
+        <div class="container-fluid">
+            <div class="page-header" id="banner">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                        <h3>{{ name }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <input type="hidden" id="ds_id" value="{{ ds_id }}">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                        <label for="columnSelect" class="control-label">Переменная: &nbsp;&nbsp;</label>
+                        <select class="selectpicker" data-done-button="true" id="columnSelect">
+                            {% for col in columns %}
+                                <option>{{ col }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <canvas id="histogram" width="400" height="400"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+{% endblock %}

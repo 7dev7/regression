@@ -1,4 +1,12 @@
 {% extends "base.html" %}
+{% block header-links %}
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+{% endblock %}
+
 {% block content %}
     <main role="main" class="container">
         <div class="container">
@@ -21,8 +29,15 @@
                                 </button>
                             </form>
                             <h4><a href="/data/dataset/{{ ds.id }}">{{ ds.name }}</a> &nbsp; &nbsp; &nbsp;
-                                <a href="/data/analysis/{{ ds.id }}" class="btn btn-outline-success btn-sm"><i
+                                <a href="/data/analysis/{{ ds.id }}" class="btn btn-outline-success btn-sm"
+                                   data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Построить регрессионные модели для данного набора данных."><i
                                         class="fas fa-chart-line"></i></a>
+                                &nbsp; &nbsp; &nbsp;
+                                <a href="/data/columns/dataset/{{ ds.id }}" class="btn btn-outline-success btn-sm"
+                                   data-toggle="tooltip" data-placement="top" title=""
+                                   data-original-title="Посмотреть информацию о наборе данных."><i
+                                        class="fas fa-chart-bar"></i></a>
                             </h4>
                             <p class="text-secondary">{{ ds.upload_time }}</p>
                         </div>
