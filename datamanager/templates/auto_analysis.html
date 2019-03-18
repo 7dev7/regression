@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header-links %}
+    <script src="{% static "js/auto_analysis.js" %}"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <main role="main" class="container">
+        <div class="container-fluid">
+            <div class="page-header" id="banner">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                        <h3>Автоматический анализ</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                {% if datasets %}
+                    <div id="step1">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active">Выбор набора данных</li>
+                        </ol>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <h4>Набор данных для анализа</h4>
+                                <br/>
+                                <fieldset>
+                                    <div class="form-group">
+                                        {% for ds in datasets %}
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="ds_{{ ds.id }}" name="dataset"
+                                                       class="custom-control-input" checked="">
+                                                <label class="custom-control-label"
+                                                       for="ds_{{ ds.id }}">{{ ds.name }} <em>{{ ds.columns }}</em>
+                                                    <p class="text-muted">Загружено {{ ds.upload_time }}</p></label>
+                                            </div>
+                                            <br/>
+                                        {% endfor %}
+                                    </div>
+                                </fieldset>
+                                <button id="step1_next" type="button" class="btn btn-outline-success">Дальше</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="step2" style="display: none">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" id="step1_button">Выбор набора данных</a></li>
+                            <li class="breadcrumb-item active">Анализ</li>
+                        </ol>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <h4>Предварительная проверка набора данных</h4>
+                                <br/>
+                                <button id="step2_back" type="button" class="btn btn-outline-primary">Назад</button>
+                                <button id="step2_next" type="button" class="btn btn-outline-success">Дальше</button>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-md-8 offset-md-2">
+                        <h4>На данный момент у вас нет наборов данных :(</h4>
+                        <h5>Вы можете добавить наборы данных <a href="/data/load">здесь</a></h5>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+{% endblock %}
