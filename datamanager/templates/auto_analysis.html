@@ -54,18 +54,22 @@
                             <li class="breadcrumb-item active">Параметры</li>
                         </ol>
                         <div class="row justify-content-center text-center">
-                            {#                            <div class="col-md-12 text-center">#}
+                            <br/>
+                            <div class="col-md-12" id="step2_message_holder">
+                            </div>
                             <br/>
                             <div class="col-md justify-content-center">
                                 <fieldset>
-                                    <h4>Входные параметры</h4>
+                                    <h4>Входные параметры: </h4>
+                                    <hr/>
                                     <div class="form-group" id="in_columns">
                                     </div>
                                 </fieldset>
                             </div>
                             <div class="col-md justify-content-center">
                                 <fieldset>
-                                    <h4>Выходные параметры</h4>
+                                    <h4>Выходные параметры: </h4>
+                                    <hr/>
                                     <div class="form-group" id="out_columns">
                                     </div>
                                 </fieldset>
@@ -74,7 +78,23 @@
                                 <button id="step2_back" type="button" class="btn btn-outline-primary">Назад</button>
                                 <button id="step2_next" type="button" class="btn btn-outline-success">Дальше</button>
                             </div>
-                            {#                            </div>#}
+                        </div>
+                    </div>
+                    <div id="step3" style="display: none">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" id="step1_button">Набор данных</a></li>
+                            <li class="breadcrumb-item"><a href="#" id="step2_button">Параметры</a></li>
+                            <li class="breadcrumb-item active">Проверка</li>
+                        </ol>
+                        <div class="row justify-content-center text-center">
+                            <br/>
+                            <div id="step3_message_holder">
+                            </div>
+                            <br/>
+                            <div class="col-md-12">
+                                <button id="step3_back" type="button" class="btn btn-outline-primary">Назад</button>
+                                <button id="step3_next" type="button" class="btn btn-outline-success">Дальше</button>
+                            </div>
                         </div>
                     </div>
                 {% else %}
