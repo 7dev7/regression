@@ -8,13 +8,13 @@ $(document).ready(function () {
     let outColumns = $('#out_columns');
     step2MessageHolder = $('#step2_message_holder');
 
-    $('#step1_button').click(function () {
+    $('.step1_button').click(function () {
         step2.hide('fast');
         step3.hide('fast');
         step1.show('fast');
     });
 
-    $('#step2_button').click(function () {
+    $('.step2_button').click(function () {
         step3.hide('fast');
         step1.hide('fast');
         step2.show('fast');
@@ -35,10 +35,26 @@ $(document).ready(function () {
 
     $('#step2_next').click(function () {
         if (!step2ValidateUserInput(inColumns, outColumns)) return;
+        let data_id = $('.datasets').find('input[type=radio]:checked').val();
 
-        step1.hide('fast');
-        step2.hide('fast');
-        step3.show('fast');
+        $.ajax({
+            url: '/data/api/dataset/analysis/',
+            type: 'POST',
+            data: JSON.stringify({
+                dataset_id: data_id,
+                in_columns: getSelectedColumns(inColumns),
+                out_columns: getSelectedColumns(outColumns)
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+
+                step1.hide('fast');
+                step2.hide('fast');
+                step3.show('fast');
+            }
+        });
     });
 
     $('#step2_back').click(function () {
