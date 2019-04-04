@@ -49,6 +49,44 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 console.log(response);
+                $("#step3_next").prop("disabled", false);
+
+                $('#in_columns_st3 ul').empty();
+                $('#out_columns_st3 ul').empty();
+
+
+                response.in_columns.forEach(col => {
+                    let col_type = response.in_types[col];
+                    col_type = col_type === 'num' ? 'Числовой' : 'Строковый';
+
+                    const col_uniq = response.in_unique[col];
+                    col = $.trim(col);
+
+                    $('#in_columns_st3 ul').append(
+                        '<li class="list-group-item d-flex justify-content-between align-items-center">' + col +
+                        '\t<span class="text-muted">Количество уникальный значений: ' + col_uniq + '</span>' +
+                        '\t<span class="text-muted">Тип переменной: ' + col_type + '</span></li>');
+                });
+
+                response.out_columns.forEach(col => {
+                    let col_type = response.out_types[col];
+                    col_type = col_type === 'num' ? 'Числовой' : 'Строковый';
+
+                    const col_uniq = response.out_unique[col];
+                    col = $.trim(col);
+
+                    $('#out_columns_st3 ul').append(
+                        '<li class="list-group-item d-flex justify-content-between align-items-center">' + col +
+                        '\t<span class="text-muted">Количество уникальный значений: ' + col_uniq + '</span>' +
+                        '\t<span class="text-muted">Тип переменной: ' + col_type + '</span></li>');
+                });
+
+                let analysisIsAllowed = validateUnique(response);
+
+                if (!analysisIsAllowed) {
+                    //TODO add tooltip
+                    $("#step3_next").prop("disabled", true);
+                }
 
                 step1.hide('fast');
                 step2.hide('fast');
@@ -82,7 +120,6 @@ function fillColumns(holder, columns, type) {
 }
 
 function step2ValidateUserInput(inColumns, outColumns) {
-    //TODO correct messages
     step2MessageHolder.empty();
 
     let inSelected = getSelectedColumns(inColumns);
@@ -97,9 +134,11 @@ function step2ValidateUserInput(inColumns, outColumns) {
         });
 
         if (Array.isArray(common) && common.length) {
+            let msg = common.length > 1 ? "Параметры " + common + " не могут быть одновременно зависимыми и независимыми"
+                : "Параметр " + common + " не может быть одновременно зависимым и независимым";
             step2MessageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
                 '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
-                '<p class="mb-0">Один параметр и входной и выходной</p> ' +
+                '<p class="mb-0">' + msg + '</p> ' +
                 '</div>');
             return false;
         }
@@ -107,16 +146,59 @@ function step2ValidateUserInput(inColumns, outColumns) {
     } else {
         step2MessageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
             '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
-            '<p class="mb-0">Не выбраны входные или выходные параметры</p> ' +
+            '<p class="mb-0">Не выбраны зависимые или независимые переменные</p> ' +
             '</div>');
         return false;
     }
 }
 
+function validateUnique(response) {
+    let msgHolder = $('#step3_message_holder');
+    msgHolder.empty();
+
+    let numOfErrors = 0;
+
+    const in_size = response.in_columns.length;
+
+    for (let i = 0; i < in_size; i++) {
+        let col = response.in_columns[i];
+        let unique = response.in_unique[col];
+
+        if (unique < response.unique_threshold) {
+            let msg = 'Параметр ' + col + ' имеет категориальную шкалу. Для проведения регрессионного анализа параметры не должны иметь данную шкалу.';
+
+            msgHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+                '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                '<p class="mb-0">' + msg + '</p> ' +
+                '</div>');
+            numOfErrors++;
+        }
+    }
+
+    const out_size = response.out_columns.length;
+
+    for (let i = 0; i < out_size; i++) {
+        let col = response.out_columns[i];
+        let unique = response.out_unique[col];
+
+        if (unique < response.unique_threshold) {
+            let msg = 'Параметр ' + col + ' имеет категориальную шкалу. Для проведения регрессионного анализа параметры не должны иметь данную шкалу.';
+
+            msgHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+                '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                '<p class="mb-0">' + msg + '</p> ' +
+                '</div>');
+            numOfErrors++;
+        }
+    }
+
+    return numOfErrors === 0
+}
+
 function getSelectedColumns(selector) {
-    let vals = [];
+    let values = [];
     selector.find('div>input[type=checkbox]:checked').each(function () {
-        vals.push($(this).val());
+        values.push($(this).val());
     });
-    return vals;
+    return values;
 }

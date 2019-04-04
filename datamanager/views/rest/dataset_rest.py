@@ -48,6 +48,10 @@ def analysis(request):
         out_types[col] = 'str' if is_string_type else 'num'
 
     return Response({
+        # TODO make configurable
+        'unique_threshold': 125,
+        'in_columns': in_columns,
+        'out_columns': out_columns,
         'in_unique': in_uniques,
         'out_unique': out_uniques,
         'in_types': in_types,
