@@ -84,8 +84,12 @@ $(document).ready(function () {
                 let analysisIsAllowed = validateUnique(response);
 
                 if (!analysisIsAllowed) {
-                    //TODO add tooltip
                     $("#step3_next").prop("disabled", true);
+                } else {
+                    $('#step3_message_holder').append('<div class="alert alert-dismissible alert-success"> ' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                        '<p class="mb-0">Набор данных подходит для анализа</p> ' +
+                        '</div>');
                 }
 
                 step1.hide('fast');
