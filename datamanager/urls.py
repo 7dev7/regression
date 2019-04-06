@@ -6,7 +6,9 @@ from datamanager.views.rest import dataset_rest, analysis_rest, ml_models_rest, 
 urlpatterns = [
     path('api/dataset/<int:data_id>/', dataset_rest.dataset_detail, name='dataset_rest'),
 
-    path('api/dataset/<int:data_id>/row/edit/', dataset_rest.row_edit, name='row_edit'),
+    path('api/dataset/<int:data_id>/row/edit/', dataset_rest.edit_row, name='edit_row'),
+
+    path('api/dataset/<int:data_id>/row/add/', dataset_rest.add_row, name='add_row'),
 
     path('api/dataset/analysis/', dataset_rest.analysis, name='dataset analysis'),
 

@@ -11,6 +11,8 @@ def get_dataframe(dataset_id):
 def update_dataframe(df, dataset_id):
     dataset = Dataset.objects.get(pk=dataset_id)
     dataset.content = get_json(df)
+    dataset.columns = df.columns.values.tolist()
+    dataset.size = df.shape[0]
     dataset.save()
 
 

@@ -27,7 +27,7 @@ def dataset_detail(request, data_id):
 @api_view(['POST'])
 @parser_classes((MultiPartParser, FormParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
-def row_edit(request, data_id):
+def edit_row(request, data_id):
     row_num = int(request.data['__row_id__'])
     df = get_dataframe(data_id)
 
@@ -37,6 +37,23 @@ def row_edit(request, data_id):
 
     update_dataframe(df, data_id)
     return Response({})
+
+
+@api_view(['POST'])
+@parser_classes((MultiPartParser, FormParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def add_row(request, data_id):
+    df = get_dataframe(data_id)
+
+    columns = list(df)
+    values = {}
+    for i in columns:
+        values[i] = request.data[i]
+
+    df = df.append(values, ignore_index=True)
+    update_dataframe(df, data_id)
+
+    return Response(df.shape[0])
 
 
 @api_view(['POST'])

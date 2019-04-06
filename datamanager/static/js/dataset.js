@@ -17,14 +17,17 @@ function parseColumnModels(dataset) {
 
     let model = [];
     for (let i = 0; i < columns.length; i++) {
-        model.push({label: columns[i], name: columns[i], editable: true});
+        model.push({label: columns[i], name: columns[i], editable: true, sorttype: 'float'});
     }
 
     return model;
 }
 
 function renderTable(dataset) {
-    const editUrl = '/data/api/dataset/' + $('#data_id').val() + '/row/edit/';
+    const dataId = $('#data_id');
+    const editUrl = '/data/api/dataset/' + dataId.val() + '/row/edit/';
+    const addUrl = '/data/api/dataset/' + dataId.val() + '/row/add/';
+
     let model = parseColumnModels(dataset);
     let columns = dataset.columns;
 
@@ -61,7 +64,7 @@ function renderTable(dataset) {
         del: true,
         refresh: false,
     }, {
-        reloadAfterSubmit: true,
+        reloadAfterSubmit: false,
         url: editUrl,
         closeAfterEdit: true,
         closeOnEscape: true,
@@ -74,6 +77,15 @@ function renderTable(dataset) {
             $.each(columns, function (i, item) {
                 $("#dataset_table").jqGrid('setCell', formid['__row_id__'], item, formid[item]);
             });
+        }
+    }, {
+        reloadAfterSubmit: false,
+        url: addUrl,
+        position: "last",
+        closeAfterAdd: true,
+        closeOnEscape: true,
+        afterSubmit: function (response) {
+            return [true, "", $.parseJSON(response.responseText)];
         }
     });
 }
