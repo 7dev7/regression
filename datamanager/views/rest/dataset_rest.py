@@ -48,12 +48,26 @@ def add_row(request, data_id):
     columns = list(df)
     values = {}
     for i in columns:
+        # TODO add type parsing
         values[i] = request.data[i]
 
     df = df.append(values, ignore_index=True)
     update_dataframe(df, data_id)
 
     return Response(df.shape[0])
+
+
+@api_view(['POST'])
+@parser_classes((MultiPartParser, FormParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def remove_row(request, data_id):
+    df = get_dataframe(data_id)
+    row_num = int(request.data['id'])
+
+    df = df.drop(df.index[row_num])
+
+    update_dataframe(df, data_id)
+    return Response()
 
 
 @api_view(['POST'])

@@ -27,6 +27,7 @@ function renderTable(dataset) {
     const dataId = $('#data_id');
     const editUrl = '/data/api/dataset/' + dataId.val() + '/row/edit/';
     const addUrl = '/data/api/dataset/' + dataId.val() + '/row/add/';
+    const removeUrl = '/data/api/dataset/' + dataId.val() + '/row/remove/';
 
     let model = parseColumnModels(dataset);
     let columns = dataset.columns;
@@ -87,5 +88,10 @@ function renderTable(dataset) {
         afterSubmit: function (response) {
             return [true, "", $.parseJSON(response.responseText)];
         }
+    }, {
+        reloadAfterSubmit: false,
+        closeAfterDelete: true,
+        closeOnEscape: true,
+        url: removeUrl
     });
 }
