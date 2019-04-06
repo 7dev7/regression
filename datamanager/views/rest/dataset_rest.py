@@ -1,12 +1,12 @@
 from pandas.core.dtypes.common import is_string_dtype
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
-from rest_framework.parsers import JSONParser
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.response import Response
 
 from datamanager.models import Dataset
 from datamanager.serializers.dataset_serializer import DatasetSerializer
-from datamanager.services.dataframe import get_dataframe
+from datamanager.services.dataframe import get_dataframe, update_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 
 
@@ -22,6 +22,21 @@ def dataset_detail(request, data_id):
 
     serializer = DatasetSerializer(snippet)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@parser_classes((MultiPartParser, FormParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def row_edit(request, data_id):
+    row_num = int(request.data['__row_id__'])
+    df = get_dataframe(data_id)
+
+    columns = list(df)
+    for i in columns:
+        df[i][row_num] = request.data[i]
+
+    update_dataframe(df, data_id)
+    return Response({})
 
 
 @api_view(['POST'])

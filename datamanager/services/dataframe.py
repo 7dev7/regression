@@ -8,6 +8,12 @@ def get_dataframe(dataset_id):
     return pd.read_json(dataset.content.replace("'", "\""))
 
 
+def update_dataframe(df, dataset_id):
+    dataset = Dataset.objects.get(pk=dataset_id)
+    dataset.content = get_json(df)
+    dataset.save()
+
+
 def get_json(df):
     return df.to_json().replace("\"", "'")
 

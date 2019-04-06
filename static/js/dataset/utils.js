@@ -10,7 +10,7 @@ function parseRows(dataset) {
             let col = columns[j];
             row[col] = content[col][i];
         }
-
+        row['__row_id__'] = i;
         rows.push(row);
     }
 
