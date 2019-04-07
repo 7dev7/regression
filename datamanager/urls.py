@@ -32,6 +32,9 @@ urlpatterns = [
     path('api/analysis/predict/', analysis_rest.linear_predict,
          name='analysis_linear_predict'),
 
+    path('api/analysis/auto/', analysis_rest.auto_analysis,
+         name='auto_analysis'),
+
     path('api/models/', ml_models_rest.save_model, name='models_save'),
 
     path('api/columns/', columns_rest.column_info, name='column_info'),

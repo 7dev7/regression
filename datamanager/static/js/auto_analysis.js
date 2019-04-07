@@ -46,7 +46,25 @@ $(document).ready(function () {
     });
 
     $('#step3_next').click(function () {
-        //    TODO start models
+        let data_id = $('.datasets').find('input[type=radio]:checked').val();
+
+        Pace.track(function () {
+            $.ajax({
+                url: '/data/api/analysis/auto/',
+                type: 'POST',
+                data: JSON.stringify({
+                    data_id: data_id,
+                    x: getSelectedColumns(inColumns),
+                    y: getSelectedColumns(outColumns)
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    //TODO track progress
+                    console.log(response);
+                }
+            });
+        });
 
         step3.hide('fast');
         step4.show('fast');

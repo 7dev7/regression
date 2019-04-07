@@ -11,6 +11,7 @@ from statsmodels.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
 from datamanager.models import MlModel
+from datamanager.services.auto_analysis import get_models
 from datamanager.services.dataframe import get_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 
@@ -207,6 +208,24 @@ def neural_regression_scatter(request):
             'hidden_layer_sizes': neural_model.hidden_layer_sizes
         }
     })
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def auto_analysis(request):
+    request_x = request.data['x']
+    request_y = request.data['y']
+    data_id = request.data['data_id']
+    df = get_dataframe(data_id)
+
+    x = df[request_x]
+    y = df[request_y]
+
+    models = get_models(x, y)
+    print(models)
+
+    return Response({'models': []})
 
 
 def find_best_model(x, y):
