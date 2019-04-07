@@ -18,8 +18,34 @@
         <div class="content">
             <div class="row">
                 <div class="col-md-12">
-                    {# TODO add handler #}
-                    <button type="button" class="btn btn-primary float-right">Управление колонками</button>
+                    <button type="button" id="columnsManagement" class="btn btn-primary float-right" data-toggle="modal"
+                            data-target="#columnModal">Управление колонками
+                    </button>
+
+                    <div class="modal fade" id="columnModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Управление колонками</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table table-hover" id="columnsTable">
+                                        <tbody>
+                                        {#                                        <tr>#}
+                                        {#                                            <th scope="row">Default</th>#}
+                                        {#                                            <td>Column content</td>#}
+                                        {#                                            <td>Column content</td>#}
+                                        {#                                            <td>Column content</td>#}
+                                        {#                                        </tr>#}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

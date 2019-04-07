@@ -4,6 +4,7 @@ $(document).ready(function () {
     let step1 = $('#step1');
     let step2 = $('#step2');
     let step3 = $('#step3');
+    let step4 = $('#step4');
     let inColumns = $('#in_columns');
     let outColumns = $('#out_columns');
     step2MessageHolder = $('#step2_message_holder');
@@ -20,6 +21,13 @@ $(document).ready(function () {
         step2.show('fast');
     });
 
+    $('.step3_button').click(function () {
+        step4.hide('fast');
+        step2.hide('fast');
+        step1.hide('fast');
+        renderStep3();
+    });
+
     $('#step1_next').click(function () {
         let data_id = $('.datasets').find('input[type=radio]:checked').val();
 
@@ -34,6 +42,32 @@ $(document).ready(function () {
     });
 
     $('#step2_next').click(function () {
+        renderStep3();
+    });
+
+    $('#step3_next').click(function () {
+        //    TODO start models
+
+        step3.hide('fast');
+        step4.show('fast');
+    });
+
+    $('#step2_back').click(function () {
+        step2.hide('fast');
+        step1.show('fast');
+    });
+
+    $('#step3_back').click(function () {
+        step3.hide('fast');
+        step2.show('fast');
+    });
+
+    $('#step4_back').click(function () {
+        step4.hide('fast');
+        renderStep3();
+    });
+
+    function renderStep3() {
         if (!step2ValidateUserInput(inColumns, outColumns)) return;
         let data_id = $('.datasets').find('input[type=radio]:checked').val();
 
@@ -53,7 +87,6 @@ $(document).ready(function () {
 
                 $('#in_columns_st3 ul').empty();
                 $('#out_columns_st3 ul').empty();
-
 
                 response.in_columns.forEach(col => {
                     let col_type = response.in_types[col];
@@ -97,17 +130,7 @@ $(document).ready(function () {
                 step3.show('fast');
             }
         });
-    });
-
-    $('#step2_back').click(function () {
-        step2.hide('fast');
-        step1.show('fast');
-    });
-
-    $('#step3_back').click(function () {
-        step3.hide('fast');
-        step2.show('fast');
-    });
+    }
 });
 
 function fillColumns(holder, columns, type) {
