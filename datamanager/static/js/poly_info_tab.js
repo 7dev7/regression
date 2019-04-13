@@ -81,8 +81,6 @@ function savePolyModel() {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                console.log(response);
-
                 if (response.status === 'ok') {
                     polyMessageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
                         '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +

@@ -15,9 +15,13 @@ def save_model(request):
     data_id = request.data['data_id']
     model = request.data['model']
     degree = request.data.get('degree', None)
+    activation = request.data.get('activation', None)
+    hidden = request.data.get('hidden', None)
 
-    if not mls.check_model_correct(in_cols, out_cols, data_id, model, degree, request.user):
+    if not mls.check_model_correct(in_cols, out_cols, data_id, model,
+                                   degree, activation, hidden, request.user):
         return Response({'status': 'fail', 'error_message': 'Модель с выбранными параметрами уже существует'})
 
-    mls.save_ml_model(in_cols, out_cols, data_id, model, degree, request.user)
+    mls.save_ml_model(in_cols, out_cols, data_id, model,
+                      degree, activation, hidden, request.user)
     return Response({'status': 'ok'})

@@ -29,6 +29,8 @@ class MlModel(models.Model):
     ds_out_cols = JSONField()
     model = models.CharField(max_length=20)
     degree = models.IntegerField(blank=True, null=True)
+    activation = models.CharField(blank=True, null=True, max_length=32)
+    hidden_layer = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.name

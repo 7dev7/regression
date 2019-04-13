@@ -3,7 +3,7 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
-NN_RANGE = range(2, 8)
+NN_RANGE = range(3, 5)
 ACTIVATIONS = ['logistic', 'tanh', 'relu']
 NN_ITERS = 7000
 
@@ -36,20 +36,33 @@ def format_models_data(models):
                 'model': 'Многослойный персептрон',
                 'description': 'Функция активации <em>{}</em>, '
                                'количество нейронов на скрытом слое <em>{}</em>'.format(func,
-                                                                               model.hidden_layer_sizes[0]),
-                'score': model_data['score']
+                                                                                        model.hidden_layer_sizes[0]),
+                'meta': {
+                    'type': 'MLP',
+                    'activation': model.activation,
+                    'hidden': model.hidden_layer_sizes[0]
+                }
             }
         elif isinstance(model, LinearRegression):
             formatted_data = {
                 'model': 'Линейная регрессия',
-                'score': model_data['score']
+                'meta': {
+                    'type': 'OLS'
+                }
             }
         else:
             formatted_data = {
-                'model': 'Нелинейная регрессия',
+                'model': 'Полиномиальная регрессия',
                 'description': 'Степень <em>{}</em>'.format(model.steps[0][1].degree),
-                'score': model_data['score']
+                'meta': {
+                    'type': 'Polynomial',
+                    'degree': model.steps[0][1].degree
+                }
             }
+
+        formatted_data['score'] = model_data['score']
+        formatted_data['meta']['in'] = model_data['in']
+        formatted_data['meta']['out'] = model_data['out']
 
         result.append(formatted_data)
     return result
@@ -62,13 +75,23 @@ def train_nn_models(x, y):
             regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=NN_ITERS, activation=activation,
                                      random_state=9)
             model = regressor.fit(x, y.values.ravel())
-            results.append({'model': model, 'score': model.score(x, y.values.ravel())})
+            results.append({
+                'model': model,
+                'score': model.score(x, y.values.ravel()),
+                'in': x.columns.values,
+                'out': y.columns.values
+            })
     return results
 
 
 def train_linear_models(x, y):
     model = LinearRegression().fit(x, y)
-    return [{'model': model, 'score': model.score(x, y.values.ravel())}]
+    return [{
+        'model': model,
+        'score': model.score(x, y.values.ravel()),
+        'in': x.columns.values,
+        'out': y.columns.values
+    }]
 
 
 def train_poly_models(x, y):
@@ -76,5 +99,10 @@ def train_poly_models(x, y):
     for degree in POLY_DEGREE_RANGE:
         model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
         model.fit(x, y)
-        results.append({'model': model, 'score': model.score(x, y.values.ravel())})
+        results.append({
+            'model': model,
+            'score': model.score(x, y.values.ravel()),
+            'in': x.columns.values,
+            'out': y.columns.values
+        })
     return results

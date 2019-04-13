@@ -72,15 +72,22 @@ $(document).ready(function () {
                         const description = modelData.description || '';
                         const score = percents(modelData.score);
 
-                        //TODO implement saving
-                        modelsTable.append('<tr class="table-light">' +
+                        const tr = $('<tr class="table-light">' +
                             '<th scope="row">' + modelData.model + '</th>' +
                             '<td>' + score + '</td>' +
-                            '<td>' + description + '      ' +
-                            '<button class="float-right btn btn-sm btn-success" id="save_model_btn" >' +
-                            'Сохранить' +
-                            '</button></td>' +
-                            '</tr>');
+                            '<td>' + description + '</td></tr>');
+
+                        const button = $('<button class="float-right btn btn-sm btn-success">Сохранить</button>');
+                        button.click(function () {
+                            handleSaveBtn(modelData);
+                        });
+
+                        const buttonTd = $('<td></td>');
+                        buttonTd.append(button);
+
+                        tr.append(buttonTd);
+
+                        modelsTable.append(tr);
                     });
 
                     $('#modelsTitle').text('Построенные модели');
@@ -171,6 +178,45 @@ $(document).ready(function () {
         });
     }
 });
+
+function handleSaveBtn(modelData) {
+    console.log(modelData);
+    let data_id = $('.datasets').find('input[type=radio]:checked').val();
+
+    const metaData = modelData.meta;
+
+    $.ajax({
+        url: '/data/api/models/',
+        type: 'POST',
+        data: JSON.stringify({
+            data_id: parseInt(data_id),
+            in: metaData.in,
+            out: metaData.out,
+            degree: metaData.degree || null,
+            model: metaData.type,
+            activation: metaData.activation || null,
+            hidden: metaData.hidden || null
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            const msgHolder = $('#step4_message_holder');
+            msgHolder.empty();
+
+            if (response.status === 'ok') {
+                msgHolder.append('<div class="alert alert-dismissible alert-success"> ' +
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                    '<p class="mb-0">Модель сохранена</p> ' +
+                    '</div>');
+            } else {
+                msgHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                    '<p class="mb-0">Ошибка при сохранении модели: ' + response.error_message + '</p> ' +
+                    '</div>');
+            }
+        }
+    });
+}
 
 function fillColumns(holder, columns, type) {
     holder.empty();
