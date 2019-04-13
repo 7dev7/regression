@@ -8,6 +8,8 @@
             $('[data-toggle="tooltip"]').tooltip()
         })
     </script>
+
+    <link rel="stylesheet" href="{% static "css/long_pace.css" %}">
 {% endblock %}
 
 {% block content %}
@@ -129,12 +131,14 @@
                             <div id="step4_message_holder">
                             </div>
                             <br/>
-                            <h3>Модели</h3>
-                            <br/>
-                            <div class="col-md-12">
-                                <button id="step4_back" type="button" class="btn btn-outline-primary">Назад</button>
-                                <button id="step4_next" type="button" class="btn btn-outline-success">Дальше
-                                </button>
+                            <div id="modelsHolder">
+                                <h3>Пожалуйста, подождите. Идет процесс построения регрессионных моделей...</h3>
+                                <br/>
+                                {#                            <div class="col-md-12">#}
+                                {#                                <button id="step4_back" type="button" class="btn btn-outline-primary">Назад</button>#}
+                                {#                                <button id="step4_next" type="button" class="btn btn-outline-success">Дальше#}
+                                {#                                </button>#}
+                                {#                            </div>#}
                             </div>
                         </div>
                     </div>

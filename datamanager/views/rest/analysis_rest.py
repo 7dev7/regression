@@ -11,7 +11,7 @@ from statsmodels.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
 from datamanager.models import MlModel
-from datamanager.services.auto_analysis import get_models
+from datamanager.services.auto_analysis import get_models, format_models_data
 from datamanager.services.dataframe import get_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 
@@ -223,9 +223,10 @@ def auto_analysis(request):
     y = df[request_y]
 
     models = get_models(x, y)
-    print(models)
+    models.sort(key=lambda m: m['score'], reverse=True)
+    formatted = format_models_data(models)
 
-    return Response({'models': []})
+    return Response({'models': formatted})
 
 
 def find_best_model(x, y):
