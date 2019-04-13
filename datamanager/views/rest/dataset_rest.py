@@ -73,6 +73,19 @@ def remove_row(request, data_id):
 @api_view(['POST'])
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
+def remove_column(request, data_id):
+    df = get_dataframe(data_id)
+    column = request.data['column']
+
+    df = df.drop(columns=[column])
+
+    update_dataframe(df, data_id)
+    return Response({'ok'})
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
 def analysis(request):
     ds_id = request.data['dataset_id']
     in_columns = request.data['in_columns']

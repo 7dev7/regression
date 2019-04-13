@@ -12,6 +12,8 @@ urlpatterns = [
 
     path('api/dataset/<int:data_id>/row/remove/', dataset_rest.remove_row, name='remove_row'),
 
+    path('api/dataset/<int:data_id>/column/remove/', dataset_rest.remove_column, name='remove_column'),
+
     path('api/dataset/analysis/', dataset_rest.analysis, name='dataset analysis'),
 
     path('api/analysis/', analysis_rest.linear_regression_scatter,

@@ -15,10 +15,18 @@ function renderColumnsModal(responseData) {
     table.empty();
 
     for (let i = 0; i < columns.length; i++) {
-        table.append('<tr><td>' +
-            '<input type="text" class="form-control form-control-sm renameColumnInput" value="' + columns[i] + '"/></td><td>' +
-            '<button class="btn btn-outline-danger float-right removeColumnBtn" value="' + i + '"><span aria-hidden="true">&times;</span>' +
-            '</button></td></tr>');
+        const btn = $('<button class="btn btn-outline-danger float-right removeColumnBtn"><span aria-hidden="true">&times;</span></button>');
+        btn.click(function () {
+            handleColumnRemove(columns[i]);
+        });
+
+        const btnTd = $('<td></td>');
+        btnTd.append(btn);
+
+        const tr = $('<tr><td><input type="text" class="form-control form-control-sm renameColumnInput" value="' + columns[i] + '"/></td></tr>');
+        tr.append(btnTd);
+
+        table.append(tr);
     }
 }
 
@@ -26,6 +34,25 @@ $('.renameColumnInput').bind('input', function () {
     const newName = $(this).text();
     console.log(newName)
 });
+
+function handleColumnRemove(columnToRemove) {
+    const dataId = $('#data_id');
+    const removeColumnUrl = '/data/api/dataset/' + dataId.val() + '/column/remove/';
+
+    $.ajax({
+        url: removeColumnUrl,
+        type: 'POST',
+        data: JSON.stringify({
+            column: columnToRemove
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            location.reload();
+            return false;
+        }
+    });
+}
 
 function parseColumnModels(dataset) {
     let content = JSON.parse(dataset.content.replace(new RegExp('\'', 'g'), "\""));
