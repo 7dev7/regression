@@ -72,10 +72,14 @@ $(document).ready(function () {
                         const description = modelData.description || '';
                         const score = percents(modelData.score);
 
+                        //TODO implement saving
                         modelsTable.append('<tr class="table-light">' +
                             '<th scope="row">' + modelData.model + '</th>' +
                             '<td>' + score + '</td>' +
-                            '<td>' + description + '</td>' +
+                            '<td>' + description + '      ' +
+                            '<button class="float-right btn btn-sm btn-success" id="save_model_btn" >' +
+                            'Сохранить' +
+                            '</button></td>' +
                             '</tr>');
                     });
 
