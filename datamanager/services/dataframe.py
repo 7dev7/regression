@@ -1,6 +1,6 @@
 import pandas as pd
 
-from datamanager.models import Dataset
+from datamanager.models import Dataset, MlModel
 
 
 def get_dataframe(dataset_id):
@@ -14,6 +14,17 @@ def update_dataframe(df, dataset_id):
     dataset.columns = df.columns.values.tolist()
     dataset.size = df.shape[0]
     dataset.save()
+
+    update_relative_models(dataset)
+
+
+def update_relative_models(dataset):
+    columns = set(dataset.columns)
+    models = MlModel.objects.filter(dataset=dataset)
+    for model in models:
+        model_columns = set(model.ds_in_cols + model.ds_out_cols)
+        if columns != model_columns:
+            model.delete()
 
 
 def get_json(df):
