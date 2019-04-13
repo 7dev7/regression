@@ -33,3 +33,11 @@ Array.prototype.max = function () {
 Array.prototype.min = function () {
     return Math.min.apply(null, this);
 };
+
+const round = (param) => {
+    return parseFloat(param).toFixed(3);
+};
+
+const percents = (param) => {
+    return Math.round(parseFloat(param) * 100) + '%'
+};

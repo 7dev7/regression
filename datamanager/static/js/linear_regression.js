@@ -244,11 +244,3 @@ function fillParamsTable(info) {
         body.append(row);
     }
 }
-
-const round = (param) => {
-    return parseFloat(param).toFixed(3);
-};
-
-const percents = (param) => {
-    return Math.round(parseFloat(param) * 100) + '%'
-};

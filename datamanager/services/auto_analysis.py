@@ -5,9 +5,15 @@ from sklearn.preprocessing import PolynomialFeatures
 
 NN_RANGE = range(2, 8)
 ACTIVATIONS = ['logistic', 'tanh', 'relu']
-NN_ITERS = 10000
+NN_ITERS = 7000
 
 POLY_DEGREE_RANGE = range(2, 10)
+
+func_mapping = {
+    'tanh': 'тангенс',
+    'logistic': 'сигмоида',
+    'relu': 'выпрямитель'
+}
 
 
 def get_models(x, y):
@@ -15,7 +21,7 @@ def get_models(x, y):
     linear = train_linear_models(x, y)
     poly = train_poly_models(x, y)
 
-    return nn_models + linear + poly
+    return list(filter(lambda m: m['score'] >= 0, nn_models + linear + poly))
 
 
 def format_models_data(models):
@@ -24,10 +30,12 @@ def format_models_data(models):
         model = model_data['model']
 
         if isinstance(model, MLPRegressor):
+            func = func_mapping.get(model.activation, '')
+
             formatted_data = {
                 'model': 'Многослойный персептрон',
-                'description': 'Функция активации = {}, '
-                               'количество нейронов на скрытом слое {}'.format(model.activation,
+                'description': 'Функция активации <em>{}</em>, '
+                               'количество нейронов на скрытом слое <em>{}</em>'.format(func,
                                                                                model.hidden_layer_sizes[0]),
                 'score': model_data['score']
             }
@@ -39,7 +47,7 @@ def format_models_data(models):
         else:
             formatted_data = {
                 'model': 'Нелинейная регрессия',
-                'description': 'Степень {}'.format(model.steps[0][1]),
+                'description': 'Степень <em>{}</em>'.format(model.steps[0][1].degree),
                 'score': model_data['score']
             }
 

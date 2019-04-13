@@ -95,7 +95,7 @@ def analysis(request):
 
     return Response({
         # TODO make configurable
-        'unique_threshold': 125,
+        'unique_threshold': 5,
         'in_columns': in_columns,
         'out_columns': out_columns,
         'in_unique': in_uniques,

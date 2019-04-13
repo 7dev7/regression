@@ -132,13 +132,28 @@
                             </div>
                             <br/>
                             <div id="modelsHolder">
-                                <h3>Пожалуйста, подождите. Идет процесс построения регрессионных моделей...</h3>
+                                <h3 id="modelsTitle">Пожалуйста, подождите. Идет процесс построения регрессионных
+                                    моделей...</h3>
                                 <br/>
-                                {#                            <div class="col-md-12">#}
-                                {#                                <button id="step4_back" type="button" class="btn btn-outline-primary">Назад</button>#}
-                                {#                                <button id="step4_next" type="button" class="btn btn-outline-success">Дальше#}
-                                {#                                </button>#}
-                                {#                            </div>#}
+                                <div id="modelsTable" style="display: none">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Модель</th>
+                                            <th scope="col">R<sup>2</sup></th>
+                                            <th scope="col">Описание</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                    <div class="col-md-12">
+                                        <button id="step4_back" type="button" class="btn btn-outline-primary">Назад
+                                        </button>
+                                        <button id="step4_next" type="button" class="btn btn-outline-success">Дальше
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

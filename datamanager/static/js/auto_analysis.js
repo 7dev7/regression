@@ -12,17 +12,22 @@ $(document).ready(function () {
     $('.step1_button').click(function () {
         step2.hide('fast');
         step3.hide('fast');
+        step4.hide('fast');
+        $('#modelsTable').hide('fast');
         step1.show('fast');
     });
 
     $('.step2_button').click(function () {
         step3.hide('fast');
         step1.hide('fast');
+        step4.hide('fast');
+        $('#modelsTable').hide('fast');
         step2.show('fast');
     });
 
     $('.step3_button').click(function () {
         step4.hide('fast');
+        $('#modelsTable').hide('fast');
         step2.hide('fast');
         step1.hide('fast');
         renderStep3();
@@ -60,13 +65,28 @@ $(document).ready(function () {
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                    //TODO track progress
-                    console.log(response);
+                    const modelsTable = $('#modelsTable tbody');
+                    modelsTable.empty();
+
+                    response.models.forEach(modelData => {
+                        const description = modelData.description || '';
+                        const score = percents(modelData.score);
+
+                        modelsTable.append('<tr class="table-light">' +
+                            '<th scope="row">' + modelData.model + '</th>' +
+                            '<td>' + score + '</td>' +
+                            '<td>' + description + '</td>' +
+                            '</tr>');
+                    });
+
+                    $('#modelsTitle').text('Построенные модели');
+                    $('#modelsTable').show('fast');
                 }
             });
         });
 
         step3.hide('fast');
+        $('#modelsTitle').text('Пожалуйста, подождите. Идет процесс построения регрессионных моделей...');
         step4.show('fast');
     });
 
@@ -81,6 +101,7 @@ $(document).ready(function () {
     });
 
     $('#step4_back').click(function () {
+        $('#modelsTable').hide('fast');
         step4.hide('fast');
         renderStep3();
     });
@@ -100,7 +121,6 @@ $(document).ready(function () {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                console.log(response);
                 $("#step3_next").prop("disabled", false);
 
                 $('#in_columns_st3 ul').empty();
@@ -137,10 +157,7 @@ $(document).ready(function () {
                 if (!analysisIsAllowed) {
                     $("#step3_next").prop("disabled", true);
                 } else {
-                    $('#step3_message_holder').append('<div class="alert alert-dismissible alert-success"> ' +
-                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
-                        '<p class="mb-0">Набор данных подходит для анализа</p> ' +
-                        '</div>');
+                    //dataset is ok case
                 }
 
                 step1.hide('fast');

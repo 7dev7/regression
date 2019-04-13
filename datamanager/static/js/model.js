@@ -35,6 +35,3 @@ $(document).ready(function () {
     });
 });
 
-const round = (param) => {
-    return parseFloat(param).toFixed(3);
-};
