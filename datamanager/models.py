@@ -38,3 +38,20 @@ class MlModel(models.Model):
     class Meta:
         verbose_name = 'Модель'
         verbose_name_plural = 'Модели'
+
+
+class Configuration(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    unique_values_threshold = models.IntegerField(null=False, blank=False, default=5)
+    p_value = models.FloatField(null=False, blank=False, default=0.05)
+    nn_hidden_min = models.IntegerField(null=False, blank=False, default=2)
+    nn_hidden_max = models.IntegerField(null=False, blank=False, default=10)
+    poly_min = models.IntegerField(null=False, blank=False, default=2)
+    poly_max = models.IntegerField(null=False, blank=False, default=10)
+
+    def __str__(self):
+        return self.owner
+
+    class Meta:
+        verbose_name = 'Конфигурация'
+        verbose_name_plural = 'Конфигурации'

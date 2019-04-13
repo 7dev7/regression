@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header-links %}
+    <script src="{% static "js/settings.js" %}"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <main role="main" class="container">
+        <div class="container-fluid">
+            <div class="page-header" id="banner">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                        <h3>Настройки по-умолчанию</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-8 justify-content-center">
+                        <h4>Граница уникальных значений:</h4>
+                        <input type="number" class="form-control" required id="thresholdInput"
+                               value="{{ settings.unique_values_threshold }}"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 justify-content-center">
+                        <h4>P-значение:</h4>
+                        <input type="text" class="form-control" required id="pValueInput"
+                               value="{{ settings.p_value }}"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 justify-content-center">
+                        <h4>Минимальное количество нейронов на скрытом слое:</h4>
+                        <input type="number" class="form-control" required id="nnMinHiddenValInput"
+                               value="{{ settings.nn_hidden_min }}"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 justify-content-center">
+                        <h4>Максимальное количество нейронов на скрытом слое:</h4>
+                        <input type="number" class="form-control" required id="nnMaxHiddenValInput"
+                               value="{{ settings.nn_hidden_max }}"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 justify-content-center">
+                        <h4>Минимальная степень в полиномиальной регрессии:</h4>
+                        <input type="number" class="form-control" required id="polyMinDegreeInput"
+                               value="{{ settings.poly_min }}"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 justify-content-center">
+                        <h4>Максимальная степень в полиномиальной регрессии:</h4>
+                        <input type="number" class="form-control" required id="polyMaxDegreeInput"
+                               value="{{ settings.poly_max }}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

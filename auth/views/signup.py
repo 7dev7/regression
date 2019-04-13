@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render_to_response
 from django.template.context_processors import csrf
 from django.views import generic
+
 from auth.views.validation.user import validate
+from datamanager.models import Configuration
 
 
 class SignUpView(generic.TemplateView):
@@ -30,5 +32,6 @@ class SignUpView(generic.TemplateView):
 
         user = auth.authenticate(username=username, password=password)
         if user is not None:
+            Configuration.objects.create(owner=user)
             auth.login(request, user)
         return redirect('/', request)
