@@ -74,10 +74,10 @@ def train_nn_models(x, y):
         for activation in ACTIVATIONS:
             regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=NN_ITERS, activation=activation,
                                      random_state=9)
-            model = regressor.fit(x, y.values.ravel())
+            model = regressor.fit(x, y)
             results.append({
                 'model': model,
-                'score': model.score(x, y.values.ravel()),
+                'score': model.score(x, y),
                 'in': x.columns.values,
                 'out': y.columns.values
             })
@@ -88,7 +88,7 @@ def train_linear_models(x, y):
     model = LinearRegression().fit(x, y)
     return [{
         'model': model,
-        'score': model.score(x, y.values.ravel()),
+        'score': model.score(x, y),
         'in': x.columns.values,
         'out': y.columns.values
     }]
@@ -101,7 +101,7 @@ def train_poly_models(x, y):
         model.fit(x, y)
         results.append({
             'model': model,
-            'score': model.score(x, y.values.ravel()),
+            'score': model.score(x, y),
             'in': x.columns.values,
             'out': y.columns.values
         })

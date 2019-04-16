@@ -23,6 +23,10 @@ $(document).ready(function () {
             success: function (response) {
                 let predicted = response.predicted;
 
+                if (!Array.isArray(predicted)) {
+                    predicted = [predicted];
+                }
+
                 let outs = $('#outputs').val();
                 let out_columns = JSON.parse(outs.replace(/'/g, '"'));
 

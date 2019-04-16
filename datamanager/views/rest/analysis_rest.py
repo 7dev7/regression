@@ -11,7 +11,7 @@ from statsmodels.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
 from datamanager.models import MlModel
-from datamanager.services.auto_analysis import get_models, format_models_data
+from datamanager.services.auto_analysis import get_models, format_models_data, func_mapping
 from datamanager.services.dataframe import get_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 
@@ -153,7 +153,7 @@ def linear_regression_info(request):
 @api_view(['POST'])
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
-def linear_predict(request):
+def predict(request):
     inputs = request.data['inputs']
     ml_model_id = request.data['ml_model_id']
 
@@ -177,6 +177,15 @@ def linear_predict(request):
         model.fit(x, y)
         res = model.predict([inputs])
         return Response({'predicted': res[0]})
+    elif model.model == 'MLP':
+        activation = model.activation
+        hidden = model.hidden_layer
+        regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=9000, activation=activation,
+                                 random_state=9)
+        model = regressor.fit(x, y)
+        res = model.predict([inputs])
+        return Response({'predicted': res[0]})
+    return Response({'error': 'Incorrect model type'})
 
 
 @api_view(['POST'])
@@ -204,7 +213,7 @@ def neural_regression_scatter(request):
         'observations': observations,
         'model': {
             'r_squared': score,
-            'activation': neural_model.activation,
+            'activation': func_mapping.get(neural_model.activation, ''),
             'hidden_layer_sizes': neural_model.hidden_layer_sizes
         }
     })

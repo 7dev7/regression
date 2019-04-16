@@ -68,6 +68,8 @@ $(document).ready(function () {
                     const modelsTable = $('#modelsTable tbody');
                     modelsTable.empty();
 
+                    $('#step4_message_holder').empty();
+
                     response.models.forEach(modelData => {
                         const description = modelData.description || '';
                         const score = percents(modelData.score);
@@ -79,7 +81,7 @@ $(document).ready(function () {
 
                         const button = $('<button class="float-right btn btn-sm btn-success">Сохранить</button>');
                         button.click(function () {
-                            handleSaveBtn(modelData);
+                            handleSaveBtn(modelData, $(this));
                         });
 
                         const buttonTd = $('<td></td>');
@@ -179,10 +181,8 @@ $(document).ready(function () {
     }
 });
 
-function handleSaveBtn(modelData) {
-    console.log(modelData);
-    let data_id = $('.datasets').find('input[type=radio]:checked').val();
-
+function handleSaveBtn(modelData, button) {
+    const data_id = $('.datasets').find('input[type=radio]:checked').val();
     const metaData = modelData.meta;
 
     $.ajax({
@@ -214,6 +214,7 @@ function handleSaveBtn(modelData) {
                     '<p class="mb-0">Ошибка при сохранении модели: ' + response.error_message + '</p> ' +
                     '</div>');
             }
+            button.remove();
         }
     });
 }

@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 
 from datamanager.models import MlModel
+from datamanager.services.auto_analysis import func_mapping
 from datamanager.services.dataframe import get_columns_meta
 
 
@@ -15,4 +16,5 @@ class ModelView(LoginRequiredMixin, generic.TemplateView):
         data['model'] = model
 
         data['meta'] = get_columns_meta(model.dataset.id, model.ds_in_cols)
+        data['activation'] = func_mapping.get(model.activation, '')
         return data
