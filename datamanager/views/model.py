@@ -15,6 +15,7 @@ class ModelView(LoginRequiredMixin, generic.TemplateView):
         model = MlModel.objects.get(pk=kwargs.get('model_id'))
         data['model'] = model
 
-        data['meta'] = get_columns_meta(model.dataset.id, model.ds_in_cols)
+        data['meta'] = get_columns_meta(model.dataset.id, model.ds_in_cols) + \
+                       get_columns_meta(model.dataset.id, model.ds_out_cols)
         data['activation'] = func_mapping.get(model.activation, '')
         return data

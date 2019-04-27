@@ -48,9 +48,10 @@ class Configuration(models.Model):
     nn_hidden_max = models.IntegerField(null=False, blank=False, default=10)
     poly_min = models.IntegerField(null=False, blank=False, default=2)
     poly_max = models.IntegerField(null=False, blank=False, default=10)
+    highlightLimit = models.IntegerField(null=False, blank=False, default=5)
 
     def __str__(self):
-        return self.owner
+        return self.owner.username
 
     class Meta:
         verbose_name = 'Конфигурация'

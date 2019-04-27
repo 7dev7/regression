@@ -14,7 +14,7 @@ class ModelsView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'models'
 
     def get_queryset(self):
-        return MlModel.objects.filter(author=self.request.user)
+        return MlModel.objects.filter(author=self.request.user).order_by('-creation_time')
 
     @staticmethod
     def post(request):
