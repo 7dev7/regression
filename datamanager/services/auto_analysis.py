@@ -7,9 +7,10 @@ from sklearn.preprocessing import PolynomialFeatures
 import datamanager.services.linear_info as lin
 import datamanager.services.validator as validator
 
-NN_RANGE = range(3, 5)
-ACTIVATIONS = ['logistic', 'tanh', 'relu']
-NN_ITERS = 7000
+NN_RANGE = range(3, 9)
+# can be logistic, tanh, relu
+ACTIVATIONS = ['logistic', 'tanh']
+NN_ITERS = 10000
 
 POLY_DEGREE_RANGE = range(2, 10)
 
