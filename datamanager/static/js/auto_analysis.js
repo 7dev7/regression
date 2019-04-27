@@ -225,6 +225,10 @@ function handleSaveBtn(modelData, button) {
                     '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
                     '<p class="mb-0">Ошибка при сохранении модели: ' + response.error_message + '</p> ' +
                     '</div>');
+
+                $([document.documentElement, document.body]).animate({
+                    scrollTop: msgHolder.offset().top - 30
+                }, 600);
             }
             button.remove();
         }
