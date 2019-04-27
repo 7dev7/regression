@@ -70,6 +70,9 @@ $(document).ready(function () {
 
                     $('#step4_message_holder').empty();
 
+                    const highlightLimit = 5;
+                    let count = 0;
+
                     response.models.forEach(modelData => {
                         let description = modelData.description || '';
                         const score = percents(modelData.score);
@@ -79,13 +82,15 @@ $(document).ready(function () {
                             const validation = formatValidationData(validationData);
                             description = description + ' <span class="text-danger">' + validation + '</span>'
                         }
+                        const rowStyle = count < highlightLimit ? "table-success" : "table-light";
 
-                        const tr = $('<tr class="table-light">' +
-                            '<th scope="row">' + modelData.model + '</th>' +
+                        const tr = $('<tr class="' + rowStyle + '">' +
+                            '<th scope="row">' + (count + 1) + '</th>' +
+                            '<td>' + modelData.model + '</td>' +
                             '<td>' + score + '</td>' +
                             '<td>' + description + '</td></tr>');
 
-                        const button = $('<button class="float-right btn btn-sm btn-success">Сохранить</button>');
+                        const button = $('<button class="float-right btn btn-sm btn-outline-primary">Сохранить</button>');
                         button.click(function () {
                             handleSaveBtn(modelData, $(this));
                         });
@@ -96,6 +101,7 @@ $(document).ready(function () {
                         tr.append(buttonTd);
 
                         modelsTable.append(tr);
+                        count++;
                     });
 
                     $('#modelsTitle').text('Построенные модели');
