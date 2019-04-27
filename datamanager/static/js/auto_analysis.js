@@ -71,8 +71,14 @@ $(document).ready(function () {
                     $('#step4_message_holder').empty();
 
                     response.models.forEach(modelData => {
-                        const description = modelData.description || '';
+                        let description = modelData.description || '';
                         const score = percents(modelData.score);
+
+                        const validationData = modelData.validation_data;
+                        if (validationData) {
+                            const validation = formatValidationData(validationData);
+                            description = description + ' <span class="text-danger">' + validation + '</span>'
+                        }
 
                         const tr = $('<tr class="table-light">' +
                             '<th scope="row">' + modelData.model + '</th>' +
@@ -314,4 +320,19 @@ function getSelectedColumns(selector) {
         values.push($(this).val());
     });
     return values;
+}
+
+function formatValidationData(validationData) {
+    if (validationData.dw && validationData.bg && validationData.bp) {
+        return "";
+    }
+
+    let result = "Внимание, нарушаются условия применимости: ";
+    if (!validationData.dw || !validationData.bg) {
+        result += "возможна автокорреляция; ";
+    }
+    if (!validationData.bp) {
+        result += "присутствует гетероскедатичность ошибок";
+    }
+    return result;
 }

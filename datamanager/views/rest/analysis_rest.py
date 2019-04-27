@@ -7,9 +7,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
-from statsmodels.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
-from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
+import datamanager.services.linear_info as lin
+import datamanager.services.validator as validator
 from datamanager.models import MlModel
 from datamanager.services.auto_analysis import get_models, format_models_data, func_mapping
 from datamanager.services.dataframe import get_dataframe
@@ -106,48 +106,15 @@ def linear_regression_info(request):
 
     predictor = sm.add_constant(df[request_x])
     model = sm.OLS(df[request_y], predictor).fit()
-    print(model.summary())
 
-    predictors = ['Смещение'] + request_x
-    bg_lm, bg_lm_pval, bg_fval, bg_fpval = acorr_breusch_godfrey(model)
+    info = lin.get_model_info(model)
+    info['predictors'] = ['Смещение'] + request_x
+    validation_result = validator.validate_linear(info)
 
-    jb, jb_pval, jb_skew, jb_kurtosis = jarque_bera(model.resid)
-
-    het_bp_lm, het_bp_lmpval, het_bp_fval, het_bp_fpval = het_breuschpagan(model.resid, model.model.exog)
-
-    info = {
-        'r_squared': model.rsquared,
-        'adj_r_squared': model.rsquared_adj,
-        'p_values': model.pvalues,
-        'params': model.params,
-        'std': model.bse,
-        'size': model.nobs,
-        'predictors': predictors,
-        't_values': model.tvalues,
-        'durbin_watson': durbin_watson(model.resid),
-        'breusch_godfrey': {
-            'lm': bg_lm,
-            'lm_pval': bg_lm_pval,
-            'fval': bg_fval,
-            'f_pval': bg_fpval
-        },
-        'jarque_bera': {
-            'jb': jb,
-            'jb_pval': jb_pval,
-            'skew': jb_skew,
-            'kurtosis': jb_kurtosis
-        },
-        'het_breuschpagan': {
-            'lm': het_bp_lm,
-            'lm_pval': het_bp_lmpval,
-            'fval': het_bp_fval,
-            'f_pval': het_bp_fpval
-        },
-        # 'linear_harvey_collier': sms.linear_harvey_collier(model),
-        'residuals': model.resid
-    }
-
-    return Response({"info": info})
+    return Response({
+        "info": info,
+        'validation_result': validation_result
+    })
 
 
 @api_view(['POST'])
@@ -233,7 +200,7 @@ def auto_analysis(request):
 
     models = get_models(x, y)
     models.sort(key=lambda m: m['score'], reverse=True)
-    formatted = format_models_data(models)
+    formatted = format_models_data(models, df)
 
     return Response({'models': formatted})
 

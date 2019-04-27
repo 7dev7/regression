@@ -1,7 +1,11 @@
+import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
+
+import datamanager.services.linear_info as lin
+import datamanager.services.validator as validator
 
 NN_RANGE = range(3, 5)
 ACTIVATIONS = ['logistic', 'tanh', 'relu']
@@ -24,7 +28,7 @@ def get_models(x, y):
     return list(filter(lambda m: m['score'] >= 0, nn_models + linear + poly))
 
 
-def format_models_data(models):
+def format_models_data(models, df):
     result = []
     for model_data in models:
         model = model_data['model']
@@ -44,11 +48,13 @@ def format_models_data(models):
                 }
             }
         elif isinstance(model, LinearRegression):
+            validation_data = __get_linear_validation_data(model_data, df)
             formatted_data = {
                 'model': 'Линейная регрессия',
                 'meta': {
                     'type': 'OLS'
-                }
+                },
+                'validation_data': validation_data
             }
         else:
             formatted_data = {
@@ -66,6 +72,14 @@ def format_models_data(models):
 
         result.append(formatted_data)
     return result
+
+
+def __get_linear_validation_data(model, df):
+    predictor = sm.add_constant(df[model['in']])
+    model = sm.OLS(df[model['out']], predictor).fit()
+
+    info = lin.get_model_info(model)
+    return validator.validate_linear(info)
 
 
 def train_nn_models(x, y):

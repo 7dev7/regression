@@ -150,10 +150,7 @@ function refillRegressionInfo() {
             breuschPagan.text(percents(responseInfo.info.het_breuschpagan.f_pval));
             breuschPagan.attr('data-original-title', responseInfo.info.het_breuschpagan.f_pval);
 
-
-            validateDwCriteria(responseInfo.info.durbin_watson);
-            validateBgCriteria(responseInfo.info.breusch_godfrey);
-            validateHetBpCriteria(responseInfo.info.het_breuschpagan);
+            showValidationResults(responseInfo);
 
             fillParamsTable(responseInfo.info);
         }
@@ -179,45 +176,26 @@ function formatRegressionEquation(info) {
     return equation;
 }
 
-function validateDwCriteria(dwCriteria) {
+function showValidationResults(responseInfo) {
     messageHolder.find('div').remove();
 
-    if (dwCriteria > 1.5 && dwCriteria < 2.5) {
-        messageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
-            '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
-            '<p class="mb-0">Критерий Дарбина - Уотсона соблюдается</p> ' +
-            '</div>');
-    } else {
+    const validationResult = responseInfo.validation_result;
+
+    if (!validationResult.dw) {
         messageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
             '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
             '<p class="mb-0">Критерий Дарбина - Уотсона не соблюдается, возможна автокорреляция остатков регрессионной модели</p> ' +
             '</div>');
     }
-}
 
-function validateBgCriteria(bgCriteria) {
-    let fPValue = parseFloat(bgCriteria.f_pval);
-    if (fPValue > 0.05) {
-        messageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
-            '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
-            '<p class="mb-0">Тест Бройша - Годфри соблюдается</p> ' +
-            '</div>');
-    } else {
+    if (!validationResult.bg) {
         messageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
             '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
             '<p class="mb-0">Тест Бройша - Годфри не соблюдается, возможна автокорреляция остатков регрессионной модели</p> ' +
             '</div>');
     }
-}
 
-function validateHetBpCriteria(hetBpCriteria) {
-    let fPValue = parseFloat(hetBpCriteria.f_pval);
-    if (fPValue < 0.05) {
-        messageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
-            '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
-            '<p class="mb-0">Гетероскедатичность случайных ошибок отсутствует</p> ' +
-            '</div>');
-    } else {
+    if (!validationResult.bp) {
         messageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
             '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
             '<p class="mb-0">Присутствует гетероскедатичность случайных ошибок. Это может привести к неэффективности построенных оценок.</p> ' +
