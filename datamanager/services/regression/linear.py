@@ -3,22 +3,30 @@ from sklearn.linear_model import LinearRegression
 from statsmodels.sandbox.stats.diagnostic import het_breuschpagan, acorr_breusch_godfrey
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
+import datamanager.services.dataframe as dataframe
 import datamanager.services.scatter as sct
 import datamanager.services.validator as validator
 
 
-def train_linear_model(x, y, x_name, y_name):
+def linear_model_scatter(x_name, y_name, data_id):
+    df = dataframe.get_dataframe(data_id)
+
+    x = df[[x_name]]
+    y = df[[y_name]]
+
     model = LinearRegression().fit(x, y)
     scatter_data = sct.get_scatter_data(model, x, y, x_name, y_name)
     return scatter_data
 
 
-def train_linear_model_enhanced(df, x_name, y_name):
-    predictor = sm.add_constant(df[x_name])
-    model = sm.OLS(df[y_name], predictor).fit()
+def linear_model_info(x_names, y_names, data_id):
+    df = dataframe.get_dataframe(data_id)
+
+    predictor = sm.add_constant(df[x_names])
+    model = sm.OLS(df[y_names], predictor).fit()
 
     info = get_model_info(model)
-    info['predictors'] = ['Смещение'] + x_name
+    info['predictors'] = ['Смещение'] + x_names
     validation_result = validator.validate_linear(info)
     return {
         "info": info,

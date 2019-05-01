@@ -20,9 +20,11 @@ from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
 def linear_regression_scatter(request):
-    x, y, request_x, request_y, df = get_data(request)
+    x_name = request.data['x']
+    y_name = request.data['y']
+    data_id = request.data['data_id']
 
-    model_data = lin_regr.train_linear_model(x, y, request_x, request_y)
+    model_data = lin_regr.linear_model_scatter(x_name, y_name, data_id)
     return Response(model_data)
 
 
@@ -30,12 +32,11 @@ def linear_regression_scatter(request):
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
 def linear_regression_info(request):
-    request_x = request.data['x']
-    request_y = request.data['y']
+    x_names = request.data['x']
+    y_names = request.data['y']
     data_id = request.data['data_id']
-    df = get_dataframe(data_id)
 
-    model_data = lin_regr.train_linear_model_enhanced(df, request_x, request_y)
+    model_data = lin_regr.linear_model_info(x_names, y_names, data_id)
     return Response(model_data)
 
 
