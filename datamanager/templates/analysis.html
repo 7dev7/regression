@@ -11,6 +11,7 @@
     <script src="{% static "js/polynomial.js" %}"></script>
     <script src="{% static "js/poly_info_tab.js" %}"></script>
     <script src="{% static "js/neural_scatter.js" %}"></script>
+    <script src="{% static "js/neural_info.js" %}"></script>
     <script src="{% static "js/forest.js" %}"></script>
     <script src="{% static "js/analysis_manager.js" %}"></script>
     <script>
@@ -56,9 +57,16 @@
                                id="poly_regr_info_tab">Параметры</a>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#neural_regression" id="neural_regr_tab">Нейронная
-                            сеть</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                           aria-haspopup="true" aria-expanded="false">Нейронная сеть</a>
+                        <div class="dropdown-menu" x-placement="bottom-start"
+                             style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 40px, 0px);">
+                            <a class="dropdown-item" data-toggle="tab" href="#neural_regression_scatter"
+                               id="neural_regr_scatter_tab">Диаграмма рассеяния</a>
+                            <a class="dropdown-item" data-toggle="tab" href="#neural_regression_info"
+                               id="neural_regr_info_tab">Параметры</a>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#forest" id="forest_tab">Случайный лес</a>
@@ -329,31 +337,54 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="neural_regression">
+                    <div class="tab-pane fade" id="neural_regression_scatter">
                         <br/>
                         <div>
                             <div class="float-left">
-                                <label for="in_select4" class="control-label">X: &nbsp;&nbsp;</label>
+                                <label for="in_select_neural_scatter" class="control-label">X: &nbsp;&nbsp;</label>
                                 <select class="selectpicker" data-live-search="true" data-done-button="true"
-                                        id="in_select4">
+                                        id="in_select_neural_scatter">
                                 </select>
                             </div>
                             <div class="float-right">
-                                <label for="out_select4" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <label for="out_select_neural_scatter" class="control-label">Y: &nbsp;&nbsp;</label>
                                 <select class="selectpicker" data-live-search="true" data-done-button="true"
-                                        id="out_select4">
+                                        id="out_select_neural_scatter">
                                 </select>
                             </div>
                         </div>
                         <canvas id="neuralScatter" width="400" height="400"></canvas>
+                    </div>
+
+                    <div class="tab-pane fade" id="neural_regression_info">
                         <br/>
-                        <hr/>
-                        <br/>
-                        <div class="row text-center">
-                            <div class="col-md-12">
-                                <h3>Параметры</h3>
+                        <div id="neuralMessageHolder">
+                        </div>
+                        <div>
+                            <div class="float-left">
+                                <label for="in_select_neural_info" class="control-label">X: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="in_select_neural_info"
+                                        multiple="multiple">
+                                </select>&nbsp;&nbsp;&nbsp;
+                                {# TODO implement saving #}
+                                <button class="float-right btn btn-success" id="save_neural_model_btn"
+                                        data-toggle="tooltip"
+                                        data-placement="right" title=""
+                                        data-original-title="Сохранение построенной регрессионной модели в список пользовательских моделей.">
+                                    Сохранить модель
+                                </button>
+                            </div>
+                            <div class="float-right">
+                                <label for="out_select_neural_info" class="control-label">Y: &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-live-search="true" data-done-button="true"
+                                        id="out_select_neural_info" multiple="multiple">
+                                </select>
                             </div>
                         </div>
+                        <br/>
+                        <br/>
+                        <br/>
                         <br/>
                         <div class="row text-center">
                             <div class="col-md-6">
@@ -370,8 +401,8 @@
 
                             <div class="col-md-6">
                                 <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Функция, вычисляющая выходной сигнал искусственного нейрона. В качестве аргумента принимает сигнал Y, получаемый на выходе входного сумматора Sigma.">
-                                    Функция активации</h5>
+                                    data-original-title="">
+                                    Функция активации: </h5>
                                 <hr/>
                             </div>
                             <div class="col-md-6">
@@ -382,8 +413,8 @@
 
                             <div class="col-md-6">
                                 <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Нейронная сеть содержит слой скрытых нейронов, не являющихся частью входа или выхода сети. Эти нейроны позволяют сети обучаться решению сложных задач, последовательно извлекая наиболее важные признаки из входного образа.">
-                                    Количество нейронов на скрытом слое</h5>
+                                    data-original-title="">
+                                    Колличество нейронов на скрытом слое: </h5>
                                 <hr/>
                             </div>
                             <div class="col-md-6">

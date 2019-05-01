@@ -29,6 +29,9 @@ urlpatterns = [
          name='analysis_nonlinear_regr_info_rest'),
 
     path('api/analysis/info/neural/', analysis_rest.neural_regression_scatter,
+         name='analysis_neural_regr_scatter_rest'),
+
+    path('api/analysis/info/neural/info/', analysis_rest.neural_regression_info,
          name='analysis_neural_regr_info_rest'),
 
     path('api/analysis/info/forest/', analysis_rest.forest_regression,

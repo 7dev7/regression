@@ -8,10 +8,11 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
 import datamanager.services.regression.linear as lin_regr
+import datamanager.services.regression.neural as neural_regr
 import datamanager.services.regression.poly as poly_regr
 import datamanager.services.scatter as sct
 from datamanager.models import MlModel
-from datamanager.services.auto_analysis import get_models, format_models_data, func_mapping
+from datamanager.services.auto_analysis import get_models, format_models_data
 from datamanager.services.dataframe import get_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 
@@ -108,18 +109,26 @@ def predict(request):
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
 def neural_regression_scatter(request):
-    x, y, request_x, request_y, df = get_data(request)
+    x_name = request.data['x']
+    y_name = request.data['y']
+    data_id = request.data['data_id']
 
-    neural_model, score = find_best_model(x, y)
+    # TODO add params to request
+    model_data = neural_regr.neural_model_scatter(x_name, y_name, data_id)
+    return Response(model_data)
 
-    scatter_data = sct.get_scatter_data(neural_model, x, y, request_x, request_y, scalar=True)
-    response = scatter_data
-    response['model'] = {
-        'r_squared': score,
-        'activation': func_mapping.get(neural_model.activation, ''),
-        'hidden_layer_sizes': neural_model.hidden_layer_sizes
-    }
-    return Response(response)
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def neural_regression_info(request):
+    x_names = request.data['x']
+    y_names = request.data['y']
+    data_id = request.data['data_id']
+
+    # TODO add params to request
+    model_data = neural_regr.neural_model_info(x_names, y_names, data_id)
+    return Response(model_data)
 
 
 @api_view(['POST'])
