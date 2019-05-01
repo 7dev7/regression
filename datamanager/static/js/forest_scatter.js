@@ -1,48 +1,44 @@
 let forestScatterTabSource = {};
 let forestScatterTabTarget = {};
 let forestChart = {};
-let forestRsquared = {};
-let forestEstimators = {};
 
-let forestInitialized = false;
+let forestScatterInitialized = false;
 
-function handleEnterForestTab() {
-    if (forestInitialized) return;
+function handleEnterForestScatterTab() {
+    if (forestScatterInitialized) return;
     Pace.track(function () {
-        forestScatterTabSource = $('#in_select5');
-        forestScatterTabTarget = $('#out_select5');
-        forestRsquared = $('#forest_r_squared');
-        forestEstimators = $('#forest_estimators');
+        forestScatterTabSource = $('#in_select_forest_scatter');
+        forestScatterTabTarget = $('#out_select_forest_scatter');
 
         fillOptions(columns, forestScatterTabSource);
         fillOptions(columns, forestScatterTabTarget);
         forestScatterTabTarget.find(':last').attr("selected", "selected");
         forestScatterTabTarget.selectpicker('refresh');
 
-        initForestEvents();
+        initForestScatterEvents();
 
         forestChart = initScatter("forestScatter");
 
-        recalculateForestRegression();
+        recalculateForestScatterRegression();
     });
-    forestInitialized = true;
+    forestScatterInitialized = true;
 }
 
-function initForestEvents() {
+function initForestScatterEvents() {
     forestScatterTabSource.on('changed.bs.select', function () {
         Pace.track(function () {
-            recalculateForestRegression();
+            recalculateForestScatterRegression();
         });
     });
 
     forestScatterTabTarget.on('changed.bs.select', function () {
         Pace.track(function () {
-            recalculateForestRegression();
+            recalculateForestScatterRegression();
         });
     });
 }
 
-function recalculateForestRegression() {
+function recalculateForestScatterRegression() {
     let x = getSelectedOption(forestScatterTabSource);
     let y = getSelectedOption(forestScatterTabTarget);
 
@@ -58,16 +54,6 @@ function recalculateForestRegression() {
         dataType: "json",
         success: function (responseInfo) {
             updateScatter(forestChart, responseInfo);
-            updateForestInfo(responseInfo);
         }
     });
-}
-
-function updateForestInfo(responseInfo) {
-    let model = responseInfo.model;
-
-    forestRsquared.text(percents(model.r_squared));
-    forestRsquared.attr('data-original-title', model.r_squared);
-
-    forestEstimators.text(model.estimators);
 }

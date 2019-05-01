@@ -72,11 +72,9 @@ function refillNeuralRegressionInfo() {
 }
 
 function updateNeuralInfo(responseInfo) {
-    let model = responseInfo;
+    neuralRsquared.text(percents(responseInfo.r_squared));
+    neuralRsquared.attr('data-original-title', responseInfo.r_squared);
 
-    neuralRsquared.text(percents(model.r_squared));
-    neuralRsquared.attr('data-original-title', model.r_squared);
-
-    activationFunc.text(model.activation);
-    hiddenNeurons.text(model.hidden_layer_sizes);
+    activationFunc.text(responseInfo.activation);
+    hiddenNeurons.text(responseInfo.hidden_layer_sizes);
 }

@@ -34,8 +34,11 @@ urlpatterns = [
     path('api/analysis/info/neural/info/', analysis_rest.neural_regression_info,
          name='analysis_neural_regr_info_rest'),
 
-    path('api/analysis/info/forest/', analysis_rest.forest_regression,
-         name='analysis_forest_regression_rest'),
+    path('api/analysis/info/forest/', analysis_rest.forest_regression_scatter,
+         name='analysis_forest_regression_scatter_rest'),
+
+    path('api/analysis/info/forest/info/', analysis_rest.forest_regression_info,
+         name='analysis_forest_regression_info_rest'),
 
     path('api/analysis/predict/', analysis_rest.predict,
          name='analysis_predict'),

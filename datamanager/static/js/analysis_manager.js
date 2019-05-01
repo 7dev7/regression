@@ -4,7 +4,8 @@ $(document).ready(function () {
     let polyRegrInfoTab = $('#poly_regr_info_tab');
     let neuralRegrScatterTab = $('#neural_regr_scatter_tab');
     let neuralRegrInfoTab = $('#neural_regr_info_tab');
-    let forestTab = $('#forest_tab');
+    let forestScatterTab = $('#forest_regr_scatter_tab');
+    let forestInfoTab = $('#forest_regr_info_tab');
 
     linearRegrTab.click(function () {
         handleEnterRegressionTab();
@@ -26,7 +27,11 @@ $(document).ready(function () {
         handleEnterNeuralInfoTab();
     });
 
-    forestTab.click(function () {
-        handleEnterForestTab();
+    forestScatterTab.click(function () {
+        handleEnterForestScatterTab();
+    });
+
+    forestInfoTab.click(function () {
+        handleEnterForestInfoTab();
     });
 });

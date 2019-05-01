@@ -1,16 +1,15 @@
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
+import datamanager.services.regression.forest as forest_regr
 import datamanager.services.regression.linear as lin_regr
 import datamanager.services.regression.neural as neural_regr
 import datamanager.services.regression.poly as poly_regr
-import datamanager.services.scatter as sct
 from datamanager.models import MlModel
 from datamanager.services.auto_analysis import get_models, format_models_data
 from datamanager.services.dataframe import get_dataframe
@@ -134,20 +133,25 @@ def neural_regression_info(request):
 @api_view(['POST'])
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
-def forest_regression(request):
-    x, y, request_x, request_y, df = get_data(request)
+def forest_regression_scatter(request):
+    x_name = request.data['x']
+    y_name = request.data['y']
+    data_id = request.data['data_id']
 
-    forest = RandomForestRegressor(n_estimators=150, random_state=0, max_depth=2)
-    forest.fit(x, y)
-    score = forest.score(x, y)
+    model_data = forest_regr.forest_model_scatter(x_name, y_name, data_id)
+    return Response(model_data)
 
-    scatter_data = sct.get_scatter_data(forest, x, y, request_x, request_y, scalar=True)
-    response = scatter_data
-    response['model'] = {
-        'r_squared': score,
-        'estimators': forest.n_estimators
-    }
-    return Response(response)
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def forest_regression_info(request):
+    x_names = request.data['x']
+    y_names = request.data['y']
+    data_id = request.data['data_id']
+
+    model_data = forest_regr.forest_model_info(x_names, y_names, data_id)
+    return Response(model_data)
 
 
 @api_view(['POST'])
@@ -167,32 +171,3 @@ def auto_analysis(request):
     formatted = format_models_data(models, df)
 
     return Response({'models': formatted})
-
-
-def find_best_model(x, y):
-    results = train_models(range(3, 4), 9000, ['logistic', 'tanh'], x, y)
-    results.sort(key=lambda r: r['score'], reverse=True)
-    return results[0]['model'], results[0]['score']
-
-
-def train_models(hidden_range, iters, activations, x, y):
-    results = []
-    for hidden in hidden_range:
-        for activation in activations:
-            regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=iters, activation=activation,
-                                     random_state=9)
-            model = regressor.fit(x, y.values.ravel())
-            results.append({'model': model, 'score': model.score(x, y.values.ravel())})
-    return results
-
-
-def get_data(request):
-    request_x = request.data['x']
-    request_y = request.data['y']
-    data_id = request.data['data_id']
-    df = get_dataframe(data_id)
-
-    x = df[[request_x]]
-    y = df[[request_y]]
-
-    return x, y, request_x, request_y, df
