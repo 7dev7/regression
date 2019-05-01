@@ -1,4 +1,5 @@
 import statsmodels.api as sm
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
@@ -7,12 +8,13 @@ from sklearn.preprocessing import PolynomialFeatures
 import datamanager.services.linear_info as lin
 import datamanager.services.validator as validator
 
-NN_RANGE = range(3, 9)
+NN_RANGE = range(3, 4)
 # can be logistic, tanh, relu
 ACTIVATIONS = ['logistic', 'tanh']
 NN_ITERS = 10000
 
 POLY_DEGREE_RANGE = range(2, 10)
+TREE_RANGE = range(50, 150, 20)
 
 func_mapping = {
     'tanh': 'тангенс',
@@ -25,8 +27,9 @@ def get_models(x, y):
     nn_models = train_nn_models(x, y)
     linear = train_linear_models(x, y)
     poly = train_poly_models(x, y)
+    forest = train_random_forest_models(x, y)
 
-    return list(filter(lambda m: m['score'] >= 0, nn_models + linear + poly))
+    return list(filter(lambda m: m['score'] >= 0, nn_models + linear + poly + forest))
 
 
 def format_models_data(models, df):
@@ -56,6 +59,14 @@ def format_models_data(models, df):
                     'type': 'OLS'
                 },
                 'validation_data': validation_data
+            }
+        elif isinstance(model, RandomForestRegressor):
+            formatted_data = {
+                'model': 'Случайный лес',
+                'description': 'Количество деревьев: {}'.format(model.n_estimators),
+                'meta': {
+                    'type': 'Forest'
+                }
             }
         else:
             formatted_data = {
@@ -117,6 +128,22 @@ def train_poly_models(x, y):
         results.append({
             'model': model,
             'score': model.score(x, y),
+            'in': x.columns.values,
+            'out': y.columns.values
+        })
+    return results
+
+
+def train_random_forest_models(x, y):
+    results = []
+
+    for estimator in TREE_RANGE:
+        forest = RandomForestRegressor(n_estimators=estimator, random_state=0, max_depth=2)
+        forest.fit(x, y)
+
+        results.append({
+            'model': forest,
+            'score': forest.score(x, y),
             'in': x.columns.values,
             'out': y.columns.values
         })
