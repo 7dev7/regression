@@ -19,7 +19,7 @@ def poly_model_scatter(x_name, y_name, data_id, degree):
     return scatter_data
 
 
-def train_poly_model_enhanced(x_names, y_names, data_id, degree):
+def poly_model_info(x_names, y_names, data_id, degree):
     df = dataframe.get_dataframe(data_id)
 
     x = df[x_names]

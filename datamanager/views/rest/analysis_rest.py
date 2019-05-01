@@ -62,7 +62,7 @@ def poly_regression_info(request):
     data_id = request.data['data_id']
     degree = int(request.data['degree'])
 
-    model_data = poly_regr.train_poly_model_enhanced(x_names, y_names, data_id, degree)
+    model_data = poly_regr.poly_model_info(x_names, y_names, data_id, degree)
     return Response(model_data)
 
 
