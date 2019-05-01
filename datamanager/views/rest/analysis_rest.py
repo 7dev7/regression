@@ -8,6 +8,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
 import datamanager.services.regression.linear as lin_regr
+import datamanager.services.regression.poly as poly_regr
 import datamanager.services.scatter as sct
 from datamanager.models import MlModel
 from datamanager.services.auto_analysis import get_models, format_models_data, func_mapping
@@ -42,45 +43,26 @@ def linear_regression_info(request):
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
 def polynomial_regression_scatter(request):
-    x, y, request_x, request_y, df = get_data(request)
+    x_name = request.data['x']
+    y_name = request.data['y']
+    data_id = request.data['data_id']
     degree = int(request.data['degree'])
 
-    model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
-    model.fit(x, y)
-
-    scatter_data = sct.get_scatter_data(model, x, y, request_x, request_y)
-    response = scatter_data
-    response['model'] = {
-        'r_squared': model.score(x, y),
-        'degree': degree,
-        'coefs': model.steps[1][1].coef_[0][1:],
-        'intercept': model.steps[1][1].intercept_,
-    }
-    return Response(response)
+    model_data = poly_regr.poly_model_scatter(x_name, y_name, data_id, degree)
+    return Response(model_data)
 
 
 @api_view(['POST'])
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
 def poly_regression_info(request):
-    request_x = request.data['x']
-    request_y = request.data['y']
+    x_names = request.data['x']
+    y_names = request.data['y']
     data_id = request.data['data_id']
-    df = get_dataframe(data_id)
-
-    x = df[request_x]
-    y = df[request_y]
     degree = int(request.data['degree'])
 
-    model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
-    model.fit(x, y)
-
-    return Response({
-        'r_squared': model.score(x, y),
-        'degree': degree,
-        'coefs': model.steps[1][1].coef_[0][1:],
-        'intercept': model.steps[1][1].intercept_,
-    })
+    model_data = poly_regr.train_poly_model_enhanced(x_names, y_names, data_id, degree)
+    return Response(model_data)
 
 
 @api_view(['POST'])
