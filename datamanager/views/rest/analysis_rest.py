@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, parser_classes, authentication_c
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from sklearn import preprocessing
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
@@ -182,6 +183,34 @@ def neural_regression_scatter(request):
             'r_squared': score,
             'activation': func_mapping.get(neural_model.activation, ''),
             'hidden_layer_sizes': neural_model.hidden_layer_sizes
+        }
+    })
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def forest_regression(request):
+    x, y, request_x, request_y, df = get_data(request)
+
+    forest = RandomForestRegressor(n_estimators=150, random_state=0, max_depth=2)
+    forest.fit(x, y)
+    predictions = forest.predict(x)
+    score = forest.score(x, y)
+
+    size = x.shape[0]
+
+    labels = [x.iloc[i][request_x] for i in range(0, size)]
+
+    line_points = [{'x': labels[i], 'y': predictions[i]} for i in range(0, size)]
+    observations = [{'x': labels[i], 'y': y.iloc[i][request_y]} for i in range(0, 200)]
+
+    return Response({
+        'predictors': labels,
+        'linePoints': line_points,
+        'observations': observations,
+        'model': {
+            'r_squared': score
         }
     })
 
