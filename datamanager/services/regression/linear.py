@@ -1,5 +1,29 @@
-from statsmodels.sandbox.stats.diagnostic import acorr_breusch_godfrey, het_breuschpagan
-from statsmodels.stats.stattools import jarque_bera, durbin_watson
+import statsmodels.api as sm
+from sklearn.linear_model import LinearRegression
+from statsmodels.sandbox.stats.diagnostic import het_breuschpagan, acorr_breusch_godfrey
+from statsmodels.stats.stattools import durbin_watson, jarque_bera
+
+import datamanager.services.scatter as sct
+import datamanager.services.validator as validator
+
+
+def train_linear_model(x, y, x_name, y_name):
+    model = LinearRegression().fit(x, y)
+    scatter_data = sct.get_scatter_data(model, x, y, x_name, y_name)
+    return scatter_data
+
+
+def train_linear_model_enhanced(df, x_name, y_name):
+    predictor = sm.add_constant(df[x_name])
+    model = sm.OLS(df[y_name], predictor).fit()
+
+    info = get_model_info(model)
+    info['predictors'] = ['Смещение'] + x_name
+    validation_result = validator.validate_linear(info)
+    return {
+        "info": info,
+        'validation_result': validation_result
+    }
 
 
 def get_model_info(model):

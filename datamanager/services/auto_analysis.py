@@ -5,10 +5,10 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
-import datamanager.services.linear_info as lin
+import datamanager.services.regression.linear as lin_regr
 import datamanager.services.validator as validator
 
-NN_RANGE = range(3, 4)
+NN_RANGE = range(3, 9)
 # can be logistic, tanh, relu
 ACTIVATIONS = ['logistic', 'tanh']
 NN_ITERS = 10000
@@ -90,7 +90,7 @@ def __get_linear_validation_data(model, df):
     predictor = sm.add_constant(df[model['in']])
     model = sm.OLS(df[model['out']], predictor).fit()
 
-    info = lin.get_model_info(model)
+    info = lin_regr.get_model_info(model)
     return validator.validate_linear(info)
 
 

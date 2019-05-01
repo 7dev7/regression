@@ -1,4 +1,3 @@
-import statsmodels.api as sm
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
@@ -8,9 +7,8 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
-import datamanager.services.linear_info as lin
+import datamanager.services.regression.linear as lin_regr
 import datamanager.services.scatter as sct
-import datamanager.services.validator as validator
 from datamanager.models import MlModel
 from datamanager.services.auto_analysis import get_models, format_models_data, func_mapping
 from datamanager.services.dataframe import get_dataframe
@@ -23,9 +21,21 @@ from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 def linear_regression_scatter(request):
     x, y, request_x, request_y, df = get_data(request)
 
-    model = LinearRegression().fit(x, y)
-    scatter_data = sct.get_scatter_data(model, x, y, request_x, request_y)
-    return Response(scatter_data)
+    model_data = lin_regr.train_linear_model(x, y, request_x, request_y)
+    return Response(model_data)
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def linear_regression_info(request):
+    request_x = request.data['x']
+    request_y = request.data['y']
+    data_id = request.data['data_id']
+    df = get_dataframe(data_id)
+
+    model_data = lin_regr.train_linear_model_enhanced(df, request_x, request_y)
+    return Response(model_data)
 
 
 @api_view(['POST'])
@@ -70,29 +80,6 @@ def poly_regression_info(request):
         'degree': degree,
         'coefs': model.steps[1][1].coef_[0][1:],
         'intercept': model.steps[1][1].intercept_,
-    })
-
-
-@api_view(['POST'])
-@parser_classes((JSONParser,))
-@authentication_classes((CsrfExemptSessionAuthentication,))
-def linear_regression_info(request):
-    request_x = request.data['x']
-    request_y = request.data['y']
-    data_id = request.data['data_id']
-
-    df = get_dataframe(data_id)
-
-    predictor = sm.add_constant(df[request_x])
-    model = sm.OLS(df[request_y], predictor).fit()
-
-    info = lin.get_model_info(model)
-    info['predictors'] = ['Смещение'] + request_x
-    validation_result = validator.validate_linear(info)
-
-    return Response({
-        "info": info,
-        'validation_result': validation_result
     })
 
 
