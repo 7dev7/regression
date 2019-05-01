@@ -2,7 +2,6 @@ import statsmodels.api as sm
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from sklearn import preprocessing
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
@@ -10,6 +9,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
 import datamanager.services.linear_info as lin
+import datamanager.services.scatter as sct
 import datamanager.services.validator as validator
 from datamanager.models import MlModel
 from datamanager.services.auto_analysis import get_models, format_models_data, func_mapping
@@ -24,20 +24,8 @@ def linear_regression_scatter(request):
     x, y, request_x, request_y, df = get_data(request)
 
     model = LinearRegression().fit(x, y)
-
-    size = x.shape[0]
-
-    labels = [x.iloc[i][request_x] for i in range(0, size)]
-    predictions = model.predict(x)
-
-    line_points = [{'x': labels[i], 'y': predictions[i][0]} for i in range(0, size)]
-    observations = [{'x': labels[i], 'y': y.iloc[i][request_y]} for i in range(0, 200)]
-
-    return Response({
-        'predictors': labels,
-        'linePoints': line_points,
-        'observations': observations
-    })
+    scatter_data = sct.get_scatter_data(model, x, y, request_x, request_y)
+    return Response(scatter_data)
 
 
 @api_view(['POST'])
@@ -50,25 +38,15 @@ def polynomial_regression_scatter(request):
     model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
     model.fit(x, y)
 
-    size = x.shape[0]
-
-    labels = [x.iloc[i][request_x] for i in range(0, size)]
-    predictions = model.predict(x)
-
-    line_points = [{'x': labels[i], 'y': predictions[i][0]} for i in range(0, size)]
-    observations = [{'x': labels[i], 'y': y.iloc[i][request_y]} for i in range(0, 200)]
-
-    return Response({
-        'predictors': labels,
-        'linePoints': line_points,
-        'observations': observations,
-        'model': {
-            'r_squared': model.score(x, y),
-            'degree': degree,
-            'coefs': model.steps[1][1].coef_[0][1:],
-            'intercept': model.steps[1][1].intercept_,
-        }
-    })
+    scatter_data = sct.get_scatter_data(model, x, y, request_x, request_y)
+    response = scatter_data
+    response['model'] = {
+        'r_squared': model.score(x, y),
+        'degree': degree,
+        'coefs': model.steps[1][1].coef_[0][1:],
+        'intercept': model.steps[1][1].intercept_,
+    }
+    return Response(response)
 
 
 @api_view(['POST'])
@@ -162,29 +140,16 @@ def predict(request):
 def neural_regression_scatter(request):
     x, y, request_x, request_y, df = get_data(request)
 
-    min_max_scaler = preprocessing.MinMaxScaler()
-    x_normalized = min_max_scaler.fit_transform(x, y)
+    neural_model, score = find_best_model(x, y)
 
-    neural_model, score = find_best_model(x_normalized, y)
-    predictions = neural_model.predict(x_normalized)
-
-    size = x.shape[0]
-
-    labels = [x.iloc[i][request_x] for i in range(0, size)]
-
-    line_points = [{'x': labels[i], 'y': predictions[i]} for i in range(0, size)]
-    observations = [{'x': labels[i], 'y': y.iloc[i][request_y]} for i in range(0, 200)]
-
-    return Response({
-        'predictors': labels,
-        'linePoints': line_points,
-        'observations': observations,
-        'model': {
-            'r_squared': score,
-            'activation': func_mapping.get(neural_model.activation, ''),
-            'hidden_layer_sizes': neural_model.hidden_layer_sizes
-        }
-    })
+    scatter_data = sct.get_scatter_data(neural_model, x, y, request_x, request_y, scalar=True)
+    response = scatter_data
+    response['model'] = {
+        'r_squared': score,
+        'activation': func_mapping.get(neural_model.activation, ''),
+        'hidden_layer_sizes': neural_model.hidden_layer_sizes
+    }
+    return Response(response)
 
 
 @api_view(['POST'])
@@ -195,25 +160,15 @@ def forest_regression(request):
 
     forest = RandomForestRegressor(n_estimators=150, random_state=0, max_depth=2)
     forest.fit(x, y)
-    predictions = forest.predict(x)
     score = forest.score(x, y)
 
-    size = x.shape[0]
-
-    labels = [x.iloc[i][request_x] for i in range(0, size)]
-
-    line_points = [{'x': labels[i], 'y': predictions[i]} for i in range(0, size)]
-    observations = [{'x': labels[i], 'y': y.iloc[i][request_y]} for i in range(0, 200)]
-
-    return Response({
-        'predictors': labels,
-        'linePoints': line_points,
-        'observations': observations,
-        'model': {
-            'r_squared': score,
-            'estimators': forest.n_estimators
-        }
-    })
+    scatter_data = sct.get_scatter_data(forest, x, y, request_x, request_y, scalar=True)
+    response = scatter_data
+    response['model'] = {
+        'r_squared': score,
+        'estimators': forest.n_estimators
+    }
+    return Response(response)
 
 
 @api_view(['POST'])
