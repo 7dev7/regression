@@ -58,12 +58,12 @@ function recalculateForestRegression() {
         dataType: "json",
         success: function (responseInfo) {
             updateScatter(forestChart, responseInfo);
-            updateInfo(responseInfo);
+            updateForestInfo(responseInfo);
         }
     });
 }
 
-function updateInfo(responseInfo) {
+function updateForestInfo(responseInfo) {
     let model = responseInfo.model;
 
     forestRsquared.text(percents(model.r_squared));

@@ -60,12 +60,12 @@ function recalculateNeuralRegression() {
         dataType: "json",
         success: function (responseInfo) {
             updateScatter(neuralChart, responseInfo);
-            updateInfo(responseInfo);
+            updateNeuralInfo(responseInfo);
         }
     });
 }
 
-function updateInfo(responseInfo) {
+function updateNeuralInfo(responseInfo) {
     let model = responseInfo.model;
 
     neuralRsquared.text(percents(model.r_squared));
