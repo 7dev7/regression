@@ -2,6 +2,7 @@ let forestScatterTabSource = {};
 let forestScatterTabTarget = {};
 let forestChart = {};
 let forestRsquared = {};
+let forestEstimators = {};
 
 let forestInitialized = false;
 
@@ -11,6 +12,7 @@ function handleEnterForestTab() {
         forestScatterTabSource = $('#in_select5');
         forestScatterTabTarget = $('#out_select5');
         forestRsquared = $('#forest_r_squared');
+        forestEstimators = $('#forest_estimators');
 
         fillOptions(columns, forestScatterTabSource);
         fillOptions(columns, forestScatterTabTarget);
@@ -66,4 +68,6 @@ function updateInfo(responseInfo) {
 
     forestRsquared.text(percents(model.r_squared));
     forestRsquared.attr('data-original-title', model.r_squared);
+
+    forestEstimators.text(model.estimators);
 }

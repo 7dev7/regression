@@ -210,7 +210,8 @@ def forest_regression(request):
         'linePoints': line_points,
         'observations': observations,
         'model': {
-            'r_squared': score
+            'r_squared': score,
+            'estimators': forest.n_estimators
         }
     })
 
