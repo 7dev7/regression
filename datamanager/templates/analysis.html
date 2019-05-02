@@ -41,9 +41,9 @@
                            aria-haspopup="true" aria-expanded="false">Линейная регрессия</a>
                         <div class="dropdown-menu" x-placement="bottom-start"
                              style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 40px, 0px);">
-                            <a class="dropdown-item" data-toggle="tab" href="#scatter" id="scatter_tab">Диаграмма
+                            <a class="dropdown-item" data-toggle="tab" href="#linear_scatter" id="scatter_tab">Диаграмма
                                 рассеяния</a>
-                            <a class="dropdown-item" data-toggle="tab" href="#linear_regression" id="linear_regr_tab">Параметры</a>
+                            <a class="dropdown-item" data-toggle="tab" href="#linear_info" id="linear_regr_tab">Параметры</a>
                         </div>
                     </li>
 
@@ -82,7 +82,7 @@
                     </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
-                    <div class="tab-pane fade show active" id="scatter">
+                    <div class="tab-pane fade show active" id="linear_scatter">
                         <br/>
                         <div>
                             <div class="float-left">
@@ -100,7 +100,7 @@
                         </div>
                         <canvas id="scatterPlot" width="400" height="400"></canvas>
                     </div>
-                    <div class="tab-pane fade" id="linear_regression">
+                    <div class="tab-pane fade" id="linear_info">
                         <br/>
                         <div id="messageHolder">
                         </div>
@@ -127,92 +127,64 @@
                         <br/>
                         <br/>
                         <br/>
-                        <br/>
-                        <div class="row text-center">
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Числовое соотношение между величинами, выраженное в виде тенденции к возрастанию (или убыванию) одной переменной величины при возрастании (убывании) другой.">
-                                    Уравнение регрессии</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="regression_equation" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
-                                    Коэффициент детерминации (R<sup>2</sup>)</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="r_squared" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Коэффициент детерминации, скорректированный на число факторов, и не чувствительный к числу регрессоров.">
-                                    Скорректированный коэффициент детерминации (Adj. R<sup>2</sup>)</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="adj_r_squared" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Используется для тестирования автокорреляции первого порядка элементов исследуемой последовательности.">
-                                    <span class="text-muted">Автокорреляция: </span>Критерий Дарбина — Уотсона</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="durbin_watson" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Процедура проверки автокорреляции произвольного порядка в случайных ошибках регрессионных моделей. Представлено F-значение.">
-                                    <span class="text-muted">Автокорреляция: </span> Тест Бройша — Годфри</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="breusch_godfrey" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Проверка ошибкок наблюдений на нормальность.">
-                                    <span class="text-muted">Нормальность: </span> Тест Харке — Бера</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="jarque_bera" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Проверка наличия гетероскедастичности случайных ошибок регрессионной модели.">
-                                    <span class="text-muted">Гетероскедатичность: </span>Тест Бройша — Пагана</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="breusch_pagan" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
+                        <div class="row">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Числовое соотношение между величинами, выраженное в виде тенденции к возрастанию (или убыванию) одной переменной величины при возрастании (убывании) другой.">
+                                        Уравнение регрессии:
+                                    </th>
+                                    <td id="regression_equation"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
+                                        Коэффициент детерминации (R<sup>2</sup>):
+                                    </th>
+                                    <td id="r_squared"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Коэффициент детерминации, скорректированный на число факторов, и не чувствительный к числу регрессоров.">
+                                        Скорректированный коэффициент детерминации (Adj. R<sup>2</sup>):
+                                    </th>
+                                    <td id="adj_r_squared"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Используется для тестирования автокорреляции первого порядка элементов исследуемой последовательности.">
+                                        <span class="text-muted">Автокорреляция: </span>Критерий Дарбина — Уотсона:
+                                    </th>
+                                    <td id="durbin_watson" data-toggle="tooltip" data-placement="top" title=""
+                                        data-original-title=""></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Процедура проверки автокорреляции произвольного порядка в случайных ошибках регрессионных моделей. Представлено F-значение.">
+                                        <span class="text-muted">Автокорреляция: </span>Тест Бройша — Годфри:
+                                    </th>
+                                    <td id="breusch_godfrey" data-toggle="tooltip" data-placement="top" title=""
+                                        data-original-title=""></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Проверка ошибкок наблюдений на нормальность.">
+                                        <span class="text-muted">Нормальность: </span>Тест Харке — Бера:
+                                    </th>
+                                    <td id="jarque_bera" data-toggle="tooltip" data-placement="top" title=""
+                                        data-original-title=""></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Проверка наличия гетероскедастичности случайных ошибок регрессионной модели.">
+                                        <span class="text-muted">Гетероскедатичность: </span>Тест Бройша — Пагана:
+                                    </th>
+                                    <td id="breusch_pagan" data-toggle="tooltip" data-placement="top" title=""
+                                        data-original-title=""></td>
+                                </tr>
+                                </tbody>
+                            </table>
                             <br/>
                             <br/>
                             <div class="col-md-12">
@@ -308,41 +280,31 @@
                         <br/>
                         <br/>
                         <br/>
-                        <div class="row text-center">
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Числовое соотношение между величинами, выраженное в виде тенденции к возрастанию (или убыванию) одной переменной величины при возрастании (убывании) другой.">
-                                    Уравнение регрессии</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="poly_regression_equation" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
-                                    Коэффициент детерминации (R<sup>2</sup>)</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="poly_r_squared" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title="" data-original-title="">
-                                    Степень полинома</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="poly_degree" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
+                        <div class="row">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Числовое соотношение между величинами, выраженное в виде тенденции к возрастанию (или убыванию) одной переменной величины при возрастании (убывании) другой.">
+                                        Уравнение регрессии:
+                                    </th>
+                                    <td id="poly_regression_equation"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
+                                        Коэффициент детерминации (R<sup>2</sup>):
+                                    </th>
+                                    <td id="poly_r_squared"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="">Степень полинома:
+                                    </th>
+                                    <td id="poly_degree"></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -416,42 +378,32 @@
                         <br/>
                         <br/>
                         <br/>
-                        <div class="row text-center">
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
-                                    Коэффициент детерминации (R<sup>2</sup>)</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="neural_r_squared" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="">
-                                    Функция активации: </h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="activation_func" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="">
-                                    Колличество нейронов на скрытом слое: </h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="hidden_neurons" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
+                        <div class="row">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
+                                        Коэффициент детерминации (R<sup>2</sup>):
+                                    </th>
+                                    <td id="neural_r_squared"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="">
+                                        Функция активации:
+                                    </th>
+                                    <td id="activation_func"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="">
+                                        Колличество нейронов на скрытом слое:
+                                    </th>
+                                    <td id="hidden_neurons"></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -504,30 +456,25 @@
                         <br/>
                         <br/>
                         <br/>
-                        <div class="row text-center">
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
-                                    Коэффициент детерминации (R<sup>2</sup>)</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="forest_r_squared" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h5 data-toggle="tooltip" data-placement="right" title=""
-                                    data-original-title="">
-                                    Количество деревьев</h5>
-                                <hr/>
-                            </div>
-                            <div class="col-md-6">
-                                <h5 id="forest_estimators" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title=""></h5>
-                                <hr/>
-                            </div>
+                        <div class="row">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="Принимает значения от 0 до 100%. Чем ближе значение коэффициента к 100%, тем сильнее зависимость. При оценке регрессионных моделей это интерпретируется как соответствие модели данным. Для приемлемых моделей предполагается, что коэффициент детерминации должен быть хотя бы не меньше 50%.">
+                                        Коэффициент детерминации (R<sup>2</sup>):
+                                    </th>
+                                    <td id="forest_r_squared"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" data-toggle="tooltip" data-placement="right" title=""
+                                        data-original-title="">
+                                        Количество деревьев:
+                                    </th>
+                                    <td id="forest_estimators"></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
