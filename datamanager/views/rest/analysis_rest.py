@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
@@ -101,6 +102,12 @@ def predict(request):
         model = regressor.fit(x, y)
         res = model.predict([inputs])
         return Response({'predicted': res[0]})
+    elif model.model == 'Forest':
+        estimators = model.estimators
+        forest = RandomForestRegressor(n_estimators=estimators, random_state=0, max_depth=2).fit(x, y)
+        model = forest.fit(x, y)
+        res = model.predict([inputs])
+        return Response({'predicted': res[0]})
     return Response({'error': 'Incorrect model type'})
 
 
@@ -151,8 +158,9 @@ def forest_regression_info(request):
     x_names = request.data['x']
     y_names = request.data['y']
     data_id = request.data['data_id']
+    estimators = int(request.data['estimators'])
 
-    model_data = forest_regr.forest_model_info(x_names, y_names, data_id)
+    model_data = forest_regr.forest_model_info(x_names, y_names, data_id, estimators)
     return Response(model_data)
 
 

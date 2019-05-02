@@ -70,7 +70,7 @@ function saveNeuralModel() {
     const activation = $('#neuralInfoActivationInput').find("option:selected").val();
     const hidden = $('#neuralInfoHiddenInput').val();
 
-    if (x.length === 0 || y.length === 0) return;
+    if (x.length === 0 || y.length === 0 || parseInt(hidden) < 0) return;
 
     Pace.track(function () {
         $.ajax({
@@ -110,7 +110,7 @@ function refillNeuralRegressionInfo() {
     const activation = $('#neuralInfoActivationInput').find("option:selected").val();
     const hidden = $('#neuralInfoHiddenInput').val();
 
-    if (x.length === 0 || y.length === 0) return;
+    if (x.length === 0 || y.length === 0 || parseInt(hidden) < 0) return;
 
     $.ajax({
         url: '/data/api/analysis/info/neural/info/',

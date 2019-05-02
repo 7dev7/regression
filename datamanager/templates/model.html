@@ -70,6 +70,14 @@
                         </div>
                     </div>
                 {% endif %}
+                {% if model.estimators %}
+                    <br/>
+                    <div class="row justify-content-md-center">
+                        <div class="col-md-8 justify-content-center">
+                            <h4>Количество деревьев: <em>{{ model.estimators }}</em></h4>
+                        </div>
+                    </div>
+                {% endif %}
                 <br/>
                 <div class="row justify-content-md-center">
                     <div class="col-md-8 justify-content-center">

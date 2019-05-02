@@ -359,7 +359,7 @@
                                 </select>&nbsp;&nbsp;&nbsp;
                                 <label for="neuralInfoHiddenInput" class="control-label">Нейроны:
                                     &nbsp;&nbsp;</label>
-                                <input class="control-label" type="number" step="1" min="1" max="32" value="3"
+                                <input type="number" step="1" min="1" max="32" value="3"
                                        id="neuralInfoHiddenInput"/>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <button class="float-right btn btn-success" id="save_neural_model_btn"
                                         data-toggle="tooltip"
@@ -437,7 +437,10 @@
                                         id="in_select_forest_info"
                                         multiple="multiple">
                                 </select>&nbsp;&nbsp;&nbsp;
-                                {# TODO implement saving #}
+                                <label for="forestInfoEstimatorsInput" class="control-label">Деревья:
+                                    &nbsp;&nbsp;</label>
+                                <input type="number" step="1" min="1" max="200" value="50"
+                                       id="forestInfoEstimatorsInput"/>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <button class="float-right btn btn-success" id="save_forest_model_btn"
                                         data-toggle="tooltip"
                                         data-placement="right" title=""

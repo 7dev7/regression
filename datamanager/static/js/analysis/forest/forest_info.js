@@ -45,15 +45,59 @@ function initForestInfoEvents() {
     });
 
     $('#save_forest_model_btn').click(function () {
-        //    TODO implement
+        saveForestModel();
+    });
+
+    $('#forestInfoEstimatorsInput').on('change', function () {
+        Pace.track(function () {
+            refillForestRegressionInfo();
+        });
+    });
+}
+
+function saveForestModel() {
+    const x = getSelectedOptions(forestInfoTabSource);
+    const y = getSelectedOptions(forestInfoTabTarget);
+    const estimators = $('#forestInfoEstimatorsInput').val();
+
+    if (x.length === 0 || y.length === 0 || parseInt(estimators) < 0) return;
+
+    Pace.track(function () {
+        $.ajax({
+            url: '/data/api/models/',
+            type: 'POST',
+            data: JSON.stringify({
+                data_id: parseInt(data_id),
+                in: x,
+                out: y,
+                model: 'Forest',
+                estimators: estimators
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response.status === 'ok') {
+                    forestMessageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                        '<p class="mb-0">Модель сохранена</p> ' +
+                        '</div>');
+                } else {
+                    forestMessageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                        '<p class="mb-0">Ошибка при сохранении модели: ' + response.error_message + '</p> ' +
+                        '</div>');
+                }
+            }
+        });
     });
 }
 
 function refillForestRegressionInfo() {
-    let x = getSelectedOptions(forestInfoTabSource);
-    let y = getSelectedOptions(forestInfoTabTarget);
+    const x = getSelectedOptions(forestInfoTabSource);
+    const y = getSelectedOptions(forestInfoTabTarget);
+    const estimators = $('#forestInfoEstimatorsInput').val();
 
-    if (x.length === 0 || y.length === 0) return;
+    if (x.length === 0 || y.length === 0 || parseInt(estimators) < 0) return;
 
     $.ajax({
         url: '/data/api/analysis/info/forest/info/',
@@ -61,7 +105,8 @@ function refillForestRegressionInfo() {
         data: JSON.stringify({
             data_id: data_id,
             x: x,
-            y: y
+            y: y,
+            estimators: estimators
         }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",

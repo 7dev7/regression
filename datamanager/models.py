@@ -31,6 +31,7 @@ class MlModel(models.Model):
     degree = models.IntegerField(blank=True, null=True)
     activation = models.CharField(blank=True, null=True, max_length=32)
     hidden_layer = models.IntegerField(blank=True, null=True)
+    estimators = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.name
