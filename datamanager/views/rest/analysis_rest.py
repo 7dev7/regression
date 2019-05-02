@@ -1,17 +1,12 @@
 from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LinearRegression
-from sklearn.neural_network import MLPRegressor
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import PolynomialFeatures
 
+import datamanager.services.model_predictor as model_predictor
 import datamanager.services.regression.forest as forest_regr
 import datamanager.services.regression.linear as lin_regr
 import datamanager.services.regression.neural as neural_regr
 import datamanager.services.regression.poly as poly_regr
-from datamanager.models import MlModel
 from datamanager.services.auto_analysis import get_models, format_models_data
 from datamanager.services.dataframe import get_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
@@ -73,42 +68,7 @@ def poly_regression_info(request):
 def predict(request):
     inputs = request.data['inputs']
     ml_model_id = request.data['ml_model_id']
-
-    model = MlModel.objects.get(pk=ml_model_id)
-
-    request_x = model.ds_in_cols
-    request_y = model.ds_out_cols
-
-    df = get_dataframe(model.dataset.id)
-
-    x = df[request_x]
-    y = df[request_y]
-
-    if model.model == 'OLS':
-        model = LinearRegression().fit(x, y)
-        res = model.predict([inputs])
-        return Response({'predicted': res[0]})
-    elif model.model == 'Polynomial':
-        degree = model.degree
-        model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
-        model.fit(x, y)
-        res = model.predict([inputs])
-        return Response({'predicted': res[0]})
-    elif model.model == 'MLP':
-        activation = model.activation
-        hidden = model.hidden_layer
-        regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=9000, activation=activation,
-                                 random_state=9)
-        model = regressor.fit(x, y)
-        res = model.predict([inputs])
-        return Response({'predicted': res[0]})
-    elif model.model == 'Forest':
-        estimators = model.estimators
-        forest = RandomForestRegressor(n_estimators=estimators, random_state=0, max_depth=2).fit(x, y)
-        model = forest.fit(x, y)
-        res = model.predict([inputs])
-        return Response({'predicted': res[0]})
-    return Response({'error': 'Incorrect model type'})
+    return Response(model_predictor.predict(ml_model_id, inputs))
 
 
 @api_view(['POST'])

@@ -23,15 +23,8 @@ def generate_model_name(in_cols, out_cols, model, degree, activation, hidden, es
     activation_suffix = ', {}'.format(func_mapping.get(activation, '')) if activation is not None else ''
     hidden_suffix = ', {} нейронов'.format(hidden) if hidden is not None else ''
     estimators_suffix = ', {} деревьев'.format(estimators) if estimators is not None else ''
-    return '{}: {} -> {}{}{}{}{}'.format(MODEL_NAMES.get(model, model), map_columns(in_cols), map_columns(out_cols),
+    return '{}: {} -> {}{}{}{}{}'.format(MODEL_NAMES.get(model, model), __map_columns(in_cols), __map_columns(out_cols),
                                          degree_suffix, activation_suffix, hidden_suffix, estimators_suffix)
-
-
-def map_columns(cols):
-    if len(cols) > 4:
-        return '[{}, {}, {}, {}, ...]'.format(cols[0], cols[1], cols[2], cols[3])
-    else:
-        return cols
 
 
 def delete_model(model_id):
@@ -58,3 +51,10 @@ def check_model_correct(in_cols, out_cols, ds_id, model, degree, activation, hid
                 return False
 
     return True
+
+
+def __map_columns(cols):
+    if len(cols) > 4:
+        return '[{}, {}, {}, {}, ...]'.format(cols[0], cols[1], cols[2], cols[3])
+    else:
+        return cols
