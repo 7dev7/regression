@@ -111,9 +111,10 @@ def neural_regression_scatter(request):
     x_name = request.data['x']
     y_name = request.data['y']
     data_id = request.data['data_id']
+    activation = request.data['activation']
+    hidden = int(request.data['hidden'])
 
-    # TODO add params to request
-    model_data = neural_regr.neural_model_scatter(x_name, y_name, data_id)
+    model_data = neural_regr.neural_model_scatter(x_name, y_name, data_id, activation, hidden)
     return Response(model_data)
 
 
@@ -124,9 +125,10 @@ def neural_regression_info(request):
     x_names = request.data['x']
     y_names = request.data['y']
     data_id = request.data['data_id']
+    activation = request.data['activation']
+    hidden = int(request.data['hidden'])
 
-    # TODO add params to request
-    model_data = neural_regr.neural_model_info(x_names, y_names, data_id)
+    model_data = neural_regr.neural_model_info(x_names, y_names, data_id, activation, hidden)
     return Response(model_data)
 
 

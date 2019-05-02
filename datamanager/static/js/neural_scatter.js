@@ -36,11 +36,26 @@ function initNeuralScatterEvents() {
             recalculateNeuralRegression();
         });
     });
+
+    $('#neuralScatterActivationInput').on('changed.bs.select', function () {
+        Pace.track(function () {
+            recalculateNeuralRegression();
+        });
+    });
+
+    $('#neuralScatterHiddenInput').on('change', function () {
+        Pace.track(function () {
+            recalculateNeuralRegression();
+        });
+    });
 }
 
 function recalculateNeuralRegression() {
-    let x = getSelectedOption(neuralScatterTabSource);
-    let y = getSelectedOption(neuralScatterTabTarget);
+    const x = getSelectedOption(neuralScatterTabSource);
+    const y = getSelectedOption(neuralScatterTabTarget);
+
+    const activation = $('#neuralScatterActivationInput').find("option:selected").val();
+    const hidden = $('#neuralScatterHiddenInput').val();
 
     $.ajax({
         url: '/data/api/analysis/info/neural/',
@@ -48,7 +63,9 @@ function recalculateNeuralRegression() {
         data: JSON.stringify({
             data_id: data_id,
             x: x,
-            y: y
+            y: y,
+            activation: activation,
+            hidden: hidden
         }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",

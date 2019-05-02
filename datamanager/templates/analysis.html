@@ -353,7 +353,18 @@
                                 <label for="in_select_neural_scatter" class="control-label">X: &nbsp;&nbsp;</label>
                                 <select class="selectpicker" data-live-search="true" data-done-button="true"
                                         id="in_select_neural_scatter">
-                                </select>
+                                </select>&nbsp;&nbsp;&nbsp;
+                                <label for="neuralScatterActivationInput" class="control-label">Функция активации:
+                                    &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-done-button="true" id="neuralScatterActivationInput">
+                                    <option value="tanh">Тангенс</option>
+                                    <option value="logistic">Сигмоида</option>
+                                    <option value="relu">ReLU (Выпрямитель)</option>
+                                </select>&nbsp;&nbsp;&nbsp;
+                                <label for="neuralScatterHiddenInput" class="control-label">Нейроны:
+                                    &nbsp;&nbsp;</label>
+                                <input class="control-label" type="number" step="1" min="1" max="32" value="3"
+                                       id="neuralScatterHiddenInput"/>&nbsp;&nbsp;&nbsp;
                             </div>
                             <div class="float-right">
                                 <label for="out_select_neural_scatter" class="control-label">Y: &nbsp;&nbsp;</label>
@@ -376,7 +387,17 @@
                                         id="in_select_neural_info"
                                         multiple="multiple">
                                 </select>&nbsp;&nbsp;&nbsp;
-                                {# TODO implement saving #}
+                                <label for="neuralInfoActivationInput" class="control-label">Функция активации:
+                                    &nbsp;&nbsp;</label>
+                                <select class="selectpicker" data-done-button="true" id="neuralInfoActivationInput">
+                                    <option value="tanh">Тангенс</option>
+                                    <option value="logistic">Сигмоида</option>
+                                    <option value="relu">ReLU (Выпрямитель)</option>
+                                </select>&nbsp;&nbsp;&nbsp;
+                                <label for="neuralInfoHiddenInput" class="control-label">Нейроны:
+                                    &nbsp;&nbsp;</label>
+                                <input class="control-label" type="number" step="1" min="1" max="32" value="3"
+                                       id="neuralInfoHiddenInput"/>&nbsp;&nbsp;&nbsp;
                                 <button class="float-right btn btn-success" id="save_neural_model_btn"
                                         data-toggle="tooltip"
                                         data-placement="right" title=""

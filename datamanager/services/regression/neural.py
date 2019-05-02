@@ -5,12 +5,12 @@ from datamanager.services import dataframe
 from datamanager.services.auto_analysis import func_mapping
 
 
-def neural_model_scatter(x_name, y_name, data_id):
+def neural_model_scatter(x_name, y_name, data_id, activation, hidden):
     df = dataframe.get_dataframe(data_id)
     x = df[[x_name]]
     y = df[[y_name]]
 
-    regressor = MLPRegressor(hidden_layer_sizes=(5,), max_iter=10000, activation='tanh',
+    regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=10000, activation=activation,
                              random_state=9)
     model = regressor.fit(x, y.values.ravel())
 
@@ -18,12 +18,12 @@ def neural_model_scatter(x_name, y_name, data_id):
     return scatter_data
 
 
-def neural_model_info(x_names, y_names, data_id):
+def neural_model_info(x_names, y_names, data_id, activation, hidden):
     df = dataframe.get_dataframe(data_id)
     x = df[x_names]
     y = df[y_names]
 
-    model = MLPRegressor(hidden_layer_sizes=(5,), max_iter=10000, activation='tanh',
+    model = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=10000, activation=activation,
                          random_state=9)
     model = model.fit(x, y.values.ravel())
     score = model.score(x, y.values.ravel())

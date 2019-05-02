@@ -47,13 +47,68 @@ function initNeuralInfoEvents() {
     });
 
     $('#save_neural_model_btn').click(function () {
-        //    TODO implement
+        saveNeuralModel();
+    });
+
+    $('#neuralInfoActivationInput').on('changed.bs.select', function () {
+        Pace.track(function () {
+            refillNeuralRegressionInfo();
+        });
+    });
+
+    $('#neuralInfoHiddenInput').on('change', function () {
+        Pace.track(function () {
+            refillNeuralRegressionInfo();
+        });
+    });
+}
+
+function saveNeuralModel() {
+    const x = getSelectedOptions(neuralInfoTabSource);
+    const y = getSelectedOptions(neuralInfoTabTarget);
+
+    const activation = $('#neuralInfoActivationInput').find("option:selected").val();
+    const hidden = $('#neuralInfoHiddenInput').val();
+
+    if (x.length === 0 || y.length === 0) return;
+
+    Pace.track(function () {
+        $.ajax({
+            url: '/data/api/models/',
+            type: 'POST',
+            data: JSON.stringify({
+                data_id: parseInt(data_id),
+                in: x,
+                out: y,
+                model: 'MLP',
+                activation: activation,
+                hidden: hidden
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response.status === 'ok') {
+                    neuralMessageHolder.append('<div class="alert alert-dismissible alert-success"> ' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                        '<p class="mb-0">Модель сохранена</p> ' +
+                        '</div>');
+                } else {
+                    neuralMessageHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                        '<p class="mb-0">Ошибка при сохранении модели: ' + response.error_message + '</p> ' +
+                        '</div>');
+                }
+            }
+        });
     });
 }
 
 function refillNeuralRegressionInfo() {
-    let x = getSelectedOptions(neuralInfoTabSource);
-    let y = getSelectedOptions(neuralInfoTabTarget);
+    const x = getSelectedOptions(neuralInfoTabSource);
+    const y = getSelectedOptions(neuralInfoTabTarget);
+
+    const activation = $('#neuralInfoActivationInput').find("option:selected").val();
+    const hidden = $('#neuralInfoHiddenInput').val();
 
     if (x.length === 0 || y.length === 0) return;
 
@@ -63,7 +118,9 @@ function refillNeuralRegressionInfo() {
         data: JSON.stringify({
             data_id: data_id,
             x: x,
-            y: y
+            y: y,
+            activation: activation,
+            hidden: hidden
         }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
