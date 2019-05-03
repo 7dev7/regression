@@ -36,6 +36,22 @@
                                         <tbody>
                                         </tbody>
                                     </table>
+                                    <hr/>
+                                    <div class="form-group">
+                                        <fieldset>
+                                            <form method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="ds_id" value="{{ data_id }}"/>
+                                                <input type="text" class="form-control form-control-sm"
+                                                       placeholder="Имя колонки" name="columnName" id="columnName"
+                                                       required/>
+                                                <br/>
+                                                <button class="btn btn-outline-success float-right"><span
+                                                        aria-hidden="true">Добавить</span>
+                                                </button>
+                                            </form>
+                                        </fieldset>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -18,6 +18,12 @@ def update_dataframe(df, dataset_id):
     update_relative_models(dataset)
 
 
+def add_column(ds_id, column_name):
+    df = get_dataframe(ds_id)
+    df[column_name] = 0
+    update_dataframe(df, ds_id)
+
+
 def update_relative_models(dataset):
     columns = set(dataset.columns)
     models = MlModel.objects.filter(dataset=dataset)
