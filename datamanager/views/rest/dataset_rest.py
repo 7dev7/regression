@@ -33,7 +33,8 @@ def edit_row(request, data_id):
 
     columns = list(df)
     for i in columns:
-        df[i][row_num] = request.data[i]
+        value = __get_numeric_val(request.data[i])
+        df[i][row_num] = value
 
     update_dataframe(df, data_id)
     return Response({})
@@ -48,13 +49,12 @@ def add_row(request, data_id):
     columns = list(df)
     values = {}
     for i in columns:
-        # TODO add type parsing
-        values[i] = request.data[i]
+        values[i] = __get_numeric_val(request.data[i])
 
     df = df.append(values, ignore_index=True)
     update_dataframe(df, data_id)
 
-    return Response(df.shape[0])
+    return Response(df.shape[0] - 1)
 
 
 @api_view(['POST'])
@@ -116,3 +116,16 @@ def analysis(request):
         'in_types': in_types,
         'out_types': out_types
     })
+
+
+def __get_numeric_val(raw_val):
+    if '.' in raw_val:
+        try:
+            return float(raw_val)
+        except ValueError:
+            return raw_val
+    else:
+        try:
+            return int(raw_val)
+        except ValueError:
+            return raw_val

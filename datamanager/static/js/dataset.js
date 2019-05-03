@@ -119,12 +119,13 @@ function renderTable(dataset) {
         beforeSubmit: function (postdata) {
             postdata['__row_id__'] = postdata['dataset_table_id'];
             delete postdata['dataset_table_id'];
-            return [true, ""];
+            return [true];
         },
         afterSubmit: function (postdata, formid) {
             $.each(columns, function (i, item) {
                 $("#dataset_table").jqGrid('setCell', formid['__row_id__'], item, formid[item]);
             });
+            return [true];
         }
     }, {
         reloadAfterSubmit: false,
