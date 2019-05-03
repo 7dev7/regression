@@ -3,11 +3,17 @@ $(document).ready(function () {
         let text = $('#inputs').val();
         let columns = JSON.parse(text.replace(/'/g, '"'));
 
+        const loadingRoller = $('#loadingRoller');
+        loadingRoller.show();
+
         let values = [];
         for (let i = 0; i < columns.length; i++) {
             let col = columns[i];
             let value = $('#in' + col).val();
-            if (!value) return;
+            if (!value) {
+                loadingRoller.hide();
+                return;
+            }
             values.push(parseFloat(value));
         }
 
@@ -34,6 +40,8 @@ $(document).ready(function () {
                     let col = out_columns[i];
                     $('#out' + col).val(round(predicted[i]));
                 }
+
+                $('#loadingRoller').hide();
             }
         });
     });

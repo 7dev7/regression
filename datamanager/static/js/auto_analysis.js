@@ -51,7 +51,7 @@ $(document).ready(function () {
     });
 
     $('#step3_next').click(function () {
-        let data_id = $('.datasets').find('input[type=radio]:checked').val();
+        const data_id = $('.datasets').find('input[type=radio]:checked').val();
         $('#loadingRoller').show();
 
         Pace.track(function () {
