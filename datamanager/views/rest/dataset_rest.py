@@ -86,6 +86,20 @@ def remove_column(request, data_id):
 @api_view(['POST'])
 @parser_classes((JSONParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
+def rename_column(request, data_id):
+    df = get_dataframe(data_id)
+    old_name = request.data['old_name']
+    new_name = request.data['new_name']
+
+    df = df.rename(columns={old_name: new_name})
+
+    update_dataframe(df, data_id)
+    return Response({'ok'})
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
 def analysis(request):
     ds_id = request.data['dataset_id']
     in_columns = request.data['in_columns']

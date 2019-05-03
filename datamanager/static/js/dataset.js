@@ -23,17 +23,41 @@ function renderColumnsModal(responseData) {
         const btnTd = $('<td></td>');
         btnTd.append(btn);
 
-        const tr = $('<tr><td><input type="text" class="form-control form-control-sm renameColumnInput" value="' + columns[i] + '"/></td></tr>');
+        const inputWidget = $('<input type="text" class="form-control form-control-sm" old-value="' + columns[i] + '" value="' + columns[i] + '"/>');
+        inputWidget.change(function (e) {
+            const inpt = $(this);
+            const oldName = inpt.attr('old-value');
+            const newName = inpt.val();
+
+            const dataId = $('#data_id');
+            const removeColumnUrl = '/data/api/dataset/' + dataId.val() + '/column/rename/';
+
+            $.ajax({
+                url: removeColumnUrl,
+                type: 'POST',
+                data: JSON.stringify({
+                    old_name: oldName,
+                    new_name: newName
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    location.reload();
+                    return false;
+                }
+            });
+        });
+
+        const inputTd = $('<td></td>');
+        inputTd.append(inputWidget);
+
+        const tr = $('<tr></tr>');
+        tr.append(inputTd);
         tr.append(btnTd);
 
         table.append(tr);
     }
 }
-
-$('.renameColumnInput').bind('input', function () {
-    const newName = $(this).text();
-    console.log(newName)
-});
 
 function handleColumnRemove(columnToRemove) {
     const dataId = $('#data_id');
