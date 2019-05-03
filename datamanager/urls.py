@@ -1,6 +1,7 @@
 from django.urls import path
 
-from datamanager.views import load, my_data, dataset, analysis, models, model, column, auto_analysis, settings
+from datamanager.views import load, my_data, dataset, analysis, models, model, column, auto_analysis, settings, \
+    manual_analysis
 from datamanager.views.rest import dataset_rest, analysis_rest, ml_models_rest, columns_rest
 
 urlpatterns = [
@@ -59,6 +60,8 @@ urlpatterns = [
     path('analysis/<int:data_id>/', analysis.AnalysisView.as_view(), name='analysis'),
 
     path('analysis/auto/', auto_analysis.AutoAnalysisView.as_view(), name='auto analysis'),
+
+    path('analysis/manual/', manual_analysis.ManualAnalysisView.as_view(), name='manual analysis'),
 
     path('models/', models.ModelsView.as_view(), name='models'),
 
