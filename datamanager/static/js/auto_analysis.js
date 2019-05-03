@@ -52,6 +52,7 @@ $(document).ready(function () {
 
     $('#step3_next').click(function () {
         let data_id = $('.datasets').find('input[type=radio]:checked').val();
+        $('#loadingRoller').show();
 
         Pace.track(function () {
             $.ajax({
@@ -106,6 +107,8 @@ $(document).ready(function () {
 
                     $('#modelsTitle').text('Построенные модели');
                     $('#modelsTable').show('fast');
+
+                    $('#loadingRoller').hide();
                 }
             });
         });

@@ -36,11 +36,20 @@ function initForestScatterEvents() {
             recalculateForestScatterRegression();
         });
     });
+
+    $('#forestScatterEstimatorsInput').on('change', function () {
+        Pace.track(function () {
+            recalculateForestScatterRegression();
+        });
+    });
 }
 
 function recalculateForestScatterRegression() {
-    let x = getSelectedOption(forestScatterTabSource);
-    let y = getSelectedOption(forestScatterTabTarget);
+    const x = getSelectedOption(forestScatterTabSource);
+    const y = getSelectedOption(forestScatterTabTarget);
+    const estimators = $('#forestScatterEstimatorsInput').val();
+
+    if (x.length === 0 || y.length === 0 || parseInt(estimators) < 0) return;
 
     $.ajax({
         url: '/data/api/analysis/info/forest/',
@@ -48,7 +57,8 @@ function recalculateForestScatterRegression() {
         data: JSON.stringify({
             data_id: data_id,
             x: x,
-            y: y
+            y: y,
+            estimators: estimators
         }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",

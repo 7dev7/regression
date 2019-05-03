@@ -2,12 +2,12 @@ from rest_framework.decorators import api_view, parser_classes, authentication_c
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
+import datamanager.services.auto_analysis as a_analysis
 import datamanager.services.model_predictor as model_predictor
 import datamanager.services.regression.forest as forest_regr
 import datamanager.services.regression.linear as lin_regr
 import datamanager.services.regression.neural as neural_regr
 import datamanager.services.regression.poly as poly_regr
-from datamanager.services.auto_analysis import get_models, format_models_data
 from datamanager.services.dataframe import get_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 
@@ -106,8 +106,9 @@ def forest_regression_scatter(request):
     x_name = request.data['x']
     y_name = request.data['y']
     data_id = request.data['data_id']
+    estimators = int(request.data['estimators'])
 
-    model_data = forest_regr.forest_model_scatter(x_name, y_name, data_id)
+    model_data = forest_regr.forest_model_scatter(x_name, y_name, data_id, estimators)
     return Response(model_data)
 
 
@@ -136,8 +137,8 @@ def auto_analysis(request):
     x = df[request_x]
     y = df[request_y]
 
-    models = get_models(x, y)
+    models = a_analysis.get_models(x, y)
     models.sort(key=lambda m: m['score'], reverse=True)
-    formatted = format_models_data(models, df)
+    formatted = a_analysis.format_models_data(models, df)
 
     return Response({'models': formatted})
