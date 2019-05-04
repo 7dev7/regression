@@ -42,6 +42,10 @@ $(document).ready(function () {
                 }
 
                 $('#loadingRoller').hide();
+
+                $([document.documentElement, document.body]).animate({
+                    scrollTop: $('#predictTitle').offset().top - 30
+                }, 600);
             }
         });
     });

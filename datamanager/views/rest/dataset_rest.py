@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, parser_classes, authentication_c
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.response import Response
 
+import datamanager.services.missing_values as miss_values
 from datamanager.models import Dataset
 from datamanager.serializers.dataset_serializer import DatasetSerializer
 from datamanager.services.dataframe import get_dataframe, update_dataframe
@@ -16,12 +17,22 @@ def dataset_detail(request, data_id):
     Retrieve a dataset
     """
     try:
-        snippet = Dataset.objects.get(pk=data_id)
+        dataset = Dataset.objects.get(pk=data_id)
     except Dataset.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = DatasetSerializer(snippet)
+    serializer = DatasetSerializer(dataset)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def remove_nan(request, data_id):
+    df = get_dataframe(data_id)
+    df = df.dropna()
+    update_dataframe(df, data_id)
+    return Response({'ok'})
 
 
 @api_view(['POST'])
@@ -120,7 +131,9 @@ def analysis(request):
         is_string_type = is_string_dtype(df[col])
         out_types[col] = 'str' if is_string_type else 'num'
 
-    incorrect_columns = __get_incorrect_columns(df, in_columns + out_columns)
+    all_columns = in_columns + out_columns
+    incorrect_columns = __get_incorrect_columns(df, all_columns)
+    nan_columns = miss_values.get_nan_columns(df, all_columns)
 
     return Response({
         # TODO make configurable
@@ -131,7 +144,8 @@ def analysis(request):
         'out_unique': out_uniques,
         'in_types': in_types,
         'out_types': out_types,
-        'incorrect_columns': incorrect_columns
+        'incorrect_columns': incorrect_columns,
+        'nan_columns': nan_columns
     })
 
 

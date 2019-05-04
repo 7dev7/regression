@@ -6,6 +6,22 @@ $(document).ready(function () {
                 renderColumnsModal(responseData);
             });
     });
+
+    $('#removeNanBtn').click(function () {
+        const dataId = $('#data_id');
+        const url = '/data/api/dataset/' + dataId.val() + '/nan/remove/';
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                location.reload();
+                return false;
+            }
+        });
+    });
 });
 
 function renderColumnsModal(responseData) {

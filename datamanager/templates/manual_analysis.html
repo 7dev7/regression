@@ -13,13 +13,34 @@
                 {% if datasets %}
                     {% for ds in datasets %}
                         <div class="col-md justify-content-center text-center">
-                            <h4><a href="/data/analysis/{{ ds.id }}">{{ ds.name }}
-                                {% for col in ds.columns %}
-                                    <span class="text-muted"><em>{{ col }}, </em></span>
-                                {% endfor %}
-                            </a></h4>
+                            {% for key, value in nan_map.items %}
+                                {% if key == ds.id %}
+                                    {% if value %}
+                                        <h5><a href="/data/analysis/{{ ds.id }}"
+                                               class="btn btn-lg disabled">{{ ds.name }}
+                                            {% for col in ds.columns %}
+                                                <span class="text-muted"><em>{{ col }}, </em></span>
+                                            {% endfor %}
+                                            <br/>
+                                            <span class="text-muted">Загружено {{ ds.upload_time }}</span>
+                                        </a></h5>
+                                        <span class="text-warning">Проведение анализа невозможно с пропущенными значениями.
+                                            Вы
+                                            можете заполнить либо убрать пропущенные значения на <a
+                                                    href="/data/dataset/{{ ds.id }}/" class="text-primary"><strong>этой
+                                                странице</strong></a></span>
+                                    {% else %}
+                                        <p><a href="/data/analysis/{{ ds.id }}">{{ ds.name }}
+                                            {% for col in ds.columns %}
+                                                <span class="text-muted"><em>{{ col }}, </em></span>
+                                            {% endfor %}
+                                            <br/>
+                                            <span class="text-muted">Загружено {{ ds.upload_time }}</span>
+                                        </a></p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
                             <hr/>
-                            <br/>
                         </div>
                     {% endfor %}
                 {% else %}

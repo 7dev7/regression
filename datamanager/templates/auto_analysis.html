@@ -28,13 +28,39 @@
                                 <fieldset>
                                     <div class="form-group">
                                         {% for ds in datasets %}
-                                            <div class="custom-control custom-radio datasets">
-                                                <input type="radio" id="ds_{{ ds.id }}" name="dataset"
-                                                       class="custom-control-input" checked="" value="{{ ds.id }}">
-                                                <label class="custom-control-label"
-                                                       for="ds_{{ ds.id }}">{{ ds.name }} <em>{{ ds.columns }}</em>
-                                                    <p class="text-muted">Загружено {{ ds.upload_time }}</p></label>
-                                            </div>
+                                            {% for key, value in nan_map.items %}
+                                                {% if key == ds.id %}
+                                                    {% if value %}
+                                                        <div class="custom-control custom-radio datasets">
+                                                            <input type="radio" id="ds_{{ ds.id }}" name="dataset"
+                                                                   class="custom-control-input" checked=""
+                                                                   value="{{ ds.id }}" disabled="">
+                                                            <label class="custom-control-label"
+                                                                   for="ds_{{ ds.id }}">{{ ds.name }}
+                                                                <em>{{ ds.columns }}</em>
+                                                                <p class="text-muted">Загружено {{ ds.upload_time }}</p>
+                                                            </label>
+                                                        </div>
+                                                        <p class="text-warning">Проведение анализа невозможно с
+                                                            пропущенными значениями. Вы
+                                                            можете заполнить либо убрать пропущенные значения на <a
+                                                                    href="/data/dataset/{{ ds.id }}/"
+                                                                    class="text-primary"><strong>этой странице</strong></a>
+                                                        </p>
+                                                    {% else %}
+                                                        <div class="custom-control custom-radio datasets">
+                                                            <input type="radio" id="ds_{{ ds.id }}" name="dataset"
+                                                                   class="custom-control-input" checked=""
+                                                                   value="{{ ds.id }}">
+                                                            <label class="custom-control-label"
+                                                                   for="ds_{{ ds.id }}">{{ ds.name }}
+                                                                <em>{{ ds.columns }}</em>
+                                                                <p class="text-muted">Загружено {{ ds.upload_time }}</p>
+                                                            </label>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
                                             <br/>
                                         {% endfor %}
                                     </div>

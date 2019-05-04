@@ -65,7 +65,8 @@ def format_models_data(models, df):
                 'model': 'Случайный лес',
                 'description': 'Количество деревьев: {}'.format(model.n_estimators),
                 'meta': {
-                    'type': 'Forest'
+                    'type': 'Forest',
+                    'estimators': model.n_estimators
                 }
             }
         else:

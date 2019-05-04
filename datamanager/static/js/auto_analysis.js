@@ -189,6 +189,8 @@ $(document).ready(function () {
                 $('#in_columns_st3 ul').empty();
                 $('#out_columns_st3 ul').empty();
 
+                const msgHolder = $('#step3_message_holder');
+
                 response.in_columns.forEach(col => {
                     const col_type = response.in_types[col];
                     const formatted_col_type = col_type === 'num' ? 'Числовой' : 'Строковый';
@@ -233,10 +235,20 @@ $(document).ready(function () {
 
                 if (Array.isArray(response.incorrect_columns) && response.incorrect_columns.length) {
                     nextBtn.prop("disabled", true);
-                    const msgHolder = $('#step3_message_holder');
+
                     msgHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
                         '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
                         '<p class="mb-0">Одна или несколько колонок имеют строковый тип. Проверьте данные в этих колонках</p> ' +
+                        '</div>');
+                }
+
+                if (Array.isArray(response.nan_columns) && response.nan_columns.length) {
+                    const msg = `Колонки [${response.nan_columns}] содержат пропущенные данные.
+                     При продолжении анализа строки с пропущенными данными будут исключены.`;
+                    nextBtn.prop("disabled", true);
+                    msgHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                        '<p class="mb-0">' + msg + '</p> ' +
                         '</div>');
                 }
 
@@ -262,7 +274,8 @@ function handleSaveBtn(modelData, button) {
             degree: metaData.degree || null,
             model: metaData.type,
             activation: metaData.activation || null,
-            hidden: metaData.hidden || null
+            hidden: metaData.hidden || null,
+            estimators: metaData.estimators || null,
         }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
