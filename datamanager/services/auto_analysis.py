@@ -7,13 +7,18 @@ from sklearn.preprocessing import PolynomialFeatures
 
 import datamanager.services.regression.linear as lin_regr
 import datamanager.services.validator as validator
+from datamanager.models import Configuration
 
-NN_RANGE = range(3, 9)
+NN_MIN_DEFAULT = 3
+NN_MAX_DEFAULT = 9
+
 # can be logistic, tanh, relu
 ACTIVATIONS = ['logistic', 'tanh']
 NN_ITERS = 10000
 
-POLY_DEGREE_RANGE = range(2, 10)
+POLY_MIN_DEFAULT = 2
+POLY_MAX_DEFAULT = 10
+
 TREE_RANGE = range(50, 150, 20)
 
 func_mapping = {
@@ -23,10 +28,15 @@ func_mapping = {
 }
 
 
-def get_models(x, y):
-    nn_models = train_nn_models(x, y)
+def get_models(x, y, user):
+    nn_min, nn_max, poly_min, poly_max = __get_thresholds(user)
+
+    print('Request for train models with thresholds: nn_min =', nn_min, 'nn_max =', nn_max,
+          'poly_min =', poly_min, 'poly_max =', poly_max)
+
+    nn_models = train_nn_models(x, y, nn_min=nn_min, nn_max=nn_max)
     linear = train_linear_models(x, y)
-    poly = train_poly_models(x, y)
+    poly = train_poly_models(x, y, poly_min=poly_min, poly_max=poly_max)
     forest = train_random_forest_models(x, y)
 
     return list(filter(lambda m: m['score'] >= 0, nn_models + linear + poly + forest))
@@ -87,17 +97,14 @@ def format_models_data(models, df):
     return result
 
 
-def __get_linear_validation_data(model, df):
-    predictor = sm.add_constant(df[model['in']])
-    model = sm.OLS(df[model['out']], predictor).fit()
-
-    info = lin_regr.get_model_info(model)
-    return validator.validate_linear(info)
+def __get_thresholds(user):
+    config = Configuration.objects.get(owner=user)
+    return config.nn_hidden_min, config.nn_hidden_max, config.poly_min, config.poly_max
 
 
-def train_nn_models(x, y):
+def train_nn_models(x, y, nn_min=NN_MIN_DEFAULT, nn_max=NN_MAX_DEFAULT):
     results = []
-    for hidden in NN_RANGE:
+    for hidden in range(nn_min, nn_max):
         for activation in ACTIVATIONS:
             regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=NN_ITERS, activation=activation,
                                      random_state=9)
@@ -121,9 +128,9 @@ def train_linear_models(x, y):
     }]
 
 
-def train_poly_models(x, y):
+def train_poly_models(x, y, poly_min=POLY_MIN_DEFAULT, poly_max=POLY_MAX_DEFAULT):
     results = []
-    for degree in POLY_DEGREE_RANGE:
+    for degree in range(poly_min, poly_max):
         model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
         model.fit(x, y)
         results.append({
@@ -149,3 +156,11 @@ def train_random_forest_models(x, y):
             'out': y.columns.values
         })
     return results
+
+
+def __get_linear_validation_data(model, df):
+    predictor = sm.add_constant(df[model['in']])
+    model = sm.OLS(df[model['out']], predictor).fit()
+
+    info = lin_regr.get_model_info(model)
+    return validator.validate_linear(info)

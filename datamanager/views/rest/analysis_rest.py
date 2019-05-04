@@ -137,7 +137,7 @@ def auto_analysis(request):
     x = df[request_x]
     y = df[request_y]
 
-    models = a_analysis.get_models(x, y)
+    models = a_analysis.get_models(x, y, request.user)
     models.sort(key=lambda m: m['score'], reverse=True)
     formatted = a_analysis.format_models_data(models, df)
 
