@@ -14,7 +14,7 @@ class DatasetView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'dataset'
 
     def get_queryset(self):
-        return Dataset.objects.filter(author=self.request.user)
+        return Dataset.objects.filter(author=self.request.user).order_by('-upload_time')
 
     @staticmethod
     def post(request):

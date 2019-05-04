@@ -120,6 +120,8 @@ def analysis(request):
         is_string_type = is_string_dtype(df[col])
         out_types[col] = 'str' if is_string_type else 'num'
 
+    incorrect_columns = __get_incorrect_columns(df, in_columns + out_columns)
+
     return Response({
         # TODO make configurable
         'unique_threshold': 5,
@@ -128,8 +130,18 @@ def analysis(request):
         'in_unique': in_uniques,
         'out_unique': out_uniques,
         'in_types': in_types,
-        'out_types': out_types
+        'out_types': out_types,
+        'incorrect_columns': incorrect_columns
     })
+
+
+def __get_incorrect_columns(df, all_columns):
+    incorrect_columns = []
+    for col in all_columns:
+        is_string_type = is_string_dtype(df[col])
+        if is_string_type:
+            incorrect_columns.append(col)
+    return incorrect_columns
 
 
 def __get_numeric_val(raw_val):

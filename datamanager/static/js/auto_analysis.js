@@ -50,6 +50,40 @@ $(document).ready(function () {
         renderStep3();
     });
 
+    $('#selectAllInBtn').click(function () {
+        let allChecked = true;
+        const columns = $('input:checkbox[name=in_columns]');
+
+        columns.each(function () {
+            const checked = $(this).prop("checked");
+            if (!checked) {
+                allChecked = false;
+            }
+        });
+
+        columns.each(function () {
+            const value = !allChecked;
+            $(this).prop("checked", value);
+        });
+    });
+
+    $('#selectAllOutBtn').click(function () {
+        let allChecked = true;
+        const columns = $('input:checkbox[name=out_columns]');
+
+        columns.each(function () {
+            const checked = $(this).prop("checked");
+            if (!checked) {
+                allChecked = false;
+            }
+        });
+
+        columns.each(function () {
+            const value = !allChecked;
+            $(this).prop("checked", value);
+        });
+    });
+
     $('#step3_next').click(function () {
         const data_id = $('.datasets').find('input[type=radio]:checked').val();
         $('#loadingRoller').show();
@@ -149,43 +183,61 @@ $(document).ready(function () {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                $("#step3_next").prop("disabled", false);
+                const nextBtn = $("#step3_next");
+                nextBtn.prop("disabled", false);
 
                 $('#in_columns_st3 ul').empty();
                 $('#out_columns_st3 ul').empty();
 
                 response.in_columns.forEach(col => {
-                    let col_type = response.in_types[col];
-                    col_type = col_type === 'num' ? 'Числовой' : 'Строковый';
+                    const col_type = response.in_types[col];
+                    const formatted_col_type = col_type === 'num' ? 'Числовой' : 'Строковый';
 
                     const col_uniq = response.in_unique[col];
+                    const threshold = response.unique_threshold;
+                    const uniqueStyle = col_uniq < threshold ? 'text-danger' : 'text-muted';
+
                     col = $.trim(col);
+                    const typeStyle = col_type === 'num' ? 'text-muted' : 'text-danger';
 
                     $('#in_columns_st3 ul').append(
                         '<li class="list-group-item d-flex justify-content-between align-items-center">' + col +
-                        '\t<span class="text-muted">Количество уникальный значений: ' + col_uniq + '</span>' +
-                        '\t<span class="text-muted">Тип переменной: ' + col_type + '</span></li>');
+                        '\t<span class="' + uniqueStyle + '">Количество уникальных значений: ' + col_uniq + '</span>' +
+                        '\t<span class="' + typeStyle + '">Тип переменной: ' + formatted_col_type + '</span></li>');
                 });
 
                 response.out_columns.forEach(col => {
-                    let col_type = response.out_types[col];
-                    col_type = col_type === 'num' ? 'Числовой' : 'Строковый';
+                    const col_type = response.out_types[col];
+                    const formatted_col_type = col_type === 'num' ? 'Числовой' : 'Строковый';
 
                     const col_uniq = response.out_unique[col];
+                    const threshold = response.unique_threshold;
+                    const uniqueStyle = col_uniq < threshold ? 'text-danger' : 'text-muted';
+
                     col = $.trim(col);
+                    const typeStyle = col_type === 'num' ? 'text-muted' : 'text-danger';
 
                     $('#out_columns_st3 ul').append(
                         '<li class="list-group-item d-flex justify-content-between align-items-center">' + col +
-                        '\t<span class="text-muted">Количество уникальный значений: ' + col_uniq + '</span>' +
-                        '\t<span class="text-muted">Тип переменной: ' + col_type + '</span></li>');
+                        '\t<span class="' + uniqueStyle + '">Количество уникальных значений: ' + col_uniq + '</span>' +
+                        '\t<span class="' + typeStyle + '">Тип переменной: ' + formatted_col_type + '</span></li>');
                 });
 
                 let analysisIsAllowed = validateUnique(response);
 
                 if (!analysisIsAllowed) {
-                    $("#step3_next").prop("disabled", true);
+                    nextBtn.prop("disabled", true);
                 } else {
                     //dataset is ok case
+                }
+
+                if (Array.isArray(response.incorrect_columns) && response.incorrect_columns.length) {
+                    nextBtn.prop("disabled", true);
+                    const msgHolder = $('#step3_message_holder');
+                    msgHolder.append('<div class="alert alert-dismissible alert-warning"> ' +
+                        '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                        '<p class="mb-0">Одна или несколько колонок имеют строковый тип. Проверьте данные в этих колонках</p> ' +
+                        '</div>');
                 }
 
                 step1.hide('fast');
@@ -242,7 +294,7 @@ function fillColumns(holder, columns, type) {
     holder.empty();
     columns.forEach(col => {
         holder.append('<div class="custom-control custom-checkbox">\n' +
-            '<input type="checkbox" id="' + type + '_' + col + '" name="dataset"\n' +
+            '<input type="checkbox" id="' + type + '_' + col + '" name="' + type + '_columns"\n' +
             'class="custom-control-input" value="' + col + '">\n' +
             '<label class="custom-control-label"\n' +
             'for="' + type + '_' + col + '">' + col + '</label>\n' +
@@ -272,6 +324,10 @@ function step2ValidateUserInput(inColumns, outColumns) {
                 '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
                 '<p class="mb-0">' + msg + '</p> ' +
                 '</div>');
+
+            $([document.documentElement, document.body]).animate({
+                scrollTop: step2MessageHolder.offset().top - 30
+            }, 600);
             return false;
         }
         return true;
@@ -280,6 +336,10 @@ function step2ValidateUserInput(inColumns, outColumns) {
             '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
             '<p class="mb-0">Не выбраны зависимые или независимые переменные</p> ' +
             '</div>');
+
+        $([document.documentElement, document.body]).animate({
+            scrollTop: step2MessageHolder.offset().top - 30
+        }, 600);
         return false;
     }
 }
@@ -304,6 +364,10 @@ function validateUnique(response) {
                 '<p class="mb-0">' + msg + '</p> ' +
                 '</div>');
             numOfErrors++;
+
+            $([document.documentElement, document.body]).animate({
+                scrollTop: msgHolder.offset().top - 30
+            }, 600);
         }
     }
 
@@ -321,6 +385,10 @@ function validateUnique(response) {
                 '<p class="mb-0">' + msg + '</p> ' +
                 '</div>');
             numOfErrors++;
+
+            $([document.documentElement, document.body]).animate({
+                scrollTop: msgHolder.offset().top - 30
+            }, 600);
         }
     }
 

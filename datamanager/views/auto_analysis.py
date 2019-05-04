@@ -10,5 +10,5 @@ class AutoAnalysisView(LoginRequiredMixin, generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['datasets'] = Dataset.objects.filter(author=self.request.user)
+        data['datasets'] = Dataset.objects.filter(author=self.request.user).order_by('-upload_time')
         return data

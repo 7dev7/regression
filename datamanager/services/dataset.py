@@ -9,7 +9,7 @@ def create_dataset(file, user):
         return
 
     # TODO add file check
-    df = pd.read_csv(file)
+    df = pd.read_csv(file, sep=__get_separator(file))
     content = get_json(df)
     columns = df.columns.values.tolist()
     size = df.shape[0]
@@ -17,6 +17,14 @@ def create_dataset(file, user):
     ds = Dataset(content=content, author=user, name=generate_dataset_name(user),
                  columns=columns, size=size)
     ds.save()
+
+
+def __get_separator(file):
+    for line in file:
+        comma_count = str(line).count(',')
+        semicolon_count = str(line).count(';')
+        file.seek(0)
+        return ',' if comma_count > semicolon_count else ';'
 
 
 def generate_dataset_name(user):
