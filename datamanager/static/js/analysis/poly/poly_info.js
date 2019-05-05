@@ -37,13 +37,13 @@ function handleEnterPolyInfoTab() {
 }
 
 function initPolyInfoEvents() {
-    polyInfoTabSource.on('changed.bs.select', function () {
+    polyInfoTabSource.on('hidden.bs.select', function () {
         Pace.track(function () {
             refillPolyRegressionInfo();
         });
     });
 
-    polyInfoTabTarget.on('changed.bs.select', function () {
+    polyInfoTabTarget.on('hidden.bs.select', function () {
         Pace.track(function () {
             refillPolyRegressionInfo();
         });

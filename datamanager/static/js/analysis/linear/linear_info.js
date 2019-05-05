@@ -50,13 +50,13 @@ function initVariables() {
 }
 
 function initRegrEvents() {
-    regrTabSource.on('changed.bs.select', function () {
+    regrTabSource.on('hidden.bs.select', function () {
         Pace.track(function () {
             refillRegressionInfo();
         });
     });
 
-    regrTabTarget.on('changed.bs.select', function () {
+    regrTabTarget.on('hidden.bs.select', function () {
         Pace.track(function () {
             refillRegressionInfo();
         });

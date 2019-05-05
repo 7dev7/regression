@@ -32,13 +32,13 @@ function handleEnterForestInfoTab() {
 }
 
 function initForestInfoEvents() {
-    forestInfoTabSource.on('changed.bs.select', function () {
+    forestInfoTabSource.on('hidden.bs.select', function () {
         Pace.track(function () {
             refillForestRegressionInfo();
         });
     });
 
-    forestInfoTabTarget.on('changed.bs.select', function () {
+    forestInfoTabTarget.on('hidden.bs.select', function () {
         Pace.track(function () {
             refillForestRegressionInfo();
         });

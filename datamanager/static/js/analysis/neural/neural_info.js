@@ -34,13 +34,13 @@ function handleEnterNeuralInfoTab() {
 }
 
 function initNeuralInfoEvents() {
-    neuralInfoTabSource.on('changed.bs.select', function () {
+    neuralInfoTabSource.on('hidden.bs.select', function () {
         Pace.track(function () {
             refillNeuralRegressionInfo();
         });
     });
 
-    neuralInfoTabTarget.on('changed.bs.select', function () {
+    neuralInfoTabTarget.on('hidden.bs.select', function () {
         Pace.track(function () {
             refillNeuralRegressionInfo();
         });
