@@ -22,6 +22,35 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('#datasetNameInput').change(function () {
+        const name = $(this).val();
+
+        if (!name) {
+            return;
+        }
+
+        const dataId = $('#data_id');
+        const url = '/data/api/dataset/' + dataId.val() + '/rename/';
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify({
+                name: name
+            }),
+            success: function (response) {
+                const msgHolder = $('#messageHolder');
+
+                msgHolder.append('<div class="alert alert-dismissible alert-success"> ' +
+                    '<button type="button" class="close" data-dismiss="alert">&times;</button> ' +
+                    '<p class="mb-0">Набор успешно переименован</p> ' +
+                    '</div>');
+            }
+        });
+    });
 });
 
 function renderColumnsModal(responseData) {

@@ -9,6 +9,8 @@ urlpatterns = [
 
     path('api/dataset/<int:data_id>/nan/remove/', dataset_rest.remove_nan, name='remove_nan'),
 
+    path('api/dataset/<int:data_id>/rename/', dataset_rest.rename_dataset, name='rename_dataset'),
+
     path('api/dataset/<int:data_id>/row/edit/', dataset_rest.edit_row, name='edit_row'),
 
     path('api/dataset/<int:data_id>/row/add/', dataset_rest.add_row, name='add_row'),

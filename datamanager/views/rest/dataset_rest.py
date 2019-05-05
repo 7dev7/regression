@@ -36,6 +36,19 @@ def remove_nan(request, data_id):
 
 
 @api_view(['POST'])
+@parser_classes((JSONParser,))
+@authentication_classes((CsrfExemptSessionAuthentication,))
+def rename_dataset(request, data_id):
+    name = request.data['name']
+
+    dataset = Dataset.objects.get(id=data_id)
+    dataset.name = name
+    dataset.save()
+
+    return Response({'ok'})
+
+
+@api_view(['POST'])
 @parser_classes((MultiPartParser, FormParser,))
 @authentication_classes((CsrfExemptSessionAuthentication,))
 def edit_row(request, data_id):
