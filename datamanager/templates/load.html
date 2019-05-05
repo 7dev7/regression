@@ -23,14 +23,11 @@
                         {% csrf_token %}
                         <fieldset>
                             <div class="form-group">
-                                <div class="input-group mb-3">
-                                    <div class="custom-file">
-                                        <input type="file" id="inputFile" aria-describedby="inputFileAddon"
-                                               accept=".csv"
-                                               name="inputFile" required/>
-                                        <label class="custom-file-label" for="inputFile">Файл</label>
-                                    </div>
-                                </div>
+                                <input type="file" class="form-control-file" id="inputFile"
+                                       aria-describedby="fileHelp" accept=".csv" name="inputFile" required>
+                                <small id="fileHelp" class="form-text text-muted">Выберите необходимый *.csv файл с
+                                    данными
+                                </small>
                             </div>
                             <button type="submit" class="btn btn-outline-primary float-right">Загрузить файл</button>
                         </fieldset>
@@ -38,11 +35,11 @@
                     <hr>
                 </div>
                 <br>
-                <div class="col-md-8 offset-md-2">
-                    <h4>Либо создать набор данных в визуальном режиме:</h4>
-                    <br>
-                    <a href="/" class="btn btn-outline-primary float-right">Перейти к созданию в визуальном режиме</a>
-                </div>
+                {#                <div class="col-md-8 offset-md-2">#}
+                {#                    <h4>Либо создать набор данных в визуальном режиме:</h4>#}
+                {#                    <br>#}
+                {#                    <a href="/" class="btn btn-outline-primary float-right">Перейти к созданию в визуальном режиме</a>#}
+                {#                </div>#}
             </div>
         </div>
     </main>
