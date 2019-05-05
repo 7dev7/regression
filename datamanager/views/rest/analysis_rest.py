@@ -8,6 +8,7 @@ import datamanager.services.regression.forest as forest_regr
 import datamanager.services.regression.linear as lin_regr
 import datamanager.services.regression.neural as neural_regr
 import datamanager.services.regression.poly as poly_regr
+from datamanager.models import Configuration
 from datamanager.services.dataframe import get_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
 
@@ -141,4 +142,9 @@ def auto_analysis(request):
     models.sort(key=lambda m: m['score'], reverse=True)
     formatted = a_analysis.format_models_data(models, df)
 
-    return Response({'models': formatted})
+    config = Configuration.objects.get(owner=request.user)
+
+    return Response({
+        'models': formatted,
+        'highlight_limit': config.highlightLimit
+    })

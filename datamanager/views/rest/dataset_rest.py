@@ -5,7 +5,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework.response import Response
 
 import datamanager.services.missing_values as miss_values
-from datamanager.models import Dataset
+from datamanager.models import Dataset, Configuration
 from datamanager.serializers.dataset_serializer import DatasetSerializer
 from datamanager.services.dataframe import get_dataframe, update_dataframe
 from datamanager.views.rest.csrf_auth import CsrfExemptSessionAuthentication
@@ -135,9 +135,10 @@ def analysis(request):
     incorrect_columns = __get_incorrect_columns(df, all_columns)
     nan_columns = miss_values.get_nan_columns(df, all_columns)
 
+    config = Configuration.objects.get(owner=request.user)
+
     return Response({
-        # TODO make configurable
-        'unique_threshold': 5,
+        'unique_threshold': config.unique_values_threshold,
         'in_columns': in_columns,
         'out_columns': out_columns,
         'in_unique': in_uniques,

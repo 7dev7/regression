@@ -105,7 +105,7 @@ $(document).ready(function () {
 
                     $('#step4_message_holder').empty();
 
-                    const highlightLimit = 5;
+                    const highlightLimit = response.highlight_limit;
                     let count = 0;
 
                     response.models.forEach(modelData => {
