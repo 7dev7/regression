@@ -1,6 +1,8 @@
 import statsmodels.api as sm
+from sklearn import metrics
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_val_predict
 from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
@@ -19,7 +21,7 @@ NN_ITERS = 10000
 POLY_MIN_DEFAULT = 2
 POLY_MAX_DEFAULT = 10
 
-TREE_RANGE = range(50, 150, 20)
+TREE_RANGE = range(50, 151, 100)
 
 func_mapping = {
     'tanh': 'тангенс',
@@ -106,12 +108,13 @@ def train_nn_models(x, y, nn_min=NN_MIN_DEFAULT, nn_max=NN_MAX_DEFAULT):
     results = []
     for hidden in range(nn_min, nn_max):
         for activation in ACTIVATIONS:
-            regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=NN_ITERS, activation=activation,
-                                     random_state=9)
-            model = regressor.fit(x, y)
+            model = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=NN_ITERS, activation=activation,
+                                 random_state=9)
+            predictions = cross_val_predict(model, x, y, cv=3, n_jobs=-1)
+            accuracy = metrics.r2_score(y, predictions)
             results.append({
                 'model': model,
-                'score': model.score(x, y),
+                'score': accuracy,
                 'in': x.columns.values,
                 'out': y.columns.values
             })
@@ -119,10 +122,12 @@ def train_nn_models(x, y, nn_min=NN_MIN_DEFAULT, nn_max=NN_MAX_DEFAULT):
 
 
 def train_linear_models(x, y):
-    model = LinearRegression().fit(x, y)
+    model = LinearRegression()
+    predictions = cross_val_predict(model, x, y, cv=3, n_jobs=-1)
+    accuracy = metrics.r2_score(y, predictions)
     return [{
         'model': model,
-        'score': model.score(x, y),
+        'score': accuracy,
         'in': x.columns.values,
         'out': y.columns.values
     }]
@@ -132,10 +137,11 @@ def train_poly_models(x, y, poly_min=POLY_MIN_DEFAULT, poly_max=POLY_MAX_DEFAULT
     results = []
     for degree in range(poly_min, poly_max):
         model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
-        model.fit(x, y)
+        predictions = cross_val_predict(model, x, y, cv=3, n_jobs=-1)
+        accuracy = metrics.r2_score(y, predictions)
         results.append({
             'model': model,
-            'score': model.score(x, y),
+            'score': accuracy,
             'in': x.columns.values,
             'out': y.columns.values
         })
@@ -147,11 +153,13 @@ def train_random_forest_models(x, y):
 
     for estimator in TREE_RANGE:
         forest = RandomForestRegressor(n_estimators=estimator, random_state=0, max_depth=2)
-        forest.fit(x, y)
+
+        predictions = cross_val_predict(forest, x, y, cv=3, n_jobs=-1)
+        accuracy = metrics.r2_score(y, predictions)
 
         results.append({
             'model': forest,
-            'score': forest.score(x, y),
+            'score': accuracy,
             'in': x.columns.values,
             'out': y.columns.values
         })
