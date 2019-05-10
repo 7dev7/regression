@@ -16,12 +16,14 @@ NN_MAX_DEFAULT = 9
 
 # can be logistic, tanh, relu
 ACTIVATIONS = ['logistic', 'tanh']
-NN_ITERS = 10000
+NN_ITERS = 8500
 
 POLY_MIN_DEFAULT = 2
 POLY_MAX_DEFAULT = 10
 
 TREE_RANGE = range(50, 151, 100)
+
+CV_NUM = 2
 
 func_mapping = {
     'tanh': 'тангенс',
@@ -110,7 +112,7 @@ def train_nn_models(x, y, nn_min=NN_MIN_DEFAULT, nn_max=NN_MAX_DEFAULT):
         for activation in ACTIVATIONS:
             model = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=NN_ITERS, activation=activation,
                                  random_state=9)
-            predictions = cross_val_predict(model, x, y, cv=3, n_jobs=-1)
+            predictions = cross_val_predict(model, x, y, cv=CV_NUM, n_jobs=-1)
             accuracy = metrics.r2_score(y, predictions)
             results.append({
                 'model': model,
@@ -123,7 +125,7 @@ def train_nn_models(x, y, nn_min=NN_MIN_DEFAULT, nn_max=NN_MAX_DEFAULT):
 
 def train_linear_models(x, y):
     model = LinearRegression()
-    predictions = cross_val_predict(model, x, y, cv=3, n_jobs=-1)
+    predictions = cross_val_predict(model, x, y, cv=CV_NUM, n_jobs=-1)
     accuracy = metrics.r2_score(y, predictions)
     return [{
         'model': model,
@@ -137,7 +139,7 @@ def train_poly_models(x, y, poly_min=POLY_MIN_DEFAULT, poly_max=POLY_MAX_DEFAULT
     results = []
     for degree in range(poly_min, poly_max):
         model = make_pipeline(PolynomialFeatures(degree=degree), LinearRegression())
-        predictions = cross_val_predict(model, x, y, cv=3, n_jobs=-1)
+        predictions = cross_val_predict(model, x, y, cv=CV_NUM, n_jobs=-1)
         accuracy = metrics.r2_score(y, predictions)
         results.append({
             'model': model,
@@ -154,7 +156,7 @@ def train_random_forest_models(x, y):
     for estimator in TREE_RANGE:
         forest = RandomForestRegressor(n_estimators=estimator, random_state=0, max_depth=2)
 
-        predictions = cross_val_predict(forest, x, y, cv=3, n_jobs=-1)
+        predictions = cross_val_predict(forest, x, y, cv=CV_NUM, n_jobs=-1)
         accuracy = metrics.r2_score(y, predictions)
 
         results.append({
