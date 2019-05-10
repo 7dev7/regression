@@ -7,7 +7,7 @@ def get_scatter_data(model, x, y, x_name, y_name, scalar=False):
     line_points = [{'x': labels[i], 'y': predictions[i]} for i in range(0, size)] if scalar else \
         [{'x': labels[i], 'y': predictions[i][0]} for i in range(0, size)]
 
-    observations = [{'x': labels[i], 'y': y.iloc[i][y_name]} for i in range(0, 200)]
+    observations = [{'x': labels[i], 'y': y.iloc[i][y_name]} for i in range(0, size)]
 
     return {
         'predictors': labels,
