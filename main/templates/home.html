@@ -1,17 +1,22 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+
 {% block content %}
     <div class="container">
         <div class="page-header" id="banner">
             <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 text-center">
-                    <h1>Регрессия</h1>
-                </div>
             </div>
         </div>
-        <div>
-            <div class="row">
-
-            </div>
+        <img src="{% static "img/logo.png" %}" class="rounded mx-auto d-block" style="width: 30%; height: 30%;"
+             alt="Логотип">
+        <div class="jumbotron">
+            <p class="lead">Данный сервис предназначен для построения регрессионных моделей, определения зависимости в
+                числовых наборах данных, а также прогнозирования значений на основе построенных моделей</p>
+            <hr class="my-4">
+            <p>Для начала регрессионного анализа добавьте набор данных</p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/data/load" role="button">Добавить набор данных</a>
+            </p>
         </div>
     </div>
 {% endblock %}
