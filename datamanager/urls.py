@@ -1,7 +1,7 @@
 from django.urls import path
 
 from datamanager.views import load, my_data, dataset, analysis, models, model, column, auto_analysis, settings, \
-    manual_analysis
+    manual_analysis, export
 from datamanager.views.rest import dataset_rest, analysis_rest, ml_models_rest, columns_rest
 
 urlpatterns = [
@@ -70,6 +70,8 @@ urlpatterns = [
     path('models/', models.ModelsView.as_view(), name='models'),
 
     path('model/<int:model_id>/', model.ModelView.as_view(), name='model'),
+
+    path('model/<int:model_id>/export/', export.ExportModelView.as_view(), name='export model'),
 
     path('columns/dataset/<int:dataset_id>/', column.ColumnView.as_view(), name='column'),
 
