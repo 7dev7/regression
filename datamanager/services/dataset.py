@@ -8,15 +8,17 @@ def create_dataset(file, user):
     if file is None:
         return
 
-    # TODO add file check
-    df = pd.read_csv(file, sep=__get_separator(file))
-    content = get_json(df)
-    columns = df.columns.values.tolist()
-    size = df.shape[0]
+    try:
+        df = pd.read_csv(file, sep=__get_separator(file))
+        content = get_json(df)
+        columns = df.columns.values.tolist()
+        size = df.shape[0]
 
-    ds = Dataset(content=content, author=user, name=generate_dataset_name(user),
-                 columns=columns, size=size)
-    ds.save()
+        ds = Dataset(content=content, author=user, name=generate_dataset_name(user),
+                     columns=columns, size=size)
+        ds.save()
+    except:
+        print("error during dataset saving")
 
 
 def __get_separator(file):

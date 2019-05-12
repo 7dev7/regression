@@ -110,13 +110,12 @@ def train_nn_models(x, y, nn_min=NN_MIN_DEFAULT, nn_max=NN_MAX_DEFAULT):
     results = []
     for hidden in range(nn_min, nn_max):
         for activation in ACTIVATIONS:
-            model = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=NN_ITERS, activation=activation,
-                                 random_state=9)
-            predictions = cross_val_predict(model, x, y, cv=CV_NUM, n_jobs=-1)
-            accuracy = metrics.r2_score(y, predictions)
+            regressor = MLPRegressor(hidden_layer_sizes=(hidden,), max_iter=NN_ITERS, activation=activation,
+                                     random_state=9)
+            model = regressor.fit(x, y)
             results.append({
                 'model': model,
-                'score': accuracy,
+                'score': model.score(x, y),
                 'in': x.columns.values,
                 'out': y.columns.values
             })
