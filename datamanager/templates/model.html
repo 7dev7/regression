@@ -110,7 +110,7 @@
                     <div class="col-md-4 justify-content-center">
                         <h4 data-toggle="tooltip" data-placement="top"
                             title="Минимальное, максимальное и среднее значения представлены на основании обучающей выборки."
-                            data-original-title="test">Значения входных параметров: </h4>
+                            data-original-title="">Значения входных параметров: </h4>
                         {% for col in model.ds_in_cols %}
                             <label class="col-form-label" for="in{{ col }}">{{ col }}
                                 {% for m in meta %}
@@ -125,7 +125,9 @@
                         {% endfor %}
                     </div>
                     <div class="col-md-4 justify-content-center">
-                        <h4>Значения выходных параметров: </h4>
+                        <h4 data-toggle="tooltip" data-placement="top"
+                            title="Минимальное, максимальное и среднее значения представлены на основании обучающей выборки."
+                            data-original-title="">Значения выходных параметров: </h4>
                         {% for col in model.ds_out_cols %}
                             <label class="col-form-label" for="in{{ col }}">{{ col }}
                                 {% for m in meta %}
