@@ -23,16 +23,12 @@ class SettingsView(LoginRequiredMixin, generic.TemplateView):
         args.update(csrf(request))
 
         unique_values_threshold = request.POST.get('unique_values_threshold')
-        highlight_limit = request.POST.get('highlightLimit')
-        p_value = request.POST.get('p_value').replace(',', '.')
         nn_hidden_min = request.POST.get('nn_hidden_min')
         nn_hidden_max = request.POST.get('nn_hidden_max')
         poly_min = request.POST.get('poly_min')
         poly_max = request.POST.get('poly_max')
 
         cfg.update_config(request.user, unique_values_threshold=unique_values_threshold,
-                          highlight_limit=highlight_limit,
-                          p_value=p_value,
                           nn_hidden_min=nn_hidden_min,
                           nn_hidden_max=nn_hidden_max,
                           poly_min=poly_min,
