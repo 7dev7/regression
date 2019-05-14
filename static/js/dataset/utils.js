@@ -2,8 +2,14 @@ function parseRows(dataset) {
     let content = JSON.parse(dataset.content.replace(new RegExp('\'', 'g'), "\""));
     let columns = dataset.columns;
 
+    let indices = [];
+    for (let key in content[columns[0]]) {
+        indices.push(parseInt(key));
+    }
+    console.log(indices);
+
     let rows = [];
-    for (let i = 0; i < dataset.size; i++) {
+    indices.forEach(i => {
         let row = {};
 
         for (let j = 0; j < columns.length; j++) {
@@ -12,8 +18,7 @@ function parseRows(dataset) {
         }
         row['__row_id__'] = i;
         rows.push(row);
-    }
-
+    });
     return rows;
 }
 

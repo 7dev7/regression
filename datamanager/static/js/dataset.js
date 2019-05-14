@@ -203,12 +203,17 @@ function renderTable(dataset) {
         closeAfterAdd: true,
         closeOnEscape: true,
         afterSubmit: function (response) {
-            return [true, "", $.parseJSON(response.responseText)];
+            location.reload();
+            return [true];
         }
     }, {
         reloadAfterSubmit: false,
         closeAfterDelete: true,
         closeOnEscape: true,
-        url: removeUrl
+        url: removeUrl,
+        afterSubmit: function (postdata, formid) {
+            location.reload();
+            return [true];
+        }
     });
 }
