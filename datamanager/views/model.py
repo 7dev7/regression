@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import redirect, render
 from django.views import generic
 
 from datamanager.models import MlModel
@@ -28,4 +28,4 @@ class ModelView(LoginRequiredMixin, generic.TemplateView):
                        get_columns_meta(model.dataset.id, model.ds_out_cols)
         args['activation'] = func_mapping.get(model.activation, '')
 
-        return render_to_response('model.html', args)
+        return render(request, 'model.html', args)

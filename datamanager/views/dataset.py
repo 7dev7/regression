@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.template.context_processors import csrf
 from django.views import generic
 
@@ -12,14 +12,20 @@ class DatasetView(LoginRequiredMixin, generic.TemplateView):
     redirect_field_name = None
     template_name = 'dataset.html'
 
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        data_id = kwargs.get('data_id')
-        data['data_id'] = data_id
+    @staticmethod
+    def get(request, data_id):
+        try:
+            dataset = Dataset.objects.get(id=data_id)
+        except:
+            return redirect('/data/', request)
+
+        if dataset.author.id != request.user.id:
+            return redirect('/data/', request)
+
+        args = {'data_id': data_id, 'dataset': dataset}
         nan_columns = miss_values.get_nan_columns_for_ds(data_id)
-        data['nan_visible'] = len(nan_columns) != 0
-        data['dataset'] = Dataset.objects.get(id=data_id)
-        return data
+        args['nan_visible'] = len(nan_columns) != 0
+        return render(request, 'dataset.html', args)
 
     @staticmethod
     def post(request, data_id):
