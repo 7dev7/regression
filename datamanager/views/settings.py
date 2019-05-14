@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import render_to_response
 from django.template.context_processors import csrf
 from django.views import generic
 
@@ -28,10 +28,19 @@ class SettingsView(LoginRequiredMixin, generic.TemplateView):
         poly_min = request.POST.get('poly_min')
         poly_max = request.POST.get('poly_max')
 
-        cfg.update_config(request.user, unique_values_threshold=unique_values_threshold,
-                          nn_hidden_min=nn_hidden_min,
-                          nn_hidden_max=nn_hidden_max,
-                          poly_min=poly_min,
-                          poly_max=poly_max)
+        try:
+            cfg.update_config(request.user, unique_values_threshold=unique_values_threshold,
+                              nn_hidden_min=nn_hidden_min,
+                              nn_hidden_max=nn_hidden_max,
+                              poly_min=poly_min,
+                              poly_max=poly_max)
+            args['message'] = 'Настройки сохранены'
+            args['message_class'] = 'success'
+        except:
+            print('error during saving settings')
+            args['message'] = 'Ошибка при сохранении настроек'
+            args['message_class'] = 'danger'
 
-        return redirect('/data/settings/', request)
+        user = request.user
+        args['settings'] = Configuration.objects.get(owner=user)
+        return render_to_response('settings.html', args)

@@ -21,6 +21,14 @@
                 </div>
             </div>
             <div class="content">
+                {% if message %}
+                    <div id="messageHolder">
+                        <div class="alert alert-dismissible alert-{{ message_class }}">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <p class="mb-0">{{ message }}</p>
+                        </div>
+                    </div>
+                {% endif %}
                 <form method="POST">
                     {% csrf_token %}
                     <div class="row justify-content-md-center">
